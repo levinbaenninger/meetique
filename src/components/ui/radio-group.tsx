@@ -6,6 +6,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a styled radio group container using Radix UI primitives.
+ *
+ * Combines a grid layout with customizable class names and forwards all additional props to the underlying Radix `RadioGroupPrimitive.Root`.
+ */
 function RadioGroup({
   className,
   ...props
@@ -19,6 +24,11 @@ function RadioGroup({
   );
 }
 
+/**
+ * Renders a styled radio button item for use within a radio group.
+ *
+ * Displays a selectable circular radio item with visual feedback for selected, focused, disabled, and invalid states. Includes a centered indicator icon when selected.
+ */
 function RadioGroupItem({
   className,
   ...props

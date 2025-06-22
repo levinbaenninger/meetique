@@ -6,6 +6,11 @@ import * as ResizablePrimitive from 'react-resizable-panels';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * A container component for grouping resizable panels with customizable layout and styling.
+ *
+ * Wraps the `PanelGroup` primitive to provide default flexbox styling for full height and width, supporting both horizontal and vertical orientations. Additional class names and props are forwarded to the underlying primitive.
+ */
 function ResizablePanelGroup({
   className,
   ...props
@@ -22,12 +27,22 @@ function ResizablePanelGroup({
   );
 }
 
+/**
+ * A wrapper component for a resizable panel within a panel group.
+ *
+ * Forwards all props to the underlying resizable panel primitive and adds a data attribute for identification.
+ */
 function ResizablePanel({
   ...props
 }: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
   return <ResizablePrimitive.Panel data-slot='resizable-panel' {...props} />;
 }
 
+/**
+ * Renders a styled resize handle for use between resizable panels, with optional grip icon for visual affordance.
+ *
+ * @param withHandle - If true, displays a grip icon inside the handle for easier identification.
+ */
 function ResizableHandle({
   withHandle,
   className,

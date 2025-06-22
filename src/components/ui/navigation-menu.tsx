@@ -5,6 +5,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders the root navigation menu container with optional viewport for submenu content.
+ *
+ * @param viewport - If true, displays the submenu viewport below the menu (default: true)
+ */
 function NavigationMenu({
   className,
   children,
@@ -29,6 +34,11 @@ function NavigationMenu({
   );
 }
 
+/**
+ * Renders a styled list container for navigation menu items.
+ *
+ * Applies flexbox layout and spacing to arrange child menu items horizontally.
+ */
 function NavigationMenuList({
   className,
   ...props
@@ -45,6 +55,11 @@ function NavigationMenuList({
   );
 }
 
+/**
+ * Provides a styled container for a single navigation menu item.
+ *
+ * Wraps the Radix NavigationMenuPrimitive.Item component, adding relative positioning and a data attribute for slot identification.
+ */
 function NavigationMenuItem({
   className,
   ...props
@@ -62,6 +77,11 @@ const navigationMenuTriggerStyle = cva(
   'group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1',
 );
 
+/**
+ * Renders a styled trigger button for the navigation menu, displaying its children and a chevron icon that rotates when the menu is open.
+ *
+ * The trigger is used to open or close a submenu within the navigation menu.
+ */
 function NavigationMenuTrigger({
   className,
   children,
@@ -82,6 +102,11 @@ function NavigationMenuTrigger({
   );
 }
 
+/**
+ * Renders the submenu content area for a navigation menu with animated transitions and responsive positioning.
+ *
+ * Applies conditional styling and animations based on menu state and viewport presence.
+ */
 function NavigationMenuContent({
   className,
   ...props
@@ -99,6 +124,11 @@ function NavigationMenuContent({
   );
 }
 
+/**
+ * Renders the navigation menu viewport container with animated transitions and responsive sizing.
+ *
+ * The viewport displays submenu content positioned below the navigation menu, applying custom styles and passing all additional props to the underlying primitive.
+ */
 function NavigationMenuViewport({
   className,
   ...props
@@ -121,6 +151,11 @@ function NavigationMenuViewport({
   );
 }
 
+/**
+ * Renders a styled navigation menu link with active, hover, and focus states.
+ *
+ * Applies custom styles for visual feedback and icon sizing, and passes all additional props to the underlying primitive link component.
+ */
 function NavigationMenuLink({
   className,
   ...props
@@ -137,6 +172,11 @@ function NavigationMenuLink({
   );
 }
 
+/**
+ * Renders an animated indicator below the active navigation menu item.
+ *
+ * Displays a small, rotated square as a visual cue for the currently active or open menu item, with fade and slide animations based on menu state.
+ */
 function NavigationMenuIndicator({
   className,
   ...props

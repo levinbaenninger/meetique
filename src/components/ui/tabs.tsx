@@ -5,6 +5,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a styled root container for a tab interface using Radix UI Tabs.
+ *
+ * Applies a flex column layout with spacing and sets a `data-slot="tabs"` attribute for identification.
+ */
 function Tabs({
   className,
   ...props
@@ -18,6 +23,11 @@ function Tabs({
   );
 }
 
+/**
+ * Renders a styled container for tab triggers within a tabs interface.
+ *
+ * Enhances the Radix UI Tabs List primitive with custom styles and a `data-slot` attribute for identification.
+ */
 function TabsList({
   className,
   ...props
@@ -34,6 +44,11 @@ function TabsList({
   );
 }
 
+/**
+ * Renders a styled tab trigger button for switching between tabs.
+ *
+ * Applies conditional styling based on active, focus, and disabled states, and supports custom class names and additional props.
+ */
 function TabsTrigger({
   className,
   ...props
@@ -50,6 +65,11 @@ function TabsTrigger({
   );
 }
 
+/**
+ * Renders the content area for a tab, applying custom styling and a data attribute for identification.
+ *
+ * Accepts all props supported by the underlying Radix UI `TabsPrimitive.Content` component.
+ */
 function TabsContent({
   className,
   ...props

@@ -4,6 +4,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a responsive HTML table with consistent styling and horizontal overflow handling.
+ *
+ * The table is wrapped in a container that enables horizontal scrolling on smaller screens. Additional class names can be provided for custom styling.
+ */
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
     <div
@@ -19,6 +24,11 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
   );
 }
 
+/**
+ * Renders a styled table header (`<thead>`) element with a bottom border on all child rows.
+ *
+ * Accepts standard `<thead>` HTML props and allows additional class names for custom styling.
+ */
 function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   return (
     <thead
@@ -29,6 +39,11 @@ function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   );
 }
 
+/**
+ * Renders a styled `<tbody>` element for use within a table.
+ *
+ * Removes the border from the last table row and allows additional class names and props to be applied.
+ */
 function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   return (
     <tbody
@@ -39,6 +54,11 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   );
 }
 
+/**
+ * Renders a styled table footer (`<tfoot>`) with a muted background, top border, and medium font weight.
+ *
+ * Applies custom styles for the last row to remove its bottom border.
+ */
 function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   return (
     <tfoot
@@ -52,6 +72,11 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   );
 }
 
+/**
+ * Renders a table row with hover and selected state styling.
+ *
+ * Applies background color changes on hover and when selected, along with a bottom border and color transition effects.
+ */
 function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   return (
     <tr
@@ -65,6 +90,11 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   );
 }
 
+/**
+ * Renders a styled table header cell (`<th>`) with consistent alignment, padding, and font styling.
+ *
+ * Applies additional styling for child elements with the `role="checkbox"` attribute to ensure proper alignment.
+ */
 function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   return (
     <th
@@ -78,6 +108,11 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   );
 }
 
+/**
+ * Renders a styled table cell (`<td>`) element with consistent padding, vertical alignment, and optional custom classes.
+ *
+ * Applies special styling for child elements with the `role="checkbox"` attribute.
+ */
 function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   return (
     <td
@@ -91,6 +126,11 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   );
 }
 
+/**
+ * Renders a styled table caption element with muted text color and spacing.
+ *
+ * Accepts all standard HTML caption element props and allows additional custom class names.
+ */
 function TableCaption({
   className,
   ...props

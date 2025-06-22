@@ -5,6 +5,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a styled toggle switch component with customizable appearance and behavior.
+ *
+ * Combines Radix UI's switch primitives with predefined and custom class names to support various states, themes, and accessibility features.
+ */
 function Switch({
   className,
   ...props

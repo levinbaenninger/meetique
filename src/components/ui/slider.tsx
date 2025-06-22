@@ -5,6 +5,17 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * A customizable slider component supporting single or range selection, built on top of Radix UI's slider primitive.
+ *
+ * Renders a horizontal or vertical slider with configurable minimum, maximum, and initial values. Supports both controlled and uncontrolled usage, and automatically renders one or two thumbs based on the provided value(s).
+ *
+ * @param className - Additional class names to apply to the slider root element.
+ * @param defaultValue - The initial value(s) of the slider for uncontrolled usage.
+ * @param value - The current value(s) of the slider for controlled usage.
+ * @param min - The minimum allowed value (defaults to 0).
+ * @param max - The maximum allowed value (defaults to 100).
+ */
 function Slider({
   className,
   defaultValue,

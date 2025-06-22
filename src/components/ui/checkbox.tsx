@@ -6,6 +6,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * A styled checkbox component based on Radix UI, supporting custom classes and various visual states.
+ *
+ * Combines default and custom styles, and displays a check icon when checked. Supports light and dark modes, as well as accessibility and validation states.
+ */
 function Checkbox({
   className,
   ...props

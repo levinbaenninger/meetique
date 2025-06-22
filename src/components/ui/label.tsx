@@ -5,6 +5,13 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * A styled label component that wraps `LabelPrimitive.Root` with additional utility classes and custom styling.
+ *
+ * Accepts all props supported by `LabelPrimitive.Root`, allowing for flexible usage and custom class names.
+ *
+ * @returns The rendered label element.
+ */
 function Label({
   className,
   ...props

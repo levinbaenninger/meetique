@@ -2,6 +2,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a styled card container with base layout, background, border, and shadow.
+ *
+ * Spreads additional div props onto the root element for extensibility.
+ */
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -15,6 +20,11 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders the header section of a Card with a grid layout and responsive styling.
+ *
+ * Applies specific styles for layout, spacing, and alignment, and supports an optional action slot for aligning actions to the top-right.
+ */
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -28,6 +38,11 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders the title section of a card with emphasized font styling.
+ *
+ * Use within a CardHeader to display the main heading or title of the card.
+ */
 function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -38,6 +53,11 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders descriptive text within a card, styled with muted color and smaller font size.
+ *
+ * Use to provide supplementary information or context inside a card layout.
+ */
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -48,6 +68,9 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders a container for card action elements, positioned at the top-right within the card header grid.
+ */
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -61,6 +84,11 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders the main content area of a card with horizontal padding.
+ *
+ * Additional props are spread onto the root div element.
+ */
 function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -71,6 +99,11 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders the footer section of a card with horizontal padding and flex alignment.
+ *
+ * Additional props are spread onto the root div element.
+ */
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div

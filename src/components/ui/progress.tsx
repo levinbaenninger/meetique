@@ -5,6 +5,14 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a customizable progress bar using Radix UI primitives.
+ *
+ * Displays a horizontal progress indicator whose filled portion reflects the `value` prop as a percentage. Additional props and class names are applied to the root container for further customization.
+ *
+ * @param value - The progress percentage to display, from 0 to 100. Defaults to 0 if not provided.
+ * @returns A styled progress bar component.
+ */
 function Progress({
   className,
   value,

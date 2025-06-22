@@ -6,6 +6,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a customizable OTP (One-Time Password) input component with support for additional container and input styling.
+ *
+ * Accepts all props of the underlying `OTPInput` component, with optional class names for both the container and input elements.
+ */
 function InputOTP({
   className,
   containerClassName,
@@ -26,6 +31,11 @@ function InputOTP({
   );
 }
 
+/**
+ * Renders a flex container for grouping OTP input slots.
+ *
+ * Additional class names and div props can be provided for customization.
+ */
 function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -36,6 +46,13 @@ function InputOTPGroup({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Renders an individual OTP input slot displaying its character and active state.
+ *
+ * Displays the character for the specified slot index and visually indicates when the slot is active or contains a caret. Shows a blinking caret animation if the slot is focused.
+ *
+ * @param index - The position of the slot within the OTP input sequence
+ */
 function InputOTPSlot({
   index,
   className,
@@ -66,6 +83,11 @@ function InputOTPSlot({
   );
 }
 
+/**
+ * Renders a visual separator with a minus icon for use between OTP input slots.
+ *
+ * Adds accessibility attributes for screen readers and accepts all standard `div` props.
+ */
 function InputOTPSeparator({ ...props }: React.ComponentProps<'div'>) {
   return (
     <div data-slot='input-otp-separator' role='separator' {...props}>

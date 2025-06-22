@@ -5,6 +5,11 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Renders a styled container for displaying a user avatar.
+ *
+ * Combines default avatar layout and sizing styles with any additional classes provided. Forwards all other props to the underlying Radix UI Avatar root element.
+ */
 function Avatar({
   className,
   ...props
@@ -21,6 +26,11 @@ function Avatar({
   );
 }
 
+/**
+ * Renders an avatar image with a fixed square aspect ratio and fills the container.
+ *
+ * Combines default styling with any additional classes provided. Forwards all other props to the underlying Radix UI Avatar image primitive.
+ */
 function AvatarImage({
   className,
   ...props
@@ -34,6 +44,11 @@ function AvatarImage({
   );
 }
 
+/**
+ * Displays a fallback element within the avatar when the image cannot be loaded.
+ *
+ * Renders a styled container for fallback content, such as initials or an icon, centered within the avatar.
+ */
 function AvatarFallback({
   className,
   ...props

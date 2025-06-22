@@ -24,6 +24,12 @@ type ChartContextProps = {
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
+/**
+ * Returns the current chart configuration context.
+ *
+ * Throws an error if called outside of a `ChartContainer`.
+ * @returns The chart configuration context object.
+ */
 function useChart() {
   const context = React.useContext(ChartContext);
 
@@ -34,6 +40,14 @@ function useChart() {
   return context;
 }
 
+/**
+ * Provides a themable chart container with context-based configuration and dynamic styling for Recharts charts.
+ *
+ * Wraps chart content in a context provider and injects CSS variables for color theming, enabling consistent styling of chart elements and UI components such as tooltips and legends.
+ *
+ * @param config - Chart configuration mapping keys to color, label, and icon settings for chart elements.
+ * @param children - Chart content to render inside the responsive container.
+ */
 function ChartContainer({
   id,
   className,
@@ -104,6 +118,18 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+/**
+ * Renders a customizable tooltip content UI for Recharts charts, displaying labels, icons, and value indicators based on chart configuration and tooltip payload.
+ *
+ * Supports theming, custom label and value formatting, indicator styles (dot, line, dashed), and conditional display of labels and indicators.
+ *
+ * @param indicator - The style of the value indicator ('dot', 'line', or 'dashed'). Defaults to 'dot'.
+ * @param hideLabel - If true, hides the tooltip label.
+ * @param hideIndicator - If true, hides the value indicator.
+ * @param nameKey - Optional key to use for resolving item names from the payload.
+ * @param labelKey - Optional key to use for resolving labels from the payload.
+ * @returns The rendered tooltip content, or null if inactive or no payload.
+ */
 function ChartTooltipContent({
   active,
   payload,
@@ -250,6 +276,14 @@ function ChartTooltipContent({
 
 const ChartLegend = RechartsPrimitive.Legend;
 
+/**
+ * Renders a chart legend with configurable icons or color indicators and labels for each legend item.
+ *
+ * Displays each legend entry using the chart configuration context, supporting custom icons, labels, and optional hiding of icons. Layout and spacing adjust based on vertical alignment.
+ *
+ * @param hideIcon - If true, hides the icon and displays only the color indicator.
+ * @param nameKey - Optional key to use for resolving item configuration and labels.
+ */
 function ChartLegendContent({
   className,
   hideIcon = false,
@@ -304,7 +338,16 @@ function ChartLegendContent({
   );
 }
 
-// Helper to extract item config from a payload.
+/**
+ * Retrieves the chart configuration entry for a given data payload item.
+ *
+ * Attempts to resolve the configuration key from the payload or its nested `payload` property, using the provided key. Returns the matching config entry if found, or `undefined` if no match exists.
+ *
+ * @param config - The chart configuration mapping keys to config objects
+ * @param payload - The data payload item, possibly containing a nested `payload` property
+ * @param key - The key to use for resolving the config entry
+ * @returns The corresponding config entry, or `undefined` if not found
+ */
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,

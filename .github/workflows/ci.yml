@@ -81,6 +81,9 @@ jobs:
       - name: 🔬 Format
         run: pnpm format:fix
 
+      - name: 📥 Pull latest changes
+        run: git pull --rebase origin ${{ github.head_ref }}
+
       - name: 📸 Commit
         uses: stefanzweifel/git-auto-commit-action@v6
         with:

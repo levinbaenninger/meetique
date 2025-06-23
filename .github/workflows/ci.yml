@@ -12,9 +12,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -24,10 +21,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -38,9 +35,6 @@ jobs:
 
   type-check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -50,10 +44,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -64,9 +58,6 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     permissions:
       contents: write
     steps:
@@ -78,10 +69,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -90,6 +81,17 @@ jobs:
       - name: 🔬 Format
         run: pnpm format:fix
 
+      - name: 🔧 Stash changes before pull
+        run: git stash --include-untracked
+
+      - name: 🔄 Pull latest changes (rebase)
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+        run: git pull --rebase origin "$PR_HEAD_REF"
+
+      - name: 🔧 Pop stash after pull
+        run: git stash pop || true
+
       - name: 📸 Commit
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
@@ -97,9 +99,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -109,10 +108,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies

@@ -81,7 +81,7 @@ jobs:
       - name: 🔬 Format
         run: pnpm format:fix
 
-      - name: 📥 Pull latest changes
+      - name: 🔄 Pull latest changes (rebase)
         run: git pull --rebase origin ${{ github.head_ref }}
 
       - name: 📸 Commit

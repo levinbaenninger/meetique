@@ -12,9 +12,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -24,10 +21,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -38,9 +35,6 @@ jobs:
 
   type-check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -50,10 +44,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -64,9 +58,6 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     permissions:
       contents: write
     steps:
@@ -78,10 +69,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
@@ -97,9 +88,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20]
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
@@ -109,10 +97,10 @@ jobs:
         with:
           version: 10
 
-      - name: 💻 Use Node.js ${{ matrix.node-version }}
+      - name: 💻 Use Node.js (LTS)
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
           cache: 'pnpm'
 
       - name: 📥 Install dependencies

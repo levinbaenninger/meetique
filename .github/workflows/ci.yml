@@ -85,7 +85,9 @@ jobs:
         run: git stash --include-untracked
 
       - name: 🔄 Pull latest changes (rebase)
-        run: git pull --rebase origin ${{ github.head_ref }}
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+        run: git pull --rebase origin "$PR_HEAD_REF"
 
       - name: 🔧 Pop stash after pull
         run: git stash pop || true

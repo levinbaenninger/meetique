@@ -96,26 +96,3 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: 'chore: format code'
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: 💻 Use Node.js (LTS)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      - name: 🔬 Build
-        run: pnpm build

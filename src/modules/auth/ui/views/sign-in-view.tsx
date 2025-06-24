@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { FaGithub, FaGoogle } from 'react-icons/fa';
 import { z } from 'zod';
 
 import { Alert, AlertTitle } from '@/components/ui/alert';
@@ -53,6 +54,22 @@ export const SignInView = () => {
         onSuccess: () => {
           router.push('/');
         },
+        onError: ({ error }) => {
+          setError(error.message);
+        },
+        onResponse: () => {
+          setIsPending(false);
+        },
+      },
+    );
+  };
+  const onSocial = (provider: 'google' | 'github') => {
+    setError(null);
+    setIsPending(true);
+
+    authClient.signIn.social(
+      { provider, callbackURL: '/' },
+      {
         onError: ({ error }) => {
           setError(error.message);
         },
@@ -131,11 +148,21 @@ export const SignInView = () => {
                   </span>
                 </div>
                 <div className='grid grid-cols-2 gap-4'>
-                  <Button variant='outline' type='button' className='w-full'>
-                    Google
+                  <Button
+                    onClick={() => onSocial('google')}
+                    variant='outline'
+                    type='button'
+                    className='w-full'
+                  >
+                    <FaGoogle />
                   </Button>
-                  <Button variant='outline' type='button' className='w-full'>
-                    GitHub
+                  <Button
+                    onClick={() => onSocial('github')}
+                    variant='outline'
+                    type='button'
+                    className='w-full'
+                  >
+                    <FaGithub />
                   </Button>
                 </div>
                 <div className='text-center text-sm'>

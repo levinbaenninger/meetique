@@ -67,7 +67,7 @@ export const DashboardSidebar = () => {
         </Link>
       </SidebarHeader>
       <div className='px-4 py-2'>
-        <Separator className='text-[#5D6B68] opacity-10' />
+        <Separator className='text-sidebar-muted opacity-10' />
       </div>
       <SidebarContent>
         {groups.map((group, index) => (
@@ -80,9 +80,9 @@ export const DashboardSidebar = () => {
                       <SidebarMenuButton
                         asChild
                         className={cn(
-                          'from-sidebar-accent via-sidebar/50 to-sidebar/50 h-10 border border-transparent from-5% via-30% hover:border-[#5D6B68]/10 hover:bg-linear-to-r/oklch',
+                          'from-sidebar-accent via-sidebar/50 to-sidebar/50 hover:border-sidebar-muted/10 h-10 border border-transparent from-5% via-30% hover:bg-linear-to-r/oklch',
                           isActive(item.href) &&
-                            'border-[#5D6B68]/10 bg-linear-to-r/oklch',
+                            'border-sidebar-muted/10 bg-linear-to-r/oklch',
                         )}
                         isActive={isActive(item.href)}
                       >
@@ -100,7 +100,7 @@ export const DashboardSidebar = () => {
             </SidebarGroup>
             {index !== groups.length - 1 && (
               <div className='px-4 py-2' key={`${group.label}-separator`}>
-                <Separator className='text-[#5D6B68] opacity-10' />
+                <Separator className='text-sidebar-muted opacity-10' />
               </div>
             )}
           </React.Fragment>

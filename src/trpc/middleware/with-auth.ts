@@ -1,9 +1,16 @@
 import { TRPCError } from '@trpc/server';
+import { headers } from 'next/headers';
+
+import { auth } from '@/lib/auth';
 
 import { middleware } from '../trpc';
 
 export const withAuth = middleware(async ({ ctx, next }) => {
-  if (!ctx.session) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Unauthorized',
@@ -13,7 +20,7 @@ export const withAuth = middleware(async ({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session,
+      session,
     },
   });
 });

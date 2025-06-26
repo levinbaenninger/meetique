@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { DM_Mono, Inter } from 'next/font/google';
 
+import { Toaster } from '@/components/ui/sonner';
 import { TRPCReactProvider } from '@/trpc/client';
 
 const inter = Inter({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <TRPCReactProvider>
       <html lang='en'>
         <body className={`${inter.className} ${dmMono.variable} antialiased`}>
+          <Toaster />
           {children}
         </body>
       </html>

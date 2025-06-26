@@ -12,6 +12,7 @@ export const withAuth = middleware(async ({ ctx, next }) => {
 
   return next({
     ctx: {
+      ...ctx,
       session: ctx.session,
     },
   });

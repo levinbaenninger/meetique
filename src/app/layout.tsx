@@ -3,6 +3,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { DM_Mono, Inter } from 'next/font/google';
 
+import { TRPCReactProvider } from '@/trpc/client';
+
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
@@ -25,10 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={`${inter.className} ${dmMono.variable} antialiased`}>
-        {children}
-      </body>
-    </html>
+    <TRPCReactProvider>
+      <html lang='en'>
+        <body className={`${inter.className} ${dmMono.variable} antialiased`}>
+          {children}
+        </body>
+      </html>
+    </TRPCReactProvider>
   );
 }

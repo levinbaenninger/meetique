@@ -13,7 +13,7 @@ export const withAuth = middleware(async ({ ctx, next }) => {
   if (!session) {
     throw new TRPCError({
       code: 'UNAUTHORIZED',
-      message: 'Unauthorized.',
+      message: 'Unauthorized',
     });
   }
 

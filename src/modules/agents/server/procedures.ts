@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
 import { agents } from '@/db/schema';
-import { createAgentSchema } from '@/modules/agents/schemas';
+import { createAgentSchema, updateAgentSchema } from '@/modules/agents/schemas';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
@@ -26,7 +26,7 @@ export const agentsRouter = router({
       if (!existingAgent) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'Agent not found.',
+          message: 'Agent not found',
         });
       }
 
@@ -89,5 +89,44 @@ export const agentsRouter = router({
         .returning();
 
       return createdAgent;
+    }),
+  update: protectedProcedure
+    .input(updateAgentSchema)
+    .mutation(async ({ input, ctx }) => {
+      const [updatedAgent] = await db
+        .update(agents)
+        .set(input)
+        .where(
+          and(eq(agents.id, input.id), eq(agents.userId, ctx.session.user.id)),
+        )
+        .returning();
+
+      if (!updatedAgent) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Agent not found',
+        });
+      }
+
+      return updatedAgent;
+    }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const [deletedAgent] = await db
+        .delete(agents)
+        .where(
+          and(eq(agents.id, input.id), eq(agents.userId, ctx.session.user.id)),
+        )
+        .returning();
+
+      if (!deletedAgent) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Agent not found',
+        });
+      }
+
+      return deletedAgent;
     }),
 });

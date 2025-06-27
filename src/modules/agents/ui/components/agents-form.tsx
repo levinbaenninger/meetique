@@ -49,6 +49,28 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       },
       onError: (error) => {
         toast.error(error.message);
+        // TODO: if error is 401 or 403, redirect to sign-in or /upgrade
+      },
+    }),
+  );
+
+  const updateAgent = useMutation(
+    trpc.agents.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
+
+        if (initialValues?.id) {
+          queryClient.invalidateQueries(
+            trpc.agents.get.queryOptions({
+              id: initialValues.id,
+            }),
+          );
+        }
+
+        onSuccess?.();
+      },
+      onError: (error) => {
+        toast.error(error.message);
         // TODO: if error is 401 or 403, redirect to sign-in
       },
     }),
@@ -63,11 +85,14 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   });
 
   const isEdit = !!initialValues?.id;
-  const isPending = createAgent.isPending;
+  const isPending = createAgent.isPending || updateAgent.isPending;
 
   const onSubmit = (values: z.infer<typeof createAgentSchema>) => {
     if (isEdit) {
-      // TODO: update agent
+      updateAgent.mutate({
+        id: initialValues.id,
+        ...values,
+      });
     } else {
       createAgent.mutate(values);
     }

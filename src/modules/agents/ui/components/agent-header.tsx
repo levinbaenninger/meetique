@@ -52,8 +52,11 @@ export const AgentHeader = ({ agentName, onEdit, onRemove }: Props) => {
             <PencilIcon className='size-4 text-black' />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onRemove}>
-            <TrashIcon className='size-4 text-black' />
+          <DropdownMenuItem
+            onClick={onRemove}
+            className='text-destructive focus:text-destructive'
+          >
+            <TrashIcon className='text-destructive size-4' />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

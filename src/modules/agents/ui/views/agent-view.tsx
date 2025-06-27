@@ -111,9 +111,11 @@ export const AgentViewLoading = () => (
   />
 );
 
-export const AgentViewError = () => (
-  <ErrorState
-    title='Error loading agent'
-    description='Please try again later or contact support if the problem persists.'
-  />
-);
+export const AgentViewError = () => {
+  return (
+    <ErrorState
+      title='Error loading agent'
+      description='Please try again later.'
+    />
+  );
+};

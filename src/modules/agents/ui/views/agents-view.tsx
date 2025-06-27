@@ -53,6 +53,6 @@ export const AgentsViewLoading = () => (
 export const AgentsViewError = () => (
   <ErrorState
     title='Error loading agents'
-    description='Please try again later or contact support if the problem persists.'
+    description='Please try again later.'
   />
 );

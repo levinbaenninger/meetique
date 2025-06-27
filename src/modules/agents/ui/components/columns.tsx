@@ -35,12 +35,14 @@ export const columns: ColumnDef<Agent>[] = [
   {
     accessorKey: 'meetingCount',
     header: 'Meetings',
-    cell: () => (
+    cell: ({ row }) => (
       <Badge
         variant='outline'
         className='ml-auto flex items-center gap-x-2 [&svg]:size-4'
       >
-        <VideoIcon className='text-primary' />5 Meetings
+        <VideoIcon className='text-primary' />
+        {row.original.meetingCount}{' '}
+        {row.original.meetingCount === 1 ? 'Meeting' : 'Meetings'}
       </Badge>
     ),
   },

@@ -1,7 +1,8 @@
 import { TRPCError } from '@trpc/server';
-import { eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
+import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
 import { agents } from '@/db/schema';
 import { createAgentSchema } from '@/modules/agents/schemas';
@@ -29,15 +30,51 @@ export const agentsRouter = router({
 
       return existingAgent;
     }),
-  list: protectedProcedure.query(async () => {
-    const data = await db
-      .select({
-        meetingCount: sql<number>`5`,
-        ...getTableColumns(agents),
-      })
-      .from(agents);
-    return data;
-  }),
+  list: protectedProcedure
+    .input(
+      z.object({
+        page: z.number().default(DEFAULT_PAGE),
+        limit: z.number().min(MIN_LIMIT).max(MAX_LIMIT).default(DEFAULT_LIMIT),
+        search: z.string().nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { page, limit, search } = input;
+
+      const data = await db
+        .select({
+          meetingCount: sql<number>`5`,
+          ...getTableColumns(agents),
+        })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.session.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        )
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      const [total] = await db
+        .select({ count: count() })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.session.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined,
+          ),
+        );
+
+      const totalPages = Math.ceil(total.count / limit);
+
+      return {
+        items: data,
+        total: total.count,
+        totalPages,
+      };
+    }),
   create: protectedProcedure
     .input(createAgentSchema)
     .mutation(async ({ input, ctx }) => {

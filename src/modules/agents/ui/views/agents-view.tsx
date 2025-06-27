@@ -8,7 +8,7 @@ import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { DataTable } from '@/components/ui/data-table';
 import { useAgentsFilters } from '@/modules/agents/hooks/use-agents-filters';
-import { columns } from '@/modules/agents/ui/components/columns';
+import { agentsColumns } from '@/modules/agents/ui/components/agents-columns';
 import { useTRPC } from '@/utils/trpc';
 
 export const AgentsView = () => {
@@ -21,7 +21,7 @@ export const AgentsView = () => {
 
   return (
     <div className='flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'>
-      <DataTable data={agents.items} columns={columns} />
+      <DataTable data={agents.items} columns={agentsColumns} />
       <DataPagination
         page={filters.page}
         totalPages={agents.totalPages}

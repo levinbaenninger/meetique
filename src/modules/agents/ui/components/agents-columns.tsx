@@ -7,7 +7,7 @@ import { GeneratedAvatar } from '@/components/generated-avatar';
 import { Badge } from '@/components/ui/badge';
 import type { Agent } from '@/modules/agents/types';
 
-export const columns: ColumnDef<Agent>[] = [
+export const agentsColumns: ColumnDef<Agent>[] = [
   {
     accessorKey: 'name',
     header: 'Agent Name',

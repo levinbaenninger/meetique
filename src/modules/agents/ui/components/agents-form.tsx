@@ -28,7 +28,7 @@ interface Props {
   initialValues?: Agent;
 }
 
-export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
+export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 

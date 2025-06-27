@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { auth } from '@/lib/auth';
-import { loadSearchParams } from '@/modules/agents/params';
+import { loadAgentsFiltersParams } from '@/modules/agents/params';
 import { AgentsListHeader } from '@/modules/agents/ui/components/agents-list-header';
 import {
   AgentsView,
@@ -28,7 +28,7 @@ const Page = async ({ searchParams }: Props) => {
     redirect('/sign-in');
   }
 
-  const filters = await loadSearchParams(searchParams);
+  const filters = await loadAgentsFiltersParams(searchParams);
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(trpc.agents.list.queryOptions({ ...filters }));

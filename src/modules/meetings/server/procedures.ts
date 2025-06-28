@@ -1,10 +1,10 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, ilike } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
-import { meeting } from '@/db/schema';
+import { agent, meeting } from '@/db/schema';
 import {
   createMeetingSchema,
   updateMeetingSchema,
@@ -17,8 +17,15 @@ export const meetingsRouter = router({
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       const [existingMeeting] = await db
-        .select()
+        .select({
+          ...getTableColumns(meeting),
+          agent: agent,
+          duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
+            'duration',
+          ),
+        })
         .from(meeting)
+        .innerJoin(agent, eq(meeting.agentId, agent.id))
         .where(
           and(
             eq(meeting.id, input.id),
@@ -47,8 +54,15 @@ export const meetingsRouter = router({
       const { page, limit, search } = input;
 
       const data = await db
-        .select()
+        .select({
+          ...getTableColumns(meeting),
+          agent: agent,
+          duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
+            'duration',
+          ),
+        })
         .from(meeting)
+        .innerJoin(agent, eq(meeting.agentId, agent.id))
         .where(
           and(
             eq(meeting.userId, ctx.session.user.id),
@@ -62,6 +76,7 @@ export const meetingsRouter = router({
       const [total] = await db
         .select({ count: count() })
         .from(meeting)
+        .innerJoin(agent, eq(meeting.agentId, agent.id))
         .where(
           and(
             eq(meeting.userId, ctx.session.user.id),

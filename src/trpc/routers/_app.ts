@@ -1,9 +1,11 @@
 import { agentsRouter } from '@/modules/agents/server/procedures';
+import { meetingsRouter } from '@/modules/meetings/server/procedures';
 import { createContext } from '@/trpc/context';
 import { createCallerFactory, router } from '@/trpc/trpc';
 
 export const appRouter = router({
   agents: agentsRouter,
+  meetings: meetingsRouter,
 });
 export const createCaller = createCallerFactory(appRouter);
 

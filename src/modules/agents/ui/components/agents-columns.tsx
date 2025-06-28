@@ -25,7 +25,7 @@ export const agentsColumns: ColumnDef<Agent>[] = [
         </div>
         <div className='flex items-center gap-x-1.5'>
           <CornerDownRightIcon className='text-muted-foreground size-3' />
-          <span className='text-muted-foreground max-w-200 truncate text-xs'>
+          <span className='text-muted-foreground max-w-[200px] truncate text-xs'>
             {row.original.instructions}
           </span>
         </div>

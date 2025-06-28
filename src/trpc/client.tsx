@@ -8,8 +8,8 @@ import superjson from 'superjson';
 
 import { TRPCProvider } from '@/utils/trpc';
 
-import type { AppRouter } from './middleware/routers/_app';
 import { makeQueryClient } from './query-client';
+import type { AppRouter } from './routers/_app';
 
 let browserQueryClient: QueryClient | undefined = undefined;
 

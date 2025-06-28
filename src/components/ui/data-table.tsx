@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

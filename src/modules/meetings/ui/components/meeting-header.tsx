@@ -49,7 +49,7 @@ export const MeetingHeader = ({ meetingName, onEdit, onRemove }: Props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuItem onClick={onEdit}>
-            <PencilIcon className='size-4 text-black' />
+            <PencilIcon className='text-foreground size-4' />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem

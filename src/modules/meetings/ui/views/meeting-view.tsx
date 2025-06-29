@@ -12,7 +12,11 @@ import { toast } from 'sonner';
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { useConfirm } from '@/hooks/use-confirm';
+import { ActiveState } from '@/modules/meetings/ui/components/active-state';
+import { CancelledState } from '@/modules/meetings/ui/components/cancelled-state';
 import { MeetingHeader } from '@/modules/meetings/ui/components/meeting-header';
+import { ProcessingState } from '@/modules/meetings/ui/components/processing-state';
+import { UpcomingState } from '@/modules/meetings/ui/components/upcoming-state';
 import { UpdateMeetingDialog } from '@/modules/meetings/ui/components/update-meeting-dialog';
 import { useTRPC } from '@/utils/trpc';
 
@@ -55,6 +59,12 @@ export const MeetingView = ({ meetingId }: Props) => {
     await removeMeeting.mutateAsync({ id: meetingId });
   };
 
+  const isUpcoming = meeting.status === 'upcoming';
+  const isActive = meeting.status === 'active';
+  const isCompleted = meeting.status === 'completed';
+  const isProcessing = meeting.status === 'processing';
+  const isCancelled = meeting.status === 'cancelled';
+
   return (
     <>
       <RemoveConfirmDialog />
@@ -69,6 +79,17 @@ export const MeetingView = ({ meetingId }: Props) => {
           onEdit={() => setUpdateMeetingDialogOpen(true)}
           onRemove={handleRemove}
         />
+        {isUpcoming && (
+          <UpcomingState
+            meetingId={meetingId}
+            onCancel={() => {}}
+            isCancelling={false}
+          />
+        )}
+        {isActive && <ActiveState meetingId={meetingId} />}
+        {isCompleted && <div>Completed</div>}
+        {isProcessing && <ProcessingState />}
+        {isCancelled && <CancelledState />}
       </div>
     </>
   );

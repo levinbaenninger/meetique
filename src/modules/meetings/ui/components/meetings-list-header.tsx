@@ -4,6 +4,7 @@ import { PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { DEFAULT_PAGE } from '@/constants';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-agents-filters';
 import { MeetingsAgentFilter } from '@/modules/meetings/ui/components/meetings-agent-filter';
@@ -37,17 +38,20 @@ export const MeetingsListHeader = () => {
             New Meeting
           </Button>
         </div>
-        <div className='flex items-center gap-x-2 py-1'>
-          <MeetingsSearchFilter />
-          <MeetingsStatusFilter />
-          <MeetingsAgentFilter />
-          {isAnyFilterApplied && (
-            <Button variant='outline' size='icon' onClick={onClearFilters}>
-              <XIcon className='size-4' />
-              <span className='sr-only'>Clear filters</span>
-            </Button>
-          )}
-        </div>
+        <ScrollArea>
+          <div className='flex items-center gap-x-2 py-1'>
+            <MeetingsSearchFilter />
+            <MeetingsStatusFilter />
+            <MeetingsAgentFilter />
+            {isAnyFilterApplied && (
+              <Button variant='outline' size='icon' onClick={onClearFilters}>
+                <XIcon className='size-4' />
+                <span className='sr-only'>Clear filters</span>
+              </Button>
+            )}
+          </div>
+          <ScrollBar orientation='horizontal' />
+        </ScrollArea>
       </div>
     </>
   );

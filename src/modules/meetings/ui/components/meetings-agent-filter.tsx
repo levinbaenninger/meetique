@@ -12,7 +12,7 @@ export const MeetingsAgentFilter = () => {
 
   const trpc = useTRPC();
   const { data: agents } = useQuery(
-    trpc.meetings.list.queryOptions({
+    trpc.agents.list.queryOptions({
       limit: 100,
       search: agentSearch,
     }),

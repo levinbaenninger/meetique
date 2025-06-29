@@ -15,10 +15,9 @@ import { GeneratedAvatar } from '@/components/generated-avatar';
 import { LoadingState } from '@/components/loading-state';
 import { Badge } from '@/components/ui/badge';
 import { useConfirm } from '@/hooks/use-confirm';
+import { AgentHeader } from '@/modules/agents/ui/components/agent-header';
+import { UpdateAgentDialog } from '@/modules/agents/ui/components/update-agent-dialog';
 import { useTRPC } from '@/utils/trpc';
-
-import { AgentHeader } from '../components/agent-header';
-import { UpdateAgentDialog } from '../components/update-agent-dialog';
 
 interface Props {
   agentId: string;

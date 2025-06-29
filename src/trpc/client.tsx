@@ -6,10 +6,9 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
 import superjson from 'superjson';
 
+import { makeQueryClient } from '@/trpc/query-client';
+import type { AppRouter } from '@/trpc/routers/_app';
 import { TRPCProvider } from '@/utils/trpc';
-
-import { makeQueryClient } from './query-client';
-import type { AppRouter } from './routers/_app';
 
 let browserQueryClient: QueryClient | undefined = undefined;
 

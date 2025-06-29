@@ -18,25 +18,25 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 interface Props {
-  agentName: string;
+  meetingName: string;
   onEdit: () => void;
   onRemove: () => void;
 }
 
-export const AgentHeader = ({ agentName, onEdit, onRemove }: Props) => {
+export const MeetingHeader = ({ meetingName, onEdit, onRemove }: Props) => {
   return (
     <div className='flex items-center justify-between'>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild className='text-xl font-medium'>
-              <Link href='/agents'>My Agents</Link>
+              <Link href='/meetings'>My Meetings</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage className='text-xl font-medium'>
-              {agentName}
+              {meetingName}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

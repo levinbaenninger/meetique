@@ -6,13 +6,13 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { auth } from '@/lib/auth';
-import { loadAgentsFiltersParams } from '@/modules/agents/params';
-import { AgentsListHeader } from '@/modules/agents/ui/components/agents-list-header';
+import { loadMeetingsFiltersParams } from '@/modules/meetings/params';
+import { MeetingsListHeader } from '@/modules/meetings/ui/components/meetings-list-header';
 import {
-  AgentsView,
-  AgentsViewError,
-  AgentsViewLoading,
-} from '@/modules/agents/ui/views/agents-view';
+  MeetingsView,
+  MeetingsViewError,
+  MeetingsViewLoading,
+} from '@/modules/meetings/ui/views/meetings-view';
 import { getQueryClient, trpc } from '@/trpc/server';
 
 interface Props {
@@ -28,23 +28,24 @@ const Page = async ({ searchParams }: Props) => {
     redirect('/sign-in');
   }
 
-  const filters = await loadAgentsFiltersParams(searchParams);
+  const filters = await loadMeetingsFiltersParams(searchParams);
 
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.agents.list.queryOptions({ ...filters }));
+  void queryClient.prefetchQuery(
+    trpc.meetings.list.queryOptions({ ...filters }),
+  );
 
   return (
     <>
-      <AgentsListHeader />
+      <MeetingsListHeader />
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<AgentsViewLoading />}>
-          <ErrorBoundary fallback={<AgentsViewError />}>
-            <AgentsView />
+        <Suspense fallback={<MeetingsViewLoading />}>
+          <ErrorBoundary fallback={<MeetingsViewError />}>
+            <MeetingsView />
           </ErrorBoundary>
         </Suspense>
       </HydrationBoundary>
     </>
   );
 };
-
 export default Page;

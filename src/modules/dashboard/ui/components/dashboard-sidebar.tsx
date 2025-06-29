@@ -19,8 +19,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-
-import { DashboardUserButton } from './dashboard-user-button';
+import { DashboardUserButton } from '@/modules/dashboard/ui/components/dashboard-user-button';
 
 const featureSection = [
   {

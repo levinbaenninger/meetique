@@ -2,8 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
-
-import { middleware } from '../trpc';
+import { middleware } from '@/trpc/trpc';
 
 export const withAuth = middleware(async ({ ctx, next }) => {
   const session = await auth.api.getSession({

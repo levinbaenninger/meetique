@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
-import { agents } from '@/db/schema';
+import { agent } from '@/db/schema';
 import { createAgentSchema, updateAgentSchema } from '@/modules/agents/schemas';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -16,11 +16,11 @@ export const agentsRouter = router({
       const [existingAgent] = await db
         .select({
           meetingCount: sql<number>`5`,
-          ...getTableColumns(agents),
+          ...getTableColumns(agent),
         })
-        .from(agents)
+        .from(agent)
         .where(
-          and(eq(agents.id, input.id), eq(agents.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
         );
 
       if (!existingAgent) {
@@ -46,26 +46,26 @@ export const agentsRouter = router({
       const data = await db
         .select({
           meetingCount: sql<number>`5`,
-          ...getTableColumns(agents),
+          ...getTableColumns(agent),
         })
-        .from(agents)
+        .from(agent)
         .where(
           and(
-            eq(agents.userId, ctx.session.user.id),
-            search ? ilike(agents.name, `%${search}%`) : undefined,
+            eq(agent.userId, ctx.session.user.id),
+            search ? ilike(agent.name, `%${search}%`) : undefined,
           ),
         )
-        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .orderBy(desc(agent.createdAt), desc(agent.id))
         .limit(limit)
         .offset((page - 1) * limit);
 
       const [total] = await db
         .select({ count: count() })
-        .from(agents)
+        .from(agent)
         .where(
           and(
-            eq(agents.userId, ctx.session.user.id),
-            search ? ilike(agents.name, `%${search}%`) : undefined,
+            eq(agent.userId, ctx.session.user.id),
+            search ? ilike(agent.name, `%${search}%`) : undefined,
           ),
         );
 
@@ -81,7 +81,7 @@ export const agentsRouter = router({
     .input(createAgentSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgent] = await db
-        .insert(agents)
+        .insert(agent)
         .values({
           ...input,
           userId: ctx.session.user.id,
@@ -94,10 +94,10 @@ export const agentsRouter = router({
     .input(updateAgentSchema)
     .mutation(async ({ input, ctx }) => {
       const [updatedAgent] = await db
-        .update(agents)
+        .update(agent)
         .set(input)
         .where(
-          and(eq(agents.id, input.id), eq(agents.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
         )
         .returning();
 
@@ -114,9 +114,9 @@ export const agentsRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const [deletedAgent] = await db
-        .delete(agents)
+        .delete(agent)
         .where(
-          and(eq(agents.id, input.id), eq(agents.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
         )
         .returning();
 

@@ -4,11 +4,11 @@ import { PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { DEFAULT_PAGE } from '@/constants';
 import { useAgentsFilters } from '@/modules/agents/hooks/use-agents-filters';
+import { AgentsSearchFilter } from '@/modules/agents/ui/components/agents-search-filter';
 import { NewAgentDialog } from '@/modules/agents/ui/components/new-agent-dialog';
-
-import { AgentsSearchFilter } from './agents-search-filter';
 
 export const AgentsListHeader = () => {
   const [filters, setFilters] = useAgentsFilters();
@@ -29,15 +29,18 @@ export const AgentsListHeader = () => {
             New Agent
           </Button>
         </div>
-        <div className='flex items-center gap-x-2 py-1'>
-          <AgentsSearchFilter />
-          {isAnyFilterApplied && (
-            <Button variant='outline' size='icon' onClick={onClearFilters}>
-              <XIcon className='size-4' />
-              <span className='sr-only'>Clear filters</span>
-            </Button>
-          )}
-        </div>
+        <ScrollArea>
+          <div className='flex items-center gap-x-2 py-1'>
+            <AgentsSearchFilter />
+            {isAnyFilterApplied && (
+              <Button variant='outline' size='icon' onClick={onClearFilters}>
+                <XIcon className='size-4' />
+                <span className='sr-only'>Clear filters</span>
+              </Button>
+            )}
+          </div>
+          <ScrollBar orientation='horizontal' />
+        </ScrollArea>
       </div>
     </>
   );

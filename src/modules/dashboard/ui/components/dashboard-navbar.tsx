@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useSidebar } from '@/components/ui/sidebar';
-
-import { DashboardCommand } from './dashboard-command';
+import { DashboardCommand } from '@/modules/dashboard/ui/components/dashboard-command';
 
 export const DashboardNavbar = () => {
   const { state, toggleSidebar, isMobile } = useSidebar();

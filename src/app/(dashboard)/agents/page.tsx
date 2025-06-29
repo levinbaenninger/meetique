@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import type { SearchParams } from 'nuqs';
+import type { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 

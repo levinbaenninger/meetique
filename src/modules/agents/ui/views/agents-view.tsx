@@ -23,24 +23,22 @@ export const AgentsView = () => {
 
   return (
     <div className='flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'>
+      <DataTable
+        data={agents.items}
+        columns={agentsColumns}
+        onRowClick={(row) => router.push(`/agents/${row.id}`)}
+      />
       {agents.items.length === 0 ? (
         <EmptyState
           title='Create your first agent'
           description='Create an agent to join your meetings. Each agent will follow your instructions and can interact with participants during the call.'
         />
       ) : (
-        <>
-          <DataTable
-            data={agents.items}
-            columns={agentsColumns}
-            onRowClick={(row) => router.push(`/agents/${row.id}`)}
-          />
-          <DataPagination
-            page={filters.page}
-            totalPages={agents.totalPages}
-            onPageChange={(page) => setFilters({ ...filters, page })}
-          />
-        </>
+        <DataPagination
+          page={filters.page}
+          totalPages={agents.totalPages}
+          onPageChange={(page) => setFilters({ ...filters, page })}
+        />
       )}
     </div>
   );

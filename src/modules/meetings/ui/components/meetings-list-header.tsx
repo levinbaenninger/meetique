@@ -1,13 +1,30 @@
 'use client';
 
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { DEFAULT_PAGE } from '@/constants';
+import { useMeetingsFilters } from '@/modules/meetings/hooks/use-agents-filters';
+import { MeetingsAgentFilter } from '@/modules/meetings/ui/components/meetings-agent-filter';
+import { MeetingsSearchFilter } from '@/modules/meetings/ui/components/meetings-search-filter';
+import { MeetingsStatusFilter } from '@/modules/meetings/ui/components/meetings-status-filter';
 import { NewMeetingDialog } from '@/modules/meetings/ui/components/new-meeting-dialog';
 
 export const MeetingsListHeader = () => {
+  const [filters, setFilters] = useMeetingsFilters();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const isAnyFilterApplied =
+    !!filters.search || !!filters.status || !!filters.agentId;
+
+  const onClearFilters = () =>
+    setFilters({
+      search: '',
+      page: DEFAULT_PAGE,
+      status: null,
+      agentId: '',
+    });
 
   return (
     <>
@@ -20,7 +37,17 @@ export const MeetingsListHeader = () => {
             New Meeting
           </Button>
         </div>
-        <div className='flex items-center gap-x-2 py-1'></div>
+        <div className='flex items-center gap-x-2 py-1'>
+          <MeetingsSearchFilter />
+          <MeetingsStatusFilter />
+          <MeetingsAgentFilter />
+          {isAnyFilterApplied && (
+            <Button variant='outline' size='icon' onClick={onClearFilters}>
+              <XIcon className='size-4' />
+              <span className='sr-only'>Clear filters</span>
+            </Button>
+          )}
+        </div>
       </div>
     </>
   );

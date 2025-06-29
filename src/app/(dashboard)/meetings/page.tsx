@@ -1,10 +1,12 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { auth } from '@/lib/auth';
+import { loadMeetingsFiltersParams } from '@/modules/meetings/params';
 import { MeetingsListHeader } from '@/modules/meetings/ui/components/meetings-list-header';
 import {
   MeetingsView,
@@ -13,7 +15,11 @@ import {
 } from '@/modules/meetings/ui/views/meetings-view';
 import { getQueryClient, trpc } from '@/trpc/server';
 
-const Page = async () => {
+interface Props {
+  searchParams: Promise<SearchParams>;
+}
+
+const Page = async ({ searchParams }: Props) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -22,8 +28,12 @@ const Page = async () => {
     redirect('/sign-in');
   }
 
+  const filters = await loadMeetingsFiltersParams(searchParams);
+
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.meetings.list.queryOptions({}));
+  void queryClient.prefetchQuery(
+    trpc.meetings.list.queryOptions({ ...filters }),
+  );
 
   return (
     <>

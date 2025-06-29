@@ -9,6 +9,7 @@ import {
   createMeetingSchema,
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
+import { meetingStatus } from '@/modules/meetings/types';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
@@ -48,10 +49,12 @@ export const meetingsRouter = router({
         page: z.number().default(DEFAULT_PAGE),
         limit: z.number().min(MIN_LIMIT).max(MAX_LIMIT).default(DEFAULT_LIMIT),
         search: z.string().nullish(),
+        agentId: z.string().nullish(),
+        status: z.enum(meetingStatus).nullish(),
       }),
     )
     .query(async ({ input, ctx }) => {
-      const { page, limit, search } = input;
+      const { page, limit, search, agentId, status } = input;
 
       const data = await db
         .select({
@@ -67,6 +70,8 @@ export const meetingsRouter = router({
           and(
             eq(meeting.userId, ctx.session.user.id),
             search ? ilike(meeting.name, `%${search}%`) : undefined,
+            agentId ? eq(meeting.agentId, agentId) : undefined,
+            status ? eq(meeting.status, status) : undefined,
           ),
         )
         .orderBy(desc(meeting.createdAt), desc(meeting.id))
@@ -81,6 +86,8 @@ export const meetingsRouter = router({
           and(
             eq(meeting.userId, ctx.session.user.id),
             search ? ilike(meeting.name, `%${search}%`) : undefined,
+            agentId ? eq(meeting.agentId, agentId) : undefined,
+            status ? eq(meeting.status, status) : undefined,
           ),
         );
 

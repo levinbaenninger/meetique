@@ -75,6 +75,7 @@ export const CommandSelect = ({
             value={option.value}
             onSelect={() => {
               onSelect(option.value);
+              onSearch?.('');
               setIsOpen(false);
             }}
           >

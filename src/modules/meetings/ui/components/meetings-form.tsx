@@ -157,10 +157,7 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
                         </div>
                       ),
                     }))}
-                    onSelect={(value) => {
-                      field.onChange(value);
-                      setAgentSearch('');
-                    }}
+                    onSelect={(value) => field.onChange(value)}
                     onSearch={(value) => setAgentSearch(value)}
                     value={field.value}
                     placeholder='Search for an agent...'

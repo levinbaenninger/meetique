@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { CommandSelect } from '@/components/command-select';
 import { GeneratedAvatar } from '@/components/generated-avatar';
-import { useMeetingsFilters } from '@/modules/meetings/hooks/use-agents-filters';
+import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
 import { useTRPC } from '@/utils/trpc';
 
 export const MeetingsAgentFilter = () => {

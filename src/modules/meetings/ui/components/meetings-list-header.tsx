@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { DEFAULT_PAGE } from '@/constants';
-import { useMeetingsFilters } from '@/modules/meetings/hooks/use-agents-filters';
+import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
 import { MeetingsAgentFilter } from '@/modules/meetings/ui/components/meetings-agent-filter';
 import { MeetingsSearchFilter } from '@/modules/meetings/ui/components/meetings-search-filter';
 import { MeetingsStatusFilter } from '@/modules/meetings/ui/components/meetings-status-filter';

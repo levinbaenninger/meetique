@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 import { CommandSelect } from '@/components/command-select';
-import { useMeetingsFilters } from '@/modules/meetings/hooks/use-agents-filters';
+import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
 import { meetingStatus } from '@/modules/meetings/types';
 
 const options = meetingStatus.map((status) => ({

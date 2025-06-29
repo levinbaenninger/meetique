@@ -49,15 +49,6 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
     trpc.meetings.create.mutationOptions({
       onSuccess: async (createdMeeting) => {
         queryClient.invalidateQueries(trpc.meetings.list.queryOptions({}));
-
-        if (initialValues?.id) {
-          queryClient.invalidateQueries(
-            trpc.meetings.get.queryOptions({
-              id: initialValues.id,
-            }),
-          );
-        }
-
         onSuccess?.(createdMeeting.id);
       },
       onError: (error) => {

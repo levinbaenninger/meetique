@@ -68,20 +68,20 @@ export const CommandSelect = ({
         <CommandInput placeholder='Search...' onValueChange={onSearch} />
         <CommandList>
           <CommandEmpty>No options found.</CommandEmpty>
+          {options.map((option) => (
+            <CommandItem
+              key={option.id}
+              value={option.value}
+              onSelect={() => {
+                onSelect(option.value);
+                onSearch?.('');
+                setIsOpen(false);
+              }}
+            >
+              {option.children}
+            </CommandItem>
+          ))}
         </CommandList>
-        {options.map((option) => (
-          <CommandItem
-            key={option.id}
-            value={option.value}
-            onSelect={() => {
-              onSelect(option.value);
-              onSearch?.('');
-              setIsOpen(false);
-            }}
-          >
-            {option.children}
-          </CommandItem>
-        ))}
       </CommandResponsiveDialog>
     </>
   );

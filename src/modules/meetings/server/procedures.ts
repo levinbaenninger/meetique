@@ -102,6 +102,23 @@ export const meetingsRouter = router({
   create: protectedProcedure
     .input(createMeetingSchema)
     .mutation(async ({ input, ctx }) => {
+      const [existingAgent] = await db
+        .select()
+        .from(agent)
+        .where(
+          and(
+            eq(agent.userId, ctx.session.user.id),
+            eq(agent.id, input.agentId),
+          ),
+        );
+
+      if (!existingAgent) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Agent not found.',
+        });
+      }
+
       const [createdMeeting] = await db
         .insert(meeting)
         .values({
@@ -115,6 +132,23 @@ export const meetingsRouter = router({
   update: protectedProcedure
     .input(updateMeetingSchema)
     .mutation(async ({ input, ctx }) => {
+      const [existingAgent] = await db
+        .select()
+        .from(agent)
+        .where(
+          and(
+            eq(agent.userId, ctx.session.user.id),
+            eq(agent.id, input.agentId),
+          ),
+        );
+
+      if (!existingAgent) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Agent not found.',
+        });
+      }
+
       const [updatedMeeting] = await db
         .update(meeting)
         .set(input)

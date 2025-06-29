@@ -166,7 +166,7 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
                   />
                 </FormControl>
                 <FormDescription>
-                  No found what you&apos;re looking for?{' '}
+                  Not found what you&apos;re looking for?{' '}
                   <Button
                     variant='link'
                     type='button'

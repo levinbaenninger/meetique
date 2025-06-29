@@ -135,4 +135,26 @@ export const meetingsRouter = router({
 
       return updatedMeeting;
     }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const [deletedMeeting] = await db
+        .delete(meeting)
+        .where(
+          and(
+            eq(meeting.id, input.id),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+
+      if (!deletedMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      return deletedMeeting;
+    }),
 });

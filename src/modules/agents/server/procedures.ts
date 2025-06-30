@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
-import { agent } from '@/db/schema';
+import { agent, meeting } from '@/db/schema';
 import { createAgentSchema, updateAgentSchema } from '@/modules/agents/schemas';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -15,13 +15,15 @@ export const agentsRouter = router({
     .query(async ({ input, ctx }) => {
       const [existingAgent] = await db
         .select({
-          meetingCount: sql<number>`5`,
           ...getTableColumns(agent),
+          meetingCount: count(meeting.id),
         })
         .from(agent)
+        .leftJoin(meeting, eq(agent.id, meeting.agentId))
         .where(
           and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
-        );
+        )
+        .groupBy(agent.id);
 
       if (!existingAgent) {
         throw new TRPCError({

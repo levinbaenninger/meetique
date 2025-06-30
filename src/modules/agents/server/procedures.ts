@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
+import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
@@ -47,16 +47,18 @@ export const agentsRouter = router({
 
       const data = await db
         .select({
-          meetingCount: sql<number>`5`,
+          meetingCount: count(meeting.id),
           ...getTableColumns(agent),
         })
         .from(agent)
+        .leftJoin(meeting, eq(agent.id, meeting.agentId))
         .where(
           and(
             eq(agent.userId, ctx.session.user.id),
             search ? ilike(agent.name, `%${search}%`) : undefined,
           ),
         )
+        .groupBy(agent.id)
         .orderBy(desc(agent.createdAt), desc(agent.id))
         .limit(limit)
         .offset((page - 1) * limit);

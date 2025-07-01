@@ -1,4 +1,11 @@
-import { boolean, pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 
 export const user = pgTable('user', {
@@ -100,6 +107,52 @@ export const meeting = pgTable('meeting', {
   meetingUrl: text('meeting_url'),
   recordingUrl: text('recording_url'),
   summary: text('summary'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const meeting_chat = pgTable('meeting_chat', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  meetingId: text('meeting_id')
+    .notNull()
+    .references(() => meeting.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const meeting_chat_message_agent = pgTable(
+  'meeting_chat_message_agent',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    meetingChatId: text('meeting_chat_id')
+      .notNull()
+      .references(() => meeting_chat.id, { onDelete: 'cascade' }),
+    agentId: text('agent_id').references(() => agent.id, {
+      onDelete: 'set null',
+    }),
+    message: text('message').notNull(),
+    messageOrder: integer('message_order').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+  },
+);
+
+export const meeting_chat_message_user = pgTable('meeting_chat_message_user', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  meetingChatId: text('meeting_chat_id')
+    .notNull()
+    .references(() => meeting_chat.id, { onDelete: 'cascade' }),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'set null' }),
+  message: text('message').notNull(),
+  messageOrder: integer('message_order').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

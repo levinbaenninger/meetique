@@ -6,6 +6,7 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
 import superjson from 'superjson';
 
+import { API_URL } from '@/lib/env';
 import { makeQueryClient } from '@/trpc/query-client';
 import type { AppRouter } from '@/trpc/routers/_app';
 import { TRPCProvider } from '@/utils/trpc';
@@ -24,7 +25,7 @@ const getQueryClient = () => {
 const getUrl = () => {
   const base = (() => {
     if (typeof window !== 'undefined') return '';
-    return process.env.NEXT_PUBLIC_APP_URL;
+    return API_URL;
   })();
   return `${base}/api/trpc`;
 };

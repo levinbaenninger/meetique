@@ -1,3 +1,7 @@
 import { createAuthClient } from 'better-auth/react';
 
-export const authClient = createAuthClient();
+import { BETTER_AUTH_URL } from '@/lib/env';
+
+export const authClient = createAuthClient({
+  baseURL: BETTER_AUTH_URL,
+});

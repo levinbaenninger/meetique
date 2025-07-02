@@ -13,6 +13,7 @@ export const auth = betterAuth({
       ...schema,
     },
   }),
+  trustedOrigins: [BETTER_AUTH_URL],
   emailAndPassword: {
     enabled: true,
   },

@@ -1,7 +1,5 @@
-import { botttsNeutral, initials } from '@dicebear/collection';
-import { createAvatar } from '@dicebear/core';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { generateAvatarUri } from '@/lib/avatar';
 
 interface GeneratedAvatarProps {
   seed: string;
@@ -14,23 +12,11 @@ export const GeneratedAvatar = ({
   variant,
   className,
 }: GeneratedAvatarProps) => {
-  let avatar;
-
-  if (variant === 'botttsNeutral') {
-    avatar = createAvatar(botttsNeutral, {
-      seed,
-    });
-  } else {
-    avatar = createAvatar(initials, {
-      seed,
-      fontWeight: 500,
-      fontSize: 42,
-    });
-  }
+  const avatarUri = generateAvatarUri({ seed, variant });
 
   return (
     <Avatar className={className}>
-      <AvatarImage src={avatar.toDataUri()} alt='avatar' />
+      <AvatarImage src={avatarUri} alt='avatar' />
       <AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
     </Avatar>
   );

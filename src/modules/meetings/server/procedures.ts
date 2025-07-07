@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
 import { agent, meeting } from '@/db/schema';
+import { generateAvatarUri } from '@/lib/avatar';
+import { streamVideo } from '@/lib/stream-video';
 import {
   createMeetingSchema,
   updateMeetingSchema,
@@ -114,8 +116,8 @@ export const meetingsRouter = router({
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Agent not found.',
+          code: 'NOT_FOUND',
+          message: 'Agent not found or not accessible.',
         });
       }
 
@@ -126,6 +128,41 @@ export const meetingsRouter = router({
           userId: ctx.session.user.id,
         })
         .returning();
+
+      const call = streamVideo.video.call('default', createdMeeting.id);
+
+      await call.create({
+        data: {
+          created_by_id: ctx.session.user.id,
+          custom: {
+            meetingId: createdMeeting.id,
+            meetingName: createdMeeting.name,
+          },
+          settings_override: {
+            transcription: {
+              language: 'en',
+              mode: 'auto-on',
+              closed_caption_mode: 'auto-on',
+            },
+            recording: {
+              mode: 'auto-on',
+              quality: '1080p',
+            },
+          },
+        },
+      });
+
+      await streamVideo.upsertUsers([
+        {
+          id: existingAgent.id,
+          name: existingAgent.name,
+          image: generateAvatarUri({
+            seed: existingAgent.name,
+            variant: 'botttsNeutral',
+          }),
+          role: 'user',
+        },
+      ]);
 
       return createdMeeting;
     }),
@@ -144,8 +181,8 @@ export const meetingsRouter = router({
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Agent not found.',
+          code: 'NOT_FOUND',
+          message: 'Agent not found or not accessible.',
         });
       }
 
@@ -191,4 +228,30 @@ export const meetingsRouter = router({
 
       return deletedMeeting;
     }),
+  generateToken: protectedProcedure.mutation(async ({ ctx }) => {
+    await streamVideo.upsertUsers([
+      {
+        id: ctx.session.user.id,
+        name: ctx.session.user.name,
+        image:
+          ctx.session.user.image ??
+          generateAvatarUri({
+            seed: ctx.session.user.name,
+            variant: 'initials',
+          }),
+        role: 'admin',
+      },
+    ]);
+
+    const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60;
+    const issuedAt = Math.floor(Date.now() / 1000) - 60;
+
+    const token = streamVideo.generateUserToken({
+      user_id: ctx.session.user.id,
+      exp: expirationTime,
+      validity_in_seconds: issuedAt,
+    });
+
+    return token;
+  }),
 });

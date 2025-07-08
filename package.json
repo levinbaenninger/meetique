@@ -15,6 +15,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
+    "dev:webhook": "ngrok http --url=decent-gently-cow.ngrok-free.app 3000",
     "prepare": "husky"
   },
   "dependencies": {
@@ -49,6 +50,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@stream-io/node-sdk": "^0.4.25",
+    "@stream-io/openai-realtime-api": "^0.3.3",
     "@stream-io/video-react-sdk": "^1.18.8",
     "@tanstack/react-query": "^5.81.2",
     "@tanstack/react-table": "^8.21.3",

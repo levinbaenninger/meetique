@@ -16,7 +16,6 @@ import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
 import { agent, meeting, user } from '@/db/schema';
 import { generateAvatarUri } from '@/lib/avatar';
-import { streamChat } from '@/lib/stream-chat';
 import { streamVideo } from '@/lib/stream-video';
 import {
   createMeetingSchema,
@@ -350,15 +349,4 @@ export const meetingsRouter = router({
         };
       });
     }),
-  generateChatToken: protectedProcedure.mutation(async ({ ctx }) => {
-    const token = streamChat.createToken(ctx.session.user.id);
-    await streamChat.upsertUsers([
-      {
-        id: ctx.session.user.id,
-        role: 'admin',
-      },
-    ]);
-
-    return token;
-  }),
 });

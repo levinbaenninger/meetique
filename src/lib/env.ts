@@ -14,5 +14,22 @@ const getAppUrl = () => {
   return 'http://localhost:3000';
 };
 
+const getTrustedOrigins = () => {
+  const origins = ['https://meetique.vercel.app']; // Production URL
+
+  // Add preview URL if available
+  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
+    origins.push(`https://${process.env.VERCEL_URL}`);
+  }
+
+  // Add localhost for development
+  if (process.env.NODE_ENV === 'development') {
+    origins.push('http://localhost:3000');
+  }
+
+  return origins;
+};
+
 export const BETTER_AUTH_URL = getAppUrl();
 export const API_URL = getAppUrl();
+export const TRUSTED_ORIGINS = getTrustedOrigins();

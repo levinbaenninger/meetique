@@ -63,7 +63,7 @@ export const CompletedState = ({ meeting }: Props) => {
               <div className='flex items-center gap-x-2'>
                 <Link
                   href={`/agents/${meeting.agent.id}`}
-                  className='undeline flex items-center gap-x-2 capitalize underline-offset-4'
+                  className='flex items-center gap-x-2 capitalize underline underline-offset-4'
                 >
                   <GeneratedAvatar
                     variant='botttsNeutral'

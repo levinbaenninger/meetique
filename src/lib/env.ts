@@ -3,8 +3,8 @@ const getAppUrl = () => {
     return 'https://meetique.vercel.app';
   }
 
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
+  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_BRANCH_URL) {
+    return `https://${process.env.VERCEL_BRANCH_URL}`;
   }
 
   if (process.env.VERCEL_URL) {
@@ -18,8 +18,8 @@ const getTrustedOrigins = () => {
   const origins = ['https://meetique.vercel.app']; // Production URL
 
   // Add preview URL if available
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
-    origins.push(`https://${process.env.VERCEL_URL}`);
+  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_BRANCH_URL) {
+    origins.push(`https://${process.env.VERCEL_BRANCH_URL}`);
   }
 
   // Add localhost for development

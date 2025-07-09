@@ -47,8 +47,8 @@ export const agentsRouter = router({
 
       const data = await db
         .select({
-          meetingCount: count(meeting.id),
           ...getTableColumns(agent),
+          meetingCount: count(meeting.id),
         })
         .from(agent)
         .leftJoin(meeting, eq(agent.id, meeting.agentId))
@@ -60,6 +60,7 @@ export const agentsRouter = router({
         )
         .groupBy(agent.id)
         .orderBy(desc(agent.createdAt), desc(agent.id))
+        .groupBy(agent.id)
         .limit(limit)
         .offset((page - 1) * limit);
 

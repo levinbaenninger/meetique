@@ -38,7 +38,19 @@ export const meetingsProcessing = inngest.createFunction(
   { event: 'meetings/processing' },
   async ({ event, step }) => {
     const response = await step.run('fetch-transcript', async () => {
-      return fetch(event.data.transcriptUrl).then((res) => res.text());
+      try {
+        const res = await fetch(event.data.transcriptUrl);
+        if (!res.ok) {
+          throw new Error(
+            `Failed to fetch transcript: ${res.status} ${res.statusText}`,
+          );
+        }
+        return await res.text();
+      } catch (error) {
+        throw new Error(
+          `Failed to fetch transcript: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        );
+      }
     });
 
     const transcript = await step.run('parse-transcript', async () => {

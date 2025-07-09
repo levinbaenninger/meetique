@@ -84,7 +84,7 @@ export const AgentView = ({ agentId }: Props) => {
             </div>
             <Badge
               variant='outline'
-              className='flex cursor-pointer items-center gap-x-2 [&_svg]:size-4 hover:bg-muted'
+              className='hover:bg-muted flex cursor-pointer items-center gap-x-2 [&_svg]:size-4'
               onClick={() => router.push(`/meetings?agentId=${agent.id}`)}
             >
               <VideoIcon className='text-primary' />

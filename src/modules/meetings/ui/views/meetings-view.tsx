@@ -34,7 +34,6 @@ export const MeetingsView = () => {
         status: null,
       });
     }
-
   }, [searchParams, setFilters]);
 
   return (

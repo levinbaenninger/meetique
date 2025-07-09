@@ -9,7 +9,9 @@ import {
 } from '@stream-io/video-react-sdk';
 import { useMutation } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { CallUi } from '@/modules/call/ui/components/call-ui';
 import { useTRPC } from '@/utils/trpc';
@@ -29,9 +31,16 @@ export const CallConnect = ({
   userName,
   userImage,
 }: Props) => {
+  const router = useRouter();
+
   const trpc = useTRPC();
   const { mutateAsync: generateToken } = useMutation(
-    trpc.meetings.generateToken.mutationOptions(),
+    trpc.meetings.generateToken.mutationOptions({
+      onError: (error) => {
+        toast.error(error.message);
+        router.push('/meetings');
+      },
+    }),
   );
 
   const [client, setClient] = useState<StreamVideoClient>();

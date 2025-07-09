@@ -17,6 +17,11 @@ const verifySignatureWithSdk = (body: string, signature: string) => {
   return streamVideo.verifyWebhook(body, signature);
 };
 
+const extractMeetingIdFromCid = (callCid: string): string | undefined => {
+  const parts = callCid.split(':');
+  return parts.length > 1 ? parts[1] : undefined;
+};
+
 export async function POST(request: NextRequest) {
   const signature = request.headers.get('x-signature');
   const apiKey = request.headers.get('x-api-key');
@@ -94,7 +99,7 @@ export async function POST(request: NextRequest) {
     });
   } else if (eventType === 'call.session_participant_left') {
     const event = payload as CallSessionParticipantLeftEvent;
-    const meetingId = event.call_cid.split(':')[1];
+    const meetingId = extractMeetingIdFromCid(event.call_cid);
 
     if (!meetingId) {
       return NextResponse.json(
@@ -125,7 +130,7 @@ export async function POST(request: NextRequest) {
       .where(eq(meeting.id, meetingId));
   } else if (eventType === 'call.transcription_ready') {
     const event = payload as CallTranscriptionReadyEvent;
-    const meetingId = event.call_cid.split(':')[1];
+    const meetingId = extractMeetingIdFromCid(event.call_cid);
 
     if (!meetingId) {
       return NextResponse.json(

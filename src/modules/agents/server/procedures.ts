@@ -58,7 +58,6 @@ export const agentsRouter = router({
             search ? ilike(agent.name, `%${search}%`) : undefined,
           ),
         )
-        .groupBy(agent.id)
         .orderBy(desc(agent.createdAt), desc(agent.id))
         .groupBy(agent.id)
         .limit(limit)

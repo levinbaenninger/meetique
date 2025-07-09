@@ -253,16 +253,9 @@ export const meetingsRouter = router({
       },
     ]);
 
-    const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60;
-    const issuedAt = Math.floor(Date.now() / 1000) - 60;
-
-    const token = streamVideo.generateUserToken({
+    return streamVideo.generateUserToken({
       user_id: ctx.session.user.id,
-      exp: expirationTime,
-      validity_in_seconds: issuedAt,
     });
-
-    return token;
   }),
   getTranscript: protectedProcedure
     .input(z.object({ meetingId: z.string() }))

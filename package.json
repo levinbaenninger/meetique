@@ -91,8 +91,6 @@
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
     "sonner": "^2.0.5",
-    "stream-chat": "^9.10.1",
-    "stream-chat-react": "^13.2.1",
     "superjson": "^2.2.2",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",

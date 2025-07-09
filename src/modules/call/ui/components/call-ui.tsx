@@ -2,6 +2,7 @@
 
 import { StreamTheme, useCall } from '@stream-io/video-react-sdk';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { CallActive } from '@/modules/call/ui/components/call-active';
 import { CallEnded } from '@/modules/call/ui/components/call-ended';
@@ -17,14 +18,22 @@ export const CallUi = ({ meetingName }: Props) => {
 
   const handleJoin = async () => {
     if (!call) return;
-    await call.join();
-    setShow('call');
+    try {
+      await call.join();
+      setShow('call');
+    } catch {
+      toast.error('Failed to join call. Please try again or contact support.');
+    }
   };
 
   const handleLeave = async () => {
     if (!call) return;
-    await call.endCall();
-    setShow('ended');
+    try {
+      await call.endCall();
+      setShow('ended');
+    } catch {
+      toast.error('Failed to leave call. Please try again or contact support.');
+    }
   };
 
   return (

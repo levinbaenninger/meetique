@@ -6,6 +6,7 @@ import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
 import { agent, meeting } from '@/db/schema';
 import { createAgentSchema, updateAgentSchema } from '@/modules/agents/schemas';
+import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
@@ -81,7 +82,7 @@ export const agentsRouter = router({
         totalPages,
       };
     }),
-  create: protectedProcedure
+  create: premiumProcedure('agent')
     .input(createAgentSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgent] = await db

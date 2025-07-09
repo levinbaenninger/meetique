@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -29,18 +30,25 @@ interface Props {
 }
 
 export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
+  const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
+        );
+
         onSuccess?.();
       },
       onError: (error) => {
         toast.error(error.message);
-        // TODO: if error is 401 or 403, redirect to sign-in or /upgrade
+        if (error.data?.code === 'FORBIDDEN') {
+          router.push('/upgrade');
+        }
       },
     }),
   );
@@ -62,7 +70,6 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       },
       onError: (error) => {
         toast.error(error.message);
-        // TODO: if error is 401 or 403, redirect to sign-in
       },
     }),
   );

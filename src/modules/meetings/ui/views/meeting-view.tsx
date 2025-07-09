@@ -43,8 +43,13 @@ export const MeetingView = ({ meetingId }: Props) => {
 
   const removeMeeting = useMutation(
     trpc.meetings.delete.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries(trpc.meetings.list.queryOptions({}));
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.meetings.list.queryOptions({}),
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
+        );
         router.push('/meetings');
       },
       onError: (error) => {

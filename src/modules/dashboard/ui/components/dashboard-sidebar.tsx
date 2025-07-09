@@ -21,6 +21,8 @@ import {
 import { cn } from '@/lib/utils';
 import { DashboardUserButton } from '@/modules/dashboard/ui/components/dashboard-user-button';
 
+import { DashboardTrial } from './dashboard-trial';
+
 const featureSection = [
   {
     icon: VideoIcon,
@@ -106,6 +108,7 @@ export const DashboardSidebar = () => {
         ))}
       </SidebarContent>
       <SidebarFooter className='text-white'>
+        <DashboardTrial />
         <DashboardUserButton />
       </SidebarFooter>
     </Sidebar>

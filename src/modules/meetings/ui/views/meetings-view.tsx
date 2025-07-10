@@ -1,7 +1,8 @@
 'use client';
 
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { DataPagination } from '@/components/data-pagination';
 import { EmptyState } from '@/components/empty-state';
@@ -14,6 +15,7 @@ import { meetingsColumns } from '@/modules/meetings/ui/components/meetings-colum
 
 export const MeetingsView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [filters, setFilters] = useMeetingsFilters();
 
   const trpc = useTRPC();
@@ -22,6 +24,17 @@ export const MeetingsView = () => {
       ...filters,
     }),
   );
+
+  useEffect(() => {
+    if (searchParams.has('agentId')) {
+      setFilters({
+        agentId: searchParams.get('agentId'),
+        page: null,
+        search: null,
+        status: null,
+      });
+    }
+  }, [searchParams, setFilters]);
 
   return (
     <div className='flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'>

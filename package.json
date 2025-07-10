@@ -91,6 +91,7 @@
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.3",
     "recharts": "^2.15.4",
+    "require-in-the-middle": "^7.5.2",
     "server-only": "^0.0.1",
     "sonner": "^2.0.5",
     "superjson": "^2.2.2",

@@ -1,2 +1,20 @@
-export const MAX_FREE_MEETINGS = 10;
-export const MAX_FREE_AGENTS = 3;
+export const TIER_LIMITS = {
+  free: {
+    agents: 3,
+    meetings: 10,
+  },
+  starter: {
+    agents: -1, // unlimited
+    meetings: 30, // per month
+  },
+  pro: {
+    agents: -1, // unlimited
+    meetings: -1, // unlimited
+  },
+  enterprise: {
+    agents: -1, // unlimited
+    meetings: -1, // unlimited
+  },
+} as const;
+
+export type SubscriptionTier = keyof typeof TIER_LIMITS;

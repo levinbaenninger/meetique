@@ -3,20 +3,13 @@ import { count, eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { agent, meeting } from '@/db/schema';
 import { polarClient } from '@/lib/polar';
+import { getTierInfo } from '@/modules/premium/utils';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
 export const premiumRouter = router({
   getFreeUsage: protectedProcedure.query(async ({ ctx }) => {
-    const customer = await polarClient.customers.getStateExternal({
-      externalId: ctx.session.user.id,
-    });
-
-    const subscription = customer.activeSubscriptions[0];
-
-    if (subscription) {
-      return null;
-    }
+    const tierInfo = await getTierInfo(ctx.session.user.id);
 
     const [userMeetings] = await db
       .select({ count: count(meeting.id) })
@@ -31,6 +24,8 @@ export const premiumRouter = router({
     return {
       agentCount: userAgents.count,
       meetingCount: userMeetings.count,
+      tier: tierInfo.tier,
+      limits: tierInfo.limits,
     };
   }),
   getSubscriptions: protectedProcedure.query(async () => {
@@ -58,5 +53,8 @@ export const premiumRouter = router({
     });
 
     return product;
+  }),
+  getTierInfo: protectedProcedure.query(async ({ ctx }) => {
+    return await getTierInfo(ctx.session.user.id);
   }),
 });

@@ -1,7 +1,7 @@
 export const TIER_LIMITS = {
   free: {
     agents: 3,
-    meetings: 10,
+    meetings: 5,
   },
   starter: {
     agents: -1, // unlimited

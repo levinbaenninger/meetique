@@ -8,9 +8,9 @@ import { EmptyState } from '@/components/empty-state';
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { DataTable } from '@/components/ui/data-table';
+import { useTRPC } from '@/lib/trpc';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
 import { meetingsColumns } from '@/modules/meetings/ui/components/meetings-columns';
-import { useTRPC } from '@/utils/trpc';
 
 export const MeetingsView = () => {
   const router = useRouter();

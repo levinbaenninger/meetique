@@ -4,11 +4,11 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useTRPC } from '@/lib/trpc';
 import {
   MAX_FREE_AGENTS,
   MAX_FREE_MEETINGS,
 } from '@/modules/premium/constants';
-import { useTRPC } from '@/utils/trpc';
 
 export const DashboardTrial = () => {
   const trpc = useTRPC();

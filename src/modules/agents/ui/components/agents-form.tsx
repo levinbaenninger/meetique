@@ -19,9 +19,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useTRPC } from '@/lib/trpc';
 import { createAgentSchema } from '@/modules/agents/schemas';
 import type { Agent } from '@/modules/agents/types';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   onSuccess?: () => void;

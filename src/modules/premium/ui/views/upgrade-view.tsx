@@ -5,7 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { authClient } from '@/lib/auth-client';
-import { useTRPC } from '@/utils/trpc';
+import { useTRPC } from '@/lib/trpc';
 
 import { PricingCard } from '../components/pricing-card';
 import { UpgradeHeader } from '../components/upgrade-header';

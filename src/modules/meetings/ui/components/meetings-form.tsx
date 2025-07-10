@@ -21,10 +21,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useTRPC } from '@/lib/trpc';
 import { NewAgentDialog } from '@/modules/agents/ui/components/new-agent-dialog';
 import { createMeetingSchema } from '@/modules/meetings/schemas';
 import type { Meeting } from '@/modules/meetings/types';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   onSuccess?: (id: string) => void;

@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { DashboardNavbar } from '@/modules/dashboard/ui/components/dashboard-navbar';
 import { DashboardSidebar } from '@/modules/dashboard/ui/components/dashboard-sidebar';
@@ -5,6 +7,13 @@ import { DashboardSidebar } from '@/modules/dashboard/ui/components/dashboard-si
 interface Props {
   children: React.ReactNode;
 }
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Meetique',
+    default: 'Meetique',
+  },
+};
 
 const Layout = ({ children }: Props) => {
   return (

@@ -1,6 +1,15 @@
+import type { Metadata } from 'next';
+
 interface Props {
   children: React.ReactNode;
 }
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Meetique',
+    default: 'Meetique',
+  },
+};
 
 const Layout = ({ children }: Props) => {
   return (

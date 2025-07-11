@@ -1,4 +1,5 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { SearchParams } from 'nuqs/server';
@@ -14,6 +15,10 @@ import {
   MeetingsViewLoading,
 } from '@/modules/meetings/ui/views/meetings-view';
 import { getQueryClient, trpc } from '@/trpc/server';
+
+export const metadata: Metadata = {
+  title: 'Meetings',
+};
 
 interface Props {
   searchParams: Promise<SearchParams>;

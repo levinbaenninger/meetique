@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Call',
+};
+
 interface Props {
   children: React.ReactNode;
 }

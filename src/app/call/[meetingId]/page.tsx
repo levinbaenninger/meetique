@@ -1,4 +1,5 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -17,6 +18,10 @@ interface Props {
     meetingId: string;
   }>;
 }
+
+export const metadata: Metadata = {
+  title: 'Call',
+};
 
 const Page = async ({ params }: Props) => {
   const session = await auth.api.getSession({

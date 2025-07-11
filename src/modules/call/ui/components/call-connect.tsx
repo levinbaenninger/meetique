@@ -13,8 +13,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTRPC } from '@/lib/trpc';
 import { CallUi } from '@/modules/call/ui/components/call-ui';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   meetingId: string;

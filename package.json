@@ -1,5 +1,5 @@
 {
-  "name": "avana",
+  "name": "meetique",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -26,6 +26,8 @@
     "@hookform/resolvers": "^5.1.1",
     "@inngest/agent-kit": "^0.9.0",
     "@neondatabase/serverless": "^1.0.1",
+    "@polar-sh/better-auth": "^1.0.4",
+    "@polar-sh/sdk": "^0.34.3",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -89,6 +91,7 @@
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.3",
     "recharts": "^2.15.4",
+    "require-in-the-middle": "^7.5.2",
     "server-only": "^0.0.1",
     "sonner": "^2.0.5",
     "superjson": "^2.2.2",

@@ -15,9 +15,9 @@ import { GeneratedAvatar } from '@/components/generated-avatar';
 import { LoadingState } from '@/components/loading-state';
 import { Badge } from '@/components/ui/badge';
 import { useConfirm } from '@/hooks/use-confirm';
+import { useTRPC } from '@/lib/trpc';
 import { AgentHeader } from '@/modules/agents/ui/components/agent-header';
 import { UpdateAgentDialog } from '@/modules/agents/ui/components/update-agent-dialog';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   agentId: string;
@@ -35,8 +35,11 @@ export const AgentView = ({ agentId }: Props) => {
 
   const removeAgent = useMutation(
     trpc.agents.delete.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
+        );
         router.push('/agents');
       },
       onError: (error) => {

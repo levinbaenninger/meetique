@@ -4,8 +4,8 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
+import { useTRPC } from '@/lib/trpc';
 import { CallProvider } from '@/modules/call/ui/components/call-provider';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   meetingId: string;

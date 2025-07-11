@@ -63,6 +63,11 @@ export const metadata: Metadata = {
       },
     ],
   },
+  appleWebApp: {
+    capable: true,
+    title: 'Meetique',
+    statusBarStyle: 'black-translucent',
+  },
 };
 
 export default function RootLayout({
@@ -73,9 +78,6 @@ export default function RootLayout({
   return (
     <NuqsAdapter>
       <TRPCReactProvider>
-        <head>
-          <meta name='apple-mobile-web-app-title' content='Meetique' />
-        </head>
         <html lang='en'>
           <body className={`${inter.className} ${dmMono.variable} antialiased`}>
             <Toaster />

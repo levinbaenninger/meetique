@@ -68,7 +68,7 @@ Create a `.env` file in the root directory with the following variables:
 
 ```bash
 # Database
-DATABASE_URL="postgres://username:password@host/neondb?sslmode?require"
+DATABASE_URL="postgres://username:password@host/neondb?sslmode=require"
 
 # Authentication - GitHub OAuth
 GITHUB_CLIENT_ID="your_github_client_id"

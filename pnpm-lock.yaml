@@ -4483,10 +4483,10 @@ packages:
         integrity: sha512-nEj1RG4DdLUuJiV5CR93ORyPCptGRBwksaPPCkUtGo9ka+UIlTpaiKoTaTqVLLYlqwX4bOj9tJ32oBNdf2G3Kg==,
       }
 
-  better-call@1.0.9:
+  better-call@1.0.12:
     resolution:
       {
-        integrity: sha512-Qfm0gjk0XQz0oI7qvTK1hbqTsBY4xV2hsHAxF8LZfUYl3RaECCIifXuVqtPpZJWvlCCMlQSvkvhhyuApGUba6g==,
+        integrity: sha512-ssq5OfB9Ungv2M1WVrRnMBomB0qz1VKuhkY2WxjHaLtlsHoSe9EPolj1xf7xf8LY9o3vfk3Rx6rCWI4oVHeBRg==,
       }
 
   bignumber.js@9.3.0:
@@ -12187,14 +12187,14 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@simplewebauthn/browser': 13.1.0
       '@simplewebauthn/server': 13.1.1
-      better-call: 1.0.9
+      better-call: 1.0.12
       defu: 6.1.4
       jose: 5.10.0
       kysely: 0.28.2
       nanostores: 0.11.4
       zod: 3.25.67
 
-  better-call@1.0.9:
+  better-call@1.0.12:
     dependencies:
       '@better-fetch/fetch': 1.1.18
       rou3: 0.5.1

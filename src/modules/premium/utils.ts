@@ -52,7 +52,7 @@ export async function determineUserTier(
     return 'enterprise';
   }
 
-  return 'starter';
+  return 'free';
 }
 
 export async function getTierInfo(userId: string): Promise<TierInfo> {

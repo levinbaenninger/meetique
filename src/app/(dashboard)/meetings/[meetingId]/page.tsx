@@ -1,4 +1,5 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -14,6 +15,10 @@ interface Props {
     meetingId: string;
   }>;
 }
+
+export const metadata: Metadata = {
+  title: 'Meeting',
+};
 
 const Page = async ({ params }: Props) => {
   const { meetingId } = await params;

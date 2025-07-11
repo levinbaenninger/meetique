@@ -62,7 +62,6 @@ export const metadata: Metadata = {
         alt: 'Meetique',
       },
     ],
-    site: 'https://meetique.vercel.app',
   },
 };
 

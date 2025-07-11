@@ -8,7 +8,7 @@ import { makeQueryClient } from '@/trpc/query-client';
 import { appRouter, createAsyncCaller } from '@/trpc/routers/_app';
 
 export const getQueryClient = cache(makeQueryClient);
-export const caller = createAsyncCaller();
+export const caller = await createAsyncCaller();
 
 export const trpc = createTRPCOptionsProxy({
   ctx: createContext,

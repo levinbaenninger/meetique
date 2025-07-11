@@ -10,10 +10,7 @@ const premiumProcedure = (entity: 'agent' | 'meeting') =>
       const meetingLimit = await checkMeetingLimit(ctx.session.user.id);
 
       if (!meetingLimit.allowed) {
-        const message =
-          meetingLimit.limit === -1
-            ? 'You have reached the meeting limit.'
-            : `You have reached your monthly meeting limit of ${meetingLimit.limit}.`;
+        const message = `You have reached your monthly meeting limit of ${meetingLimit.limit}.`;
 
         throw new TRPCError({
           code: 'FORBIDDEN',
@@ -26,10 +23,7 @@ const premiumProcedure = (entity: 'agent' | 'meeting') =>
       const agentLimit = await checkAgentLimit(ctx.session.user.id);
 
       if (!agentLimit.allowed) {
-        const message =
-          agentLimit.limit === -1
-            ? 'You have reached the agent limit.'
-            : `You have reached your agent limit of ${agentLimit.limit}.`;
+        const message = `You have reached your agent limit of ${agentLimit.limit}.`;
 
         throw new TRPCError({
           code: 'FORBIDDEN',

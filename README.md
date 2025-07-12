@@ -347,11 +347,12 @@ This project welcomes contributions! Please see our [Contributing Guide](CONTRIB
 
 - **[Setup Guide](docs/setup.md)** - Detailed environment setup instructions
 - **[Architecture](docs/architecture.md)** - System architecture and design
-- **[Security Guide](docs/security.md)** - Security best practices and vulnerability reporting
+- **[Security Guide](.github/SECURITY.md)** - Security best practices and vulnerability reporting
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
-- **[Contributing](CONTRIBUTING.md)** - How to contribute to the project
-- **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines
-- **[License](LICENSE)** - MIT License details
+- **[Contributing](.github/CONTRIBUTING.md)** - How to contribute to the project
+- **[Code of Conduct](.github/CODE_OF_CONDUCT.md)** - Community guidelines
+- **[License](.github/LICENSE)** - MIT License details
+- **[Code Owners](.github/CODEOWNERS)** - Code owners of this project
 
 ## 🔗 Useful Links
 

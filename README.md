@@ -236,30 +236,6 @@ pnpm build
 pnpm start
 ```
 
-## 🚀 Deployment
-
-### Vercel Deployment (Recommended)
-
-1. **Connect your repository to Vercel**
-2. **Configure environment variables** in Vercel dashboard
-3. **Deploy** - Vercel will automatically build and deploy
-
-### Environment Variables for Production
-
-Ensure all environment variables are set in your Vercel project:
-
-- Update `POLAR_SERVER` to `"production"`
-- Use production database URL
-- Use production OAuth app credentials
-- Set up proper domain URLs
-
-### Database Migrations
-
-```bash
-# Run migrations in production
-pnpm db:migrate
-```
-
 ## 📊 Database Schema
 
 ### Core Tables
@@ -316,12 +292,6 @@ pnpm db:migrate
 - **Accessibility**: WCAG compliant with Radix UI
 - **Loading States**: Skeleton loaders and progress indicators
 - **Error Handling**: Comprehensive error boundaries and toast notifications
-
-## 📱 PWA Features
-
-- **Manifest**: Web app manifest for installation
-- **Icons**: Adaptive icons for different platforms
-- **Offline Support**: Basic offline functionality
 
 ## 🔄 Background Jobs
 

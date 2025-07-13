@@ -1,4 +1,5 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -12,6 +13,10 @@ import { getQueryClient, trpc } from '@/trpc/server';
 interface Props {
   params: Promise<{ agentId: string }>;
 }
+
+export const metadata: Metadata = {
+  title: 'Agent',
+};
 
 const Page = async ({ params }: Props) => {
   const { agentId } = await params;

@@ -8,9 +8,9 @@ import { EmptyState } from '@/components/empty-state';
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { DataTable } from '@/components/ui/data-table';
+import { useTRPC } from '@/lib/trpc';
 import { useAgentsFilters } from '@/modules/agents/hooks/use-agents-filters';
 import { agentsColumns } from '@/modules/agents/ui/components/agents-columns';
-import { useTRPC } from '@/utils/trpc';
 
 export const AgentsView = () => {
   const router = useRouter();

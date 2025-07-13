@@ -1,16 +1,29 @@
 import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, getTableColumns, ilike, sql } from 'drizzle-orm';
+import {
+  and,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  inArray,
+  sql,
+} from 'drizzle-orm';
+import JSONL from 'jsonl-parse-stringify';
 import { z } from 'zod';
 
 import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
 import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
+import { agent, meeting, user } from '@/db/schema';
+import { generateAvatarUri } from '@/lib/avatar';
+import { streamVideo } from '@/lib/stream-video';
 import { meetingChatsRouter } from '@/modules/meetingchats/server/procedures';
 import {
   createMeetingSchema,
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
-import { meetingStatus } from '@/modules/meetings/types';
+import { meetingStatus, Transcript } from '@/modules/meetings/types';
+import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
@@ -102,7 +115,7 @@ export const meetingsRouter = router({
         totalPages,
       };
     }),
-  create: protectedProcedure
+  create: premiumProcedure('meeting')
     .input(createMeetingSchema)
     .mutation(async ({ input, ctx }) => {
       const [existingAgent] = await db
@@ -117,8 +130,8 @@ export const meetingsRouter = router({
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Agent not found.',
+          code: 'NOT_FOUND',
+          message: 'Agent not found or not accessible.',
         });
       }
 
@@ -129,6 +142,41 @@ export const meetingsRouter = router({
           userId: ctx.session.user.id,
         })
         .returning();
+
+      const call = streamVideo.video.call('default', createdMeeting.id);
+
+      await call.create({
+        data: {
+          created_by_id: ctx.session.user.id,
+          custom: {
+            meetingId: createdMeeting.id,
+            meetingName: createdMeeting.name,
+          },
+          settings_override: {
+            transcription: {
+              language: 'en',
+              mode: 'auto-on',
+              closed_caption_mode: 'auto-on',
+            },
+            recording: {
+              mode: 'auto-on',
+              quality: '1080p',
+            },
+          },
+        },
+      });
+
+      await streamVideo.upsertUsers([
+        {
+          id: existingAgent.id,
+          name: existingAgent.name,
+          image: generateAvatarUri({
+            seed: existingAgent.name,
+            variant: 'botttsNeutral',
+          }),
+          role: 'user',
+        },
+      ]);
 
       return createdMeeting;
     }),
@@ -147,8 +195,8 @@ export const meetingsRouter = router({
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Agent not found.',
+          code: 'NOT_FOUND',
+          message: 'Agent not found or not accessible.',
         });
       }
 
@@ -193,5 +241,109 @@ export const meetingsRouter = router({
       }
 
       return deletedMeeting;
+    }),
+  generateToken: protectedProcedure.mutation(async ({ ctx }) => {
+    await streamVideo.upsertUsers([
+      {
+        id: ctx.session.user.id,
+        name: ctx.session.user.name,
+        image:
+          ctx.session.user.image ??
+          generateAvatarUri({
+            seed: ctx.session.user.name,
+            variant: 'initials',
+          }),
+        role: 'admin',
+      },
+    ]);
+
+    return streamVideo.generateUserToken({
+      user_id: ctx.session.user.id,
+    });
+  }),
+  getTranscript: protectedProcedure
+    .input(z.object({ meetingId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const [existingMeeting] = await db
+        .select()
+        .from(meeting)
+        .where(
+          and(
+            eq(meeting.id, input.meetingId),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        );
+
+      if (!existingMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found or not accessible.',
+        });
+      }
+
+      if (!existingMeeting.transcriptUrl) {
+        return [];
+      }
+
+      const transcript = await fetch(existingMeeting.transcriptUrl)
+        .then((res) => res.text())
+        .then((text) => JSONL.parse<Transcript>(text))
+        .catch(() => []);
+
+      const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
+
+      const userSpeakers = await db
+        .select()
+        .from(user)
+        .where(inArray(user.id, speakerIds))
+        .then((users) =>
+          users.map((user) => ({
+            ...user,
+            image:
+              user.image ??
+              generateAvatarUri({ seed: user.name, variant: 'initials' }),
+          })),
+        );
+
+      const agentSpeakers = await db
+        .select()
+        .from(agent)
+        .where(inArray(agent.id, speakerIds))
+        .then((agents) =>
+          agents.map((agent) => ({
+            ...agent,
+            image: generateAvatarUri({
+              seed: agent.name,
+              variant: 'botttsNeutral',
+            }),
+          })),
+        );
+
+      const speakers = [...userSpeakers, ...agentSpeakers];
+
+      return transcript.map((t) => {
+        const speaker = speakers.find((s) => s.id === t.speaker_id);
+
+        if (!speaker) {
+          return {
+            ...t,
+            user: {
+              name: 'Unknown',
+              image: generateAvatarUri({
+                seed: 'Unknown',
+                variant: 'initials',
+              }),
+            },
+          };
+        }
+
+        return {
+          ...t,
+          user: {
+            name: speaker.name,
+            image: speaker.image,
+          },
+        };
+      });
     }),
 });

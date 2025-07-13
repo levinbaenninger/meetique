@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import { CommandSelect } from '@/components/command-select';
 import { GeneratedAvatar } from '@/components/generated-avatar';
+import { useTRPC } from '@/lib/trpc';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
-import { useTRPC } from '@/utils/trpc';
 
 export const MeetingsAgentFilter = () => {
   const [filters, setFilters] = useMeetingsFilters();

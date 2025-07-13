@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -20,10 +21,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useTRPC } from '@/lib/trpc';
 import { NewAgentDialog } from '@/modules/agents/ui/components/new-agent-dialog';
 import { createMeetingSchema } from '@/modules/meetings/schemas';
 import type { Meeting } from '@/modules/meetings/types';
-import { useTRPC } from '@/utils/trpc';
 
 interface Props {
   onSuccess?: (id: string) => void;
@@ -32,6 +33,7 @@ interface Props {
 }
 
 export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
+  const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
@@ -48,12 +50,19 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const createMeeting = useMutation(
     trpc.meetings.create.mutationOptions({
       onSuccess: async (createdMeeting) => {
-        queryClient.invalidateQueries(trpc.meetings.list.queryOptions({}));
+        await queryClient.invalidateQueries(
+          trpc.meetings.list.queryOptions({}),
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
+        );
         onSuccess?.(createdMeeting.id);
       },
       onError: (error) => {
         toast.error(error.message);
-        // TODO: if error is 401 or 403, redirect to sign-in or /upgrade
+        if (error.data?.code === 'FORBIDDEN') {
+          router.push('/upgrade');
+        }
       },
     }),
   );
@@ -75,7 +84,6 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       },
       onError: (error) => {
         toast.error(error.message);
-        // TODO: if error is 401 or 403, redirect to sign-in
       },
     }),
   );

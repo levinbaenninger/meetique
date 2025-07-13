@@ -1,19 +1,21 @@
 'use client';
 
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { DataPagination } from '@/components/data-pagination';
 import { EmptyState } from '@/components/empty-state';
 import { ErrorState } from '@/components/error-state';
 import { LoadingState } from '@/components/loading-state';
 import { DataTable } from '@/components/ui/data-table';
+import { useTRPC } from '@/lib/trpc';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
 import { meetingsColumns } from '@/modules/meetings/ui/components/meetings-columns';
-import { useTRPC } from '@/utils/trpc';
 
 export const MeetingsView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [filters, setFilters] = useMeetingsFilters();
 
   const trpc = useTRPC();
@@ -22,6 +24,17 @@ export const MeetingsView = () => {
       ...filters,
     }),
   );
+
+  useEffect(() => {
+    if (searchParams.has('agentId')) {
+      setFilters({
+        agentId: searchParams.get('agentId'),
+        page: null,
+        search: null,
+        status: null,
+      });
+    }
+  }, [searchParams, setFilters]);
 
   return (
     <div className='flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8'>

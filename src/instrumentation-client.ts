@@ -5,7 +5,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 Sentry.init({
-  dsn: 'https://5b715004db3fb922407cec240c8e9778@o4509660392194048.ingest.de.sentry.io/4509660399534160',
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
 
   sendDefaultPii: true,
 
@@ -18,15 +18,15 @@ Sentry.init({
   _experiments: { enableLogs: true },
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  tracesSampleRate: process.env.VERCEL_ENV === 'production' ? 0.1 : 1,
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
-  replaysSessionSampleRate: 0.1,
+  replaysSessionSampleRate: process.env.VERCEL_ENV === 'production' ? 0.1 : 1,
 
   // Define how likely Replay events are sampled when an error occurs.
-  replaysOnErrorSampleRate: 1.0,
+  replaysOnErrorSampleRate: process.env.VERCEL_ENV === 'production' ? 0.1 : 1,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,

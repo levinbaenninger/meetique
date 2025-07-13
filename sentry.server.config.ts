@@ -7,6 +7,10 @@ import * as Sentry from '@sentry/nextjs';
 Sentry.init({
   dsn: 'https://5b715004db3fb922407cec240c8e9778@o4509660392194048.ingest.de.sentry.io/4509660399534160',
 
+  sendDefaultPii: true,
+
+  _experiments: { enableLogs: true },
+
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
 

@@ -30,6 +30,8 @@ flowchart TB
         S[Better Auth<br/>Authentication]
         T[Inngest<br/>Background Jobs]
         X[Sentry<br/>Error Tracking]
+        Y[Arcjet<br/>Security & Bot Protection]
+        Z[PostHog<br/>Analytics & Feature Flags]
     end
 
     subgraph "Authentication Providers"
@@ -54,6 +56,8 @@ flowchart TB
     T --> |Process Transcript| Q
     Q --> |Store Summary| N
     A --> |Errors & Performance| X
+    G --> |Security Protection| Y
+    A --> |Analytics & Events| Z
 
     style A fill:#e1f5fe
     style P fill:#fff3e0
@@ -61,4 +65,6 @@ flowchart TB
     style R fill:#e8f5e8
     style T fill:#fff8e1
     style X fill:#ffebee
+    style Y fill:#ffeaa7
+    style Z fill:#fd79a8
 ```

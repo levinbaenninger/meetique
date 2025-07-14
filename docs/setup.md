@@ -166,6 +166,60 @@ This guide provides detailed step-by-step instructions for setting up all extern
    SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
    ```
 
+## 🛡️ Arcjet Setup (Security & Bot Protection)
+
+### 1. Create Arcjet Account
+
+1. Go to [Arcjet.com](https://arcjet.com/)
+2. Sign up for a free account
+3. Create a new site/project
+
+### 2. Get API Key
+
+1. In your Arcjet dashboard, go to **API Keys**
+2. Copy your site key
+3. Add to your `.env` file:
+   ```bash
+   ARCJET_KEY="your_arcjet_api_key"
+   ```
+
+### 3. Configure Security Rules
+
+The project is pre-configured with:
+
+- **Shield Protection**: General security protection
+- **Bot Detection**: Blocks malicious bots while allowing legitimate ones
+- **Rate Limiting**: Token bucket and sliding window rate limiting
+- **Email Protection**: Validates emails during signup (blocks disposable emails)
+
+## 📊 PostHog Setup (Analytics & Feature Flags)
+
+### 1. Create PostHog Account
+
+1. Go to [PostHog.com](https://posthog.com/)
+2. Sign up for a free account
+3. Create a new project
+4. Choose EU region for GDPR compliance
+
+### 2. Get Project API Key
+
+1. In your PostHog dashboard, go to **Project Settings**
+2. Copy your **Project API Key**
+3. Add to your `.env` file:
+   ```bash
+   NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
+   NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
+   ```
+
+### 3. Verify Analytics Setup
+
+The project includes:
+
+- **Automatic Page Tracking**: All page views are tracked
+- **Exception Capture**: Errors are automatically sent to PostHog
+- **EU Compliance**: Configured for EU region with proxy routes
+- **Feature Flags**: Ready for A/B testing and feature rollouts
+
 ## 🚀 Project Setup
 
 ### 1. Clone and Install
@@ -237,6 +291,18 @@ pnpm dev:webhook  # Webhook tunnel
 - Trigger an intentional error
 - Verify error appears in Sentry dashboard
 - Check error details and context
+
+### 6. Security Protection Test
+
+- Visit `/api/arcjet` endpoint multiple times to test rate limiting
+- Verify bot protection is working
+- Check Arcjet dashboard for security events
+
+### 7. Analytics Test
+
+- Navigate through different pages
+- Verify events appear in PostHog dashboard
+- Test feature flags (if configured)
 
 ## 🔍 Troubleshooting
 

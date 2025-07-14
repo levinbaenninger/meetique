@@ -51,7 +51,8 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **Database**: Neon PostgreSQL
 - **CDN**: Vercel Edge Network
 - **Monitoring**: Sentry for error tracking and performance monitoring
-- **Analytics**: Built-in Vercel Analytics
+- **Analytics**: PostHog for user analytics and feature flags
+- **Security**: Arcjet for bot protection and rate limiting
 
 ## 📋 Prerequisites
 
@@ -63,6 +64,8 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - Polar account for payments
 - GitHub and/or Google OAuth apps
 - Sentry account for error tracking
+- Arcjet account for security protection
+- PostHog account for analytics
 
 ## 🔧 Environment Variables
 
@@ -94,6 +97,13 @@ POLAR_SERVER="sandbox"
 # Sentry Error Tracking
 NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
 SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
+
+# Arcjet Security
+ARCJET_KEY="your_arcjet_api_key"
+
+# PostHog Analytics
+NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
+NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
 ```
 
 ## 🚀 Getting Started
@@ -290,6 +300,9 @@ pnpm start
 - **Input Validation**: Zod schemas for all inputs
 - **CORS**: Configured trusted origins
 - **Webhook Security**: Signature verification for webhooks
+- **Bot Protection**: Arcjet shield and bot detection for API endpoints
+- **Rate Limiting**: Arcjet token bucket and sliding window rate limiting
+- **Email Protection**: Arcjet email validation for signup protection
 
 ## 🎨 UI/UX Features
 

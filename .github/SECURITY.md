@@ -118,6 +118,14 @@ CREATE TABLE "user" (
 - **Input Sanitization**: All inputs validated and sanitized
 - **Error Handling**: Secure error messages without data leakage
 
+#### Arcjet Security
+
+- **Bot Protection**: Advanced bot detection with allow/deny lists
+- **Shield Protection**: Multi-layered security against common attacks
+- **Rate Limiting**: Token bucket and sliding window algorithms
+- **Email Validation**: Blocks disposable and invalid email addresses
+- **IP Analysis**: Intelligent IP reputation and geolocation analysis
+
 #### Webhook Security
 
 ```typescript
@@ -142,9 +150,11 @@ export const TRUSTED_ORIGINS = getTrustedOrigins();
 
 ```bash
 # Secure environment variable patterns
-DATABASE_URL="postgresql://..." # Never log full URL
-OPENAI_API_KEY="sk-..."         # API keys with proper prefixes
-STREAM_VIDEO_API_SECRET="..."   # Separate from public keys
+DATABASE_URL="postgresql://..."         # Never log full URL
+OPENAI_API_KEY="sk-..."                 # API keys with proper prefixes
+STREAM_VIDEO_API_SECRET="..."           # Separate from public keys
+ARCJET_KEY="ajkey_..."                  # Arcjet security API key
+NEXT_PUBLIC_POSTHOG_KEY="phc_..."       # PostHog public API key
 ```
 
 #### Secret Management
@@ -193,6 +203,8 @@ const securityHeaders = [
 - **Authorization Events**: Access denials, privilege escalations
 - **API Events**: Rate limiting, suspicious requests
 - **Payment Events**: Transaction attempts, failures
+- **Security Events**: Arcjet protection triggers, bot detections
+- **User Behavior**: PostHog analytics for anomaly detection
 
 #### Error Tracking
 

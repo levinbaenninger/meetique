@@ -227,6 +227,73 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
    curl -X POST http://localhost:3000/api/webhook
    ```
 
+### 🛡️ Arcjet Security Issues
+
+#### "Arcjet protection not working"
+
+**Problem**: Security features not blocking threats
+
+**Solutions**:
+
+1. **Check API key configuration**:
+
+   ```bash
+   # Verify environment variable
+   echo $ARCJET_KEY | head -c 20
+   ```
+
+2. **Test protection endpoint**:
+
+   ```bash
+   # Test rate limiting
+   for i in {1..10}; do curl http://localhost:3000/api/arcjet; done
+   ```
+
+3. **Check Arcjet dashboard**:
+   - Verify site is active
+   - Check security events and logs
+
+#### "Rate limiting too strict"
+
+**Problem**: Legitimate users being blocked
+
+**Solutions**:
+
+1. **Adjust rate limits**:
+
+   - Modify token bucket capacity in `/api/arcjet/route.ts`
+   - Increase refill rate if needed
+
+2. **Whitelist IPs**:
+   - Add trusted IPs to allow list
+   - Configure custom characteristics
+
+### 📊 PostHog Analytics Issues
+
+#### "Events not appearing in PostHog"
+
+**Problem**: Analytics data not being captured
+
+**Solutions**:
+
+1. **Check API key configuration**:
+
+   ```bash
+   # Verify environment variable
+   echo $NEXT_PUBLIC_POSTHOG_KEY | head -c 20
+   ```
+
+2. **Verify network connectivity**:
+
+   ```bash
+   # Test PostHog endpoint
+   curl -X POST https://eu.i.posthog.com/e/ -H "Content-Type: application/json"
+   ```
+
+3. **Check browser console**:
+   - Look for PostHog initialization messages
+   - Verify no network errors
+
 ### 🚀 Build & Deployment Issues
 
 #### "Build failed"
@@ -484,6 +551,32 @@ import * as Sentry from '@sentry/nextjs'
 Sentry.captureException(new Error('Test error for Sentry'))
 ```
 
+### 7. **Arcjet Security Debugging**
+
+```bash
+# Test Arcjet protection
+curl -X GET http://localhost:3000/api/arcjet
+
+# Check Arcjet dashboard
+# https://app.arcjet.com/
+
+# Enable debug logging
+DEBUG=arcjet:* pnpm dev
+```
+
+### 8. **PostHog Analytics Debugging**
+
+```bash
+# Test PostHog events in browser console
+posthog.capture('test_event', { property: 'value' })
+
+# Check PostHog dashboard
+# https://eu.posthog.com/
+
+# Enable debug logging
+POSTHOG_DEBUG=1 pnpm dev
+```
+
 ## 🚨 Emergency Fixes
 
 ### 1. **Reset Database**
@@ -528,6 +621,8 @@ pnpm install
    - [OpenAI Status](https://status.openai.com/)
    - [Vercel Status](https://vercel-status.com/)
    - [Sentry Status](https://status.sentry.io/)
+   - [Arcjet Status](https://status.arcjet.com/)
+   - [PostHog Status](https://status.posthog.com/)
 
 ### How to Ask for Help
 

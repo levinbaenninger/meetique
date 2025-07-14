@@ -50,7 +50,8 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **Hosting**: Vercel
 - **Database**: Neon PostgreSQL
 - **CDN**: Vercel Edge Network
-- **Monitoring**: Built-in Vercel Analytics
+- **Monitoring**: Sentry for error tracking and performance monitoring
+- **Analytics**: Built-in Vercel Analytics
 
 ## 📋 Prerequisites
 
@@ -61,6 +62,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - OpenAI API key
 - Polar account for payments
 - GitHub and/or Google OAuth apps
+- Sentry account for error tracking
 
 ## 🔧 Environment Variables
 
@@ -88,6 +90,10 @@ OPENAI_API_KEY="your_openai_api_key"
 # Polar Payments
 POLAR_ACCESS_TOKEN="your_polar_access_token"
 POLAR_SERVER="sandbox"
+
+# Sentry Error Tracking
+NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
+SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
 ```
 
 ## 🚀 Getting Started

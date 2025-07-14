@@ -279,6 +279,95 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
    pnpm start
    ```
 
+### 🔍 Sentry Issues
+
+#### "Sentry not capturing errors"
+
+**Problem**: Errors not appearing in Sentry dashboard
+
+**Solutions**:
+
+1. **Check DSN configuration**:
+
+   ```bash
+   # Verify DSN is set
+   echo $NEXT_PUBLIC_SENTRY_DSN
+   ```
+
+2. **Verify environment**:
+
+   ```bash
+   # Check if Sentry is initialized
+   # Look for Sentry initialization in browser console
+   ```
+
+3. **Test error capture**:
+   ```bash
+   # Add to any component
+   import * as Sentry from '@sentry/nextjs';
+   Sentry.captureException(new Error('Test error'));
+   ```
+
+#### "High error volume in Sentry"
+
+**Problem**: Too many errors being captured
+
+**Solutions**:
+
+1. **Adjust sample rates**:
+
+   ```typescript
+   // In sentry config files
+   tracesSampleRate: 0.1, // Reduce to 10%
+   replaysSessionSampleRate: 0.1,
+   ```
+
+2. **Filter out known errors**:
+
+   ```typescript
+   // Add to Sentry config
+   beforeSend(event) {
+     // Filter out specific errors
+     if (event.exception) {
+       const error = event.exception.values?.[0];
+       if (error?.type === 'ChunkLoadError') {
+         return null;
+       }
+     }
+     return event;
+   }
+   ```
+
+3. **Set up error boundaries**:
+   ```typescript
+   // Use React error boundaries to catch and handle errors
+   ```
+
+#### "Source maps not uploading"
+
+**Problem**: Stack traces not showing original source code
+
+**Solutions**:
+
+1. **Check build configuration**:
+
+   ```bash
+   # Verify Sentry webpack plugin is configured
+   # Check next.config.ts
+   ```
+
+2. **Verify auth token**:
+
+   ```bash
+   # Check if SENTRY_AUTH_TOKEN is set for CI/CD
+   ```
+
+3. **Manual source map upload**:
+   ```bash
+   # Upload source maps manually
+   npx @sentry/cli sourcemaps upload --org your-org --project your-project .next/static/
+   ```
+
 ### 🔧 Development Issues
 
 #### "pnpm dev not working"
@@ -381,6 +470,19 @@ DEBUG=inngest:* pnpm dev:inngest
 # Check Inngest dashboard
 ```
 
+### 6. **Sentry Debugging**
+
+```bash
+# Enable Sentry debugging
+DEBUG=sentry:* pnpm dev
+
+# Check Sentry dashboard
+# https://sentry.io/organizations/your-org/projects/
+
+# Test error capture
+console.error('Test error for Sentry')
+```
+
 ## 🚨 Emergency Fixes
 
 ### 1. **Reset Database**
@@ -424,6 +526,7 @@ pnpm install
    - [Stream Status](https://status.getstream.io/)
    - [OpenAI Status](https://status.openai.com/)
    - [Vercel Status](https://vercel-status.com/)
+   - [Sentry Status](https://status.sentry.io/)
 
 ### How to Ask for Help
 
@@ -470,9 +573,10 @@ pnpm list --depth=0
 
 ### 3. **Monitoring**
 
-- Set up error tracking (Sentry)
+- Monitor Sentry dashboard for errors and performance
+- Set up Sentry alerts for critical issues
 - Monitor API usage limits
-- Track performance metrics
+- Track performance metrics with Sentry performance monitoring
 - Set up alerts for failures
 
 ---

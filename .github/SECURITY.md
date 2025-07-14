@@ -175,6 +175,14 @@ const securityHeaders = [
 ];
 ```
 
+#### Sentry Security
+
+- **Data Scrubbing**: Automatic removal of sensitive data from error reports
+- **Sample Rate Control**: Configurable sampling to prevent data overexposure
+- **Access Controls**: Team-based access to error data
+- **Data Retention**: Configurable retention periods for error data
+- **Tunnel Route**: Ad-blocker circumvention without exposing DSN
+
 ## 🔍 Security Monitoring
 
 ### 📊 Logging & Monitoring
@@ -188,9 +196,10 @@ const securityHeaders = [
 
 #### Error Tracking
 
+- **Sentry Integration**: Real-time error tracking with detailed context
 - **Structured Logging**: Consistent log format for security events
-- **Error Monitoring**: Integration with error tracking services
-- **Alert System**: Automated alerts for security incidents
+- **Error Monitoring**: Comprehensive error monitoring with stack traces
+- **Alert System**: Automated alerts for security incidents via Sentry
 - **Audit Trails**: Comprehensive audit logs for compliance
 
 ### 🚨 Incident Response
@@ -334,6 +343,7 @@ npm audit --audit-level moderate
 
 #### Monitoring Tools
 
+- **Sentry**: Error tracking, performance monitoring, and session replay
 - **Vercel Analytics**: Performance and error monitoring
 - **Database Monitoring**: Connection and query monitoring
 - **API Monitoring**: Request tracking and rate limiting

@@ -190,6 +190,12 @@ importers:
       nuqs:
         specifier: ^2.4.3
         version: 2.4.3(next@15.3.3(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      posthog-js:
+        specifier: ^1.257.0
+        version: 1.257.0
+      posthog-node:
+        specifier: ^5.5.0
+        version: 5.5.0
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -5580,6 +5586,12 @@ packages:
       }
     engines: { node: '>=12.13' }
 
+  core-js@3.44.0:
+    resolution:
+      {
+        integrity: sha512-aFCtd4l6GvAXwVEh3XbbVqJGHDJt0OZRa+5ePGx3LLwi12WfexqQxcsohb2wgsa/92xtl19Hd66G/L+TaAxDMw==,
+      }
+
   cors@2.8.5:
     resolution:
       {
@@ -6564,6 +6576,12 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  fflate@0.4.8:
+    resolution:
+      {
+        integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==,
+      }
 
   file-entry-cache@8.0.0:
     resolution:
@@ -8726,6 +8744,33 @@ packages:
       }
     engines: { node: '>=0.10.0' }
 
+  posthog-js@1.257.0:
+    resolution:
+      {
+        integrity: sha512-Ujg9RGtWVCu+4tmlRpALSy2ZOZI6JtieSYXIDDdgMWm167KYKvTtbMPHdoBaPWcNu0Km+1hAIBnQFygyn30KhA==,
+      }
+    peerDependencies:
+      '@rrweb/types': 2.0.0-alpha.17
+      rrweb-snapshot: 2.0.0-alpha.17
+    peerDependenciesMeta:
+      '@rrweb/types':
+        optional: true
+      rrweb-snapshot:
+        optional: true
+
+  posthog-node@5.5.0:
+    resolution:
+      {
+        integrity: sha512-q+d6yuwCw88ZkcYTDlrF6eBkbRDgn4pA4Jp8ghm8uTfgxoGUKEcajnuMfmYudAXsly6UC4YccwQThey8p1jvgg==,
+      }
+    engines: { node: '>=20' }
+
+  preact@10.26.9:
+    resolution:
+      {
+        integrity: sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA==,
+      }
+
   prelude-ls@1.2.1:
     resolution:
       {
@@ -10159,6 +10204,12 @@ packages:
       }
     engines: { node: '>=10.13.0' }
 
+  web-vitals@4.2.4:
+    resolution:
+      {
+        integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==,
+      }
+
   webidl-conversions@3.0.1:
     resolution:
       {
@@ -11189,8 +11240,8 @@ snapshots:
 
   '@jridgewell/source-map@0.3.10':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.12
+      '@jridgewell/trace-mapping': 0.3.29
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
@@ -14022,6 +14073,8 @@ snapshots:
     dependencies:
       is-what: 4.1.16
 
+  core-js@3.44.0: {}
+
   cors@2.8.5:
     dependencies:
       object-assign: 4.1.1
@@ -14761,6 +14814,8 @@ snapshots:
   fdir@6.4.6(picomatch@4.0.2):
     optionalDependencies:
       picomatch: 4.0.2
+
+  fflate@0.4.8: {}
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -16064,6 +16119,17 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
+  posthog-js@1.257.0:
+    dependencies:
+      core-js: 3.44.0
+      fflate: 0.4.8
+      preact: 10.26.9
+      web-vitals: 4.2.4
+
+  posthog-node@5.5.0: {}
+
+  preact@10.26.9: {}
+
   prelude-ls@1.2.1: {}
 
   prettier-plugin-tailwindcss@0.6.13(prettier@3.5.3):
@@ -16788,7 +16854,7 @@ snapshots:
 
   terser-webpack-plugin@5.3.14(esbuild@0.25.5)(webpack@5.100.1(esbuild@0.25.5)):
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/trace-mapping': 0.3.29
       jest-worker: 27.5.1
       schema-utils: 4.3.2
       serialize-javascript: 6.0.2
@@ -17065,6 +17131,8 @@ snapshots:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
+
+  web-vitals@4.2.4: {}
 
   webidl-conversions@3.0.1: {}
 

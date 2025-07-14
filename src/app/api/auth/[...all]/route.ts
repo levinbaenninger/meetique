@@ -56,7 +56,7 @@ async function protect(req: NextRequest): Promise<ArcjetDecision> {
   if (session?.user.id) {
     userId = session.user.id;
   } else {
-    userId = ip(req) || '127.0.0.1';
+    userId = ip(req);
   }
 
   if (req.nextUrl.pathname.startsWith('/api/auth/sign-up')) {
@@ -83,8 +83,6 @@ export const { GET } = authHandlers;
 
 export const POST = async (req: NextRequest) => {
   const decision = await protect(req);
-
-  console.log('Arcjet Decision:', decision);
 
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {

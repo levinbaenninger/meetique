@@ -21,6 +21,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@arcjet/inspect": "1.0.0-beta.9",
+    "@arcjet/next": "1.0.0-beta.9",
     "@dicebear/collection": "^9.2.3",
     "@dicebear/core": "^9.2.3",
     "@hookform/resolvers": "^5.1.1",

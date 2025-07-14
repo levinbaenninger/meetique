@@ -473,14 +473,15 @@ DEBUG=inngest:* pnpm dev:inngest
 ### 6. **Sentry Debugging**
 
 ```bash
-# Enable Sentry debugging
-DEBUG=sentry:* pnpm dev
+# Enable Sentry SDK debug logging
+SENTRY_DEBUG=1 pnpm dev
 
 # Check Sentry dashboard
 # https://sentry.io/organizations/your-org/projects/
 
 # Test error capture
-console.error('Test error for Sentry')
+import * as Sentry from '@sentry/nextjs'
+Sentry.captureException(new Error('Test error for Sentry'))
 ```
 
 ## 🚨 Emergency Fixes

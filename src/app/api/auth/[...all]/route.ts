@@ -15,7 +15,6 @@ import { NextRequest } from 'next/server';
 
 import { auth } from '@/lib/auth';
 
-// The arcjet instance is created outside of the handler
 const aj = arcjet({
   key: process.env.ARCJET_KEY!,
   characteristics: ['userId'],

@@ -148,6 +148,24 @@ This guide provides detailed step-by-step instructions for setting up all extern
    - **Pro**: $30/month
    - **Enterprise**: $200/month
 
+## 🔍 Sentry Setup (Error Tracking)
+
+### 1. Create Sentry Account
+
+1. Go to [Sentry.io](https://sentry.io/)
+2. Sign up for a free account
+3. Create a new project
+
+### 2. Get DSN (Data Source Name)
+
+1. In your Sentry project dashboard, go to **Settings > Client Keys (DSN)**
+2. Copy the **DSN** value
+3. Add to your `.env` file:
+   ```bash
+   NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
+   SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
+   ```
+
 ## 🚀 Project Setup
 
 ### 1. Clone and Install
@@ -214,6 +232,12 @@ pnpm dev:webhook  # Webhook tunnel
 - Verify transcript processing
 - Check meeting summary generation
 
+### 5. Error Tracking Test
+
+- Trigger an intentional error
+- Verify error appears in Sentry dashboard
+- Check error details and context
+
 ## 🔍 Troubleshooting
 
 ### Common Issues
@@ -243,6 +267,12 @@ pnpm db:studio
 - Verify API key is valid
 - Check billing status
 - Verify usage limits
+
+#### Sentry Issues
+
+- Verify DSN is correct format
+- Check project settings and quotas
+- Ensure errors are being captured
 
 ### Getting Help
 

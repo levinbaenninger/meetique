@@ -29,6 +29,7 @@ flowchart TB
         R[Polar<br/>Payments]
         S[Better Auth<br/>Authentication]
         T[Inngest<br/>Background Jobs]
+        X[Sentry<br/>Error Tracking]
     end
 
     subgraph "Authentication Providers"
@@ -52,10 +53,12 @@ flowchart TB
     P --> |Webhook| T
     T --> |Process Transcript| Q
     Q --> |Store Summary| N
+    A --> |Errors & Performance| X
 
     style A fill:#e1f5fe
     style P fill:#fff3e0
     style Q fill:#f3e5f5
     style R fill:#e8f5e8
     style T fill:#fff8e1
+    style X fill:#ffebee
 ```

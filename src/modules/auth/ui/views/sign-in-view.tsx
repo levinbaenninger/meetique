@@ -50,7 +50,7 @@ export const SignInView = () => {
       },
       {
         onSuccess: () => {
-          router.push('/check-email');
+          router.push(`/check-email?email=${encodeURIComponent(values.email)}`);
         },
         onError: ({ error }) => {
           setError(error.message);

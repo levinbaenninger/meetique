@@ -37,7 +37,7 @@ flowchart TB
     subgraph "Authentication Providers"
         U[GitHub OAuth]
         V[Google OAuth]
-        W[Email/Password]
+        W[Magic Links]
     end
 
     A --> G

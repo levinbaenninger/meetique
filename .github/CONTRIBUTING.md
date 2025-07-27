@@ -139,7 +139,7 @@ test: add unit tests for meeting service
 - **Questions?** Open a GitHub issue with the `question` label
 - **Bug reports** Use the bug report template
 - **Feature requests** Use the feature request template
-- **Security issues** Please follow our [Security Policy](docs/security.md) (don't open public issues)
+- **Security issues** Please follow our [Security Policy](SECURITY.md) (don't open public issues)
 
 ## 🤝 Community Guidelines
 

@@ -23,20 +23,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, { message: 'Name is required' }),
-    email: z.string().email(),
-    password: z
-      .string()
-      .min(8, { message: 'Password must be at least 8 characters' })
-      .max(128, { message: 'Password must be less than 128 characters' }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+const formSchema = z.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  email: z.string().email(),
+});
 
 export const SignUpView = () => {
   const router = useRouter();
@@ -48,8 +38,6 @@ export const SignUpView = () => {
     defaultValues: {
       name: '',
       email: '',
-      password: '',
-      confirmPassword: '',
     },
   });
 
@@ -57,15 +45,15 @@ export const SignUpView = () => {
     setError(null);
     setIsPending(true);
 
-    authClient.signUp.email(
+    authClient.signIn.magicLink(
       {
         name: values.name,
         email: values.email,
-        password: values.password,
+        callbackURL: '/',
       },
       {
         onSuccess: () => {
-          router.push('/');
+          router.push('/check-email');
         },
         onError: ({ error }) => {
           setError(error.message);
@@ -75,6 +63,8 @@ export const SignUpView = () => {
         },
       },
     );
+
+    form.reset();
   };
 
   const onSocial = (provider: 'google' | 'github') => {
@@ -144,40 +134,6 @@ export const SignUpView = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name='password'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type='password'
-                            placeholder='************'
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name='confirmPassword'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type='password'
-                            placeholder='************'
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
                 {!!error && (
                   <Alert className='bg-destructive/10 text-destructive border-none'>
@@ -189,7 +145,7 @@ export const SignUpView = () => {
                   {isPending ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
                   ) : (
-                    'Sign Up'
+                    'Send Magic Link'
                   )}
                 </Button>
                 <div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>

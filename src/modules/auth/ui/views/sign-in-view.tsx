@@ -25,7 +25,6 @@ import { authClient } from '@/lib/auth-client';
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1, { message: 'Password is required' }),
 });
 
 export const SignInView = () => {
@@ -37,7 +36,6 @@ export const SignInView = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   });
 
@@ -45,14 +43,14 @@ export const SignInView = () => {
     setError(null);
     setIsPending(true);
 
-    authClient.signIn.email(
+    authClient.signIn.magicLink(
       {
         email: values.email,
-        password: values.password,
+        callbackURL: '/',
       },
       {
         onSuccess: () => {
-          router.push('/');
+          router.push('/check-email');
         },
         onError: ({ error }) => {
           setError(error.message);
@@ -111,23 +109,6 @@ export const SignInView = () => {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name='password'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type='password'
-                            placeholder='************'
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
                 {!!error && (
                   <Alert className='bg-destructive/10 text-destructive border-none'>
@@ -139,7 +120,7 @@ export const SignInView = () => {
                   {isPending ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
                   ) : (
-                    'Sign In'
+                    'Send Magic Link'
                   )}
                 </Button>
                 <div className='after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t'>

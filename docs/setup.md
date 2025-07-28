@@ -122,6 +122,35 @@ This guide provides detailed step-by-step instructions for setting up all extern
 2. Set a monthly limit to avoid unexpected charges
 3. Set up email notifications for usage alerts
 
+## 📧 Resend Setup (Magic Link Emails)
+
+### 1. Create Resend Account
+
+1. Go to [Resend.com](https://resend.com/)
+2. Sign up for a free account
+3. Complete email verification
+
+### 2. Get API Key
+
+1. Go to **API Keys** section
+2. Click "Create API Key"
+3. Give it a name (e.g., "Meetique Development")
+4. Copy the key and add to your `.env` file:
+   ```bash
+   RESEND_API_KEY="re_your_api_key_here"
+   ```
+
+### 3. Verify Domain (Production)
+
+For production use:
+
+1. Go to **Domains** section
+2. Add your domain (e.g., `meetique.com`)
+3. Add the required DNS records
+4. Wait for verification
+
+For development, you can use the default `resend.dev` domain.
+
 ## 💳 Polar Setup (Payments)
 
 ### 1. Create Polar Account
@@ -264,41 +293,48 @@ pnpm dev:webhook  # Webhook tunnel
 ### 1. Basic Application Test
 
 - Visit `http://localhost:3000`
-- Sign up with email/password
+- Sign up with magic link (email)
 - Create a test agent
 - Schedule a test meeting
 
-### 2. OAuth Test
+### 2. Magic Link Authentication Test
+
+- Enter your email address on sign-up or sign-in page
+- Check your email inbox for the magic link
+- Click the magic link to authenticate
+- Verify you're redirected to the dashboard
+
+### 3. OAuth Test
 
 - Try signing in with GitHub
 - Try signing in with Google
 - Verify user data is saved correctly
 
-### 3. Video Calling Test
+### 4. Video Calling Test
 
 - Join a test meeting
 - Verify video/audio works
 - Test screen sharing
 
-### 4. Background Jobs Test
+### 5. Background Jobs Test
 
 - End a meeting
 - Verify transcript processing
 - Check meeting summary generation
 
-### 5. Error Tracking Test
+### 6. Error Tracking Test
 
 - Trigger an intentional error
 - Verify error appears in Sentry dashboard
 - Check error details and context
 
-### 6. Security Protection Test
+### 7. Security Protection Test
 
 - Visit `/api/arcjet` endpoint multiple times to test rate limiting
 - Verify bot protection is working
 - Check Arcjet dashboard for security events
 
-### 7. Analytics Test
+### 8. Analytics Test
 
 - Navigate through different pages
 - Verify events appear in PostHog dashboard
@@ -350,9 +386,8 @@ pnpm db:studio
 
 After completing setup:
 
-1. Read the [Development Workflow](development.md) guide
-2. Review the [Contributing Guidelines](../CONTRIBUTING.md)
-3. Explore the [Architecture Documentation](architecture.md)
+1. Review the [Contributing Guidelines](../CONTRIBUTING.md)
+2. Explore the [Architecture Documentation](architecture.md)
 
 ---
 

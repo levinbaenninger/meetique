@@ -164,7 +164,7 @@ When reporting conduct issues:
 - **Email**: [levin@levinbaenninger.dev](mailto:levin@levinbaenninger.dev)
 - **GitHub**: [@levinbaenninger](https://github.com/levinbaenninger)
 
-For urgent security issues, please follow our [Security Policy](docs/security.md).
+For urgent security issues, please follow our [Security Policy](./SECURITY.md).
 
 ## 📜 Attribution
 

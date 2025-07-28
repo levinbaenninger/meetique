@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { authClient } from '@/lib/auth-client';
 import { useTRPC } from '@/lib/trpc';
@@ -27,33 +27,34 @@ export const AuthView = () => {
     enabled: shouldCheckUser && !!userEmail,
   });
 
-  // Handle the result of the user existence check
-  if (shouldCheckUser && userExistsResult && !isCheckingUser) {
-    setShouldCheckUser(false);
+  useEffect(() => {
+    if (shouldCheckUser && userExistsResult && !isCheckingUser) {
+      setShouldCheckUser(false);
 
-    if (userExistsResult.exists) {
-      // User exists, send magic link for sign-in
-      authClient.signIn.magicLink(
-        {
-          email: userEmail,
-          callbackURL: '/',
-        },
-        {
-          onSuccess: () => {
-            router.push(`/check-email?email=${encodeURIComponent(userEmail)}`);
+      if (userExistsResult.exists) {
+        authClient.signIn.magicLink(
+          {
+            email: userEmail,
+            callbackURL: '/',
           },
-          onError: ({ error }) => {
-            setError(error.message);
-            setIsPending(false);
+          {
+            onSuccess: () => {
+              router.push(
+                `/check-email?email=${encodeURIComponent(userEmail)}`,
+              );
+            },
+            onError: ({ error }) => {
+              setError(error.message);
+              setIsPending(false);
+            },
           },
-        },
-      );
-    } else {
-      // User doesn't exist, proceed to name collection
-      setStep('name');
-      setIsPending(false);
+        );
+      } else {
+        setStep('name');
+        setIsPending(false);
+      }
     }
-  }
+  }, [shouldCheckUser, userExistsResult, isCheckingUser, userEmail, router]);
 
   const handleEmailSubmit = (email: string) => {
     setError(null);

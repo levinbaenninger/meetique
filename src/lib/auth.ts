@@ -34,17 +34,12 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        try {
-          await resend.emails.send({
-            from: 'Meetique <meetique@levinbaenninger.dev>',
-            to: email,
-            subject: 'Welcome to Meetique - Your magic link',
-            text: `Welcome to Meetique! Click the link to securely sign in to your account: ${url}`,
-          });
-          console.log('Magic link sent to', email);
-        } catch (error) {
-          console.error('Error sending magic link', error);
-        }
+        await resend.emails.send({
+          from: 'Meetique <meetique@levinbaenninger.dev>',
+          to: email,
+          subject: 'Welcome to Meetique - Your magic link',
+          text: `Welcome to Meetique! Click the link to securely sign in to your account: ${url}`,
+        });
       },
     }),
     polar({

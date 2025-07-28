@@ -103,22 +103,12 @@ export const CheckEmailView = ({ email, name }: Props) => {
         <CardContent className='grid p-0 md:grid-cols-2'>
           <div className='p-6 md:p-8'>
             <div className='flex flex-col gap-6'>
-              <div className='flex flex-col items-center gap-4 text-center'>
-                <div className='bg-primary/10 text-primary rounded-full p-3'>
-                  <Mail className='h-8 w-8' />
-                </div>
-                <div>
-                  <h1 className='text-2xl font-bold'>Check your email</h1>
-                  <p className='text-muted-foreground mt-2 text-balance'>
-                    We&apos;ve sent a magic link to{' '}
-                    {email ? (
-                      <span className='font-medium'>{email}</span>
-                    ) : (
-                      'your email address'
-                    )}
-                    . Click the link to sign in to your account and get started.
-                  </p>
-                </div>
+              <div className='flex flex-col items-center text-center'>
+                <h1 className='text-2xl font-bold'>Check your email</h1>
+                <p className='text-muted-foreground mt-2 text-balance'>
+                  We&apos;ve sent you a magic link to{' '}
+                  <span className='font-medium'>{email}</span>
+                </p>
               </div>
 
               <div className='space-y-4'>

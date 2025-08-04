@@ -5,16 +5,18 @@ import {
   ClockFadingIcon,
   FileTextIcon,
   FileVideoIcon,
+  MessageCircleIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 
 import { GeneratedAvatar } from '@/components/generated-avatar';
 import { Badge } from '@/components/ui/badge';
-import { MarkdownView } from '@/components/ui/markdown-view';
+import { MarkdownStyleType, MarkdownView } from '@/components/ui/markdown-view';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 import { VideoPlayer } from '@/components/ui/video-player';
 import { formatDuration } from '@/lib/utils';
+import { MeetingChat } from '@/modules/meetingchats/ui/components/chat';
 import { Meeting } from '@/modules/meetings/types';
 import { Transcript } from '@/modules/meetings/ui/components/transcript';
 
@@ -49,6 +51,13 @@ export const CompletedState = ({ meeting }: Props) => {
               >
                 <FileVideoIcon />
                 Recording
+              </TabsTrigger>
+              <TabsTrigger
+                value='chat'
+                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
+              >
+                <MessageCircleIcon />
+                Chat
               </TabsTrigger>
             </TabsList>
             <ScrollBar orientation='horizontal' />
@@ -86,7 +95,10 @@ export const CompletedState = ({ meeting }: Props) => {
                   : 'No duration'}
               </Badge>
               <div>
-                <MarkdownView markdownText={meeting.summary} />
+                <MarkdownView
+                  markdownText={meeting.summary}
+                  type={MarkdownStyleType.TextMuted}
+                />
               </div>
             </div>
           </div>
@@ -98,6 +110,9 @@ export const CompletedState = ({ meeting }: Props) => {
           <div className='rounded-lg border bg-white px-4 py-5'>
             <VideoPlayer src={meeting.recordingUrl!} />
           </div>
+        </TabsContent>
+        <TabsContent value='chat'>
+          <MeetingChat meeting={meeting} />
         </TabsContent>
       </Tabs>
     </div>

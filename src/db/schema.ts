@@ -1,11 +1,4 @@
-import {
-  boolean,
-  integer,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-} from 'drizzle-orm/pg-core';
+import { boolean, pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 
 export const user = pgTable('user', {
@@ -77,8 +70,8 @@ export const agent = pgTable('agent', {
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   instructions: text('instructions').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const meetingStatus = pgEnum('meeting_status', [
@@ -107,8 +100,8 @@ export const meeting = pgTable('meeting', {
   meetingUrl: text('meeting_url'),
   recordingUrl: text('recording_url'),
   summary: text('summary'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const meeting_chat = pgTable('meeting_chat', {
@@ -118,8 +111,11 @@ export const meeting_chat = pgTable('meeting_chat', {
   meetingId: text('meeting_id')
     .notNull()
     .references(() => meeting.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdByUserId: text('created_by_user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const meeting_chat_message_agent = pgTable(
@@ -135,9 +131,8 @@ export const meeting_chat_message_agent = pgTable(
       onDelete: 'set null',
     }),
     message: text('message').notNull(),
-    messageOrder: integer('message_order').notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
 );
 
@@ -152,7 +147,6 @@ export const meeting_chat_message_user = pgTable('meeting_chat_message_user', {
     .notNull()
     .references(() => user.id, { onDelete: 'set null' }),
   message: text('message').notNull(),
-  messageOrder: integer('message_order').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

@@ -3,11 +3,17 @@
 import * as React from 'react';
 import Markdown from 'react-markdown';
 
-interface Props {
-  markdownText: string | null;
+export enum MarkdownStyleType {
+  TextPrimary,
+  TextMuted,
 }
 
-function MarkdownView({ markdownText }: Props) {
+interface Props {
+  markdownText: string | null;
+  type: MarkdownStyleType;
+}
+
+function MarkdownView({ markdownText, type }: Props) {
   return (
     <Markdown
       components={{
@@ -18,31 +24,31 @@ function MarkdownView({ markdownText }: Props) {
         p: (props) => (
           <p
             {...props}
-            className='text-muted-foreground mb-2 text-sm leading-relaxed'
+            className={`${getColor(type)} mb-2 text-sm leading-relaxed`}
           />
         ),
         ul: (props) => (
-          <ul {...props} className='mb-2 list-inside list-disc pl-5' />
+          <ul {...props} className={`mb-2 list-inside list-disc pl-5`} />
         ),
         li: (props) => (
           <li
             {...props}
-            className='text-muted-foreground mb-0 text-sm leading-relaxed'
+            className={`${getColor(type)} mb-0 text-sm leading-relaxed`}
           />
         ),
         strong: (props) => (
-          <strong {...props} className='text-muted-foreground font-semibold' />
+          <strong {...props} className={`${getColor(type)} font-semibold`} />
         ),
         code: (props) => (
           <code
             {...props}
-            className='text-muted-foreground bg-muted rounded-md px-1 py-0.5 text-sm'
+            className={`${getColor(type)} bg-muted rounded-md px-1 py-0.5 text-sm`}
           />
         ),
         blockquote: (props) => (
           <blockquote
             {...props}
-            className='text-muted-foreground border-primary border-l-2 pl-4'
+            className={`${getColor(type)} border-primary border-l-2 pl-4`}
           />
         ),
         img: (props) => (
@@ -53,6 +59,17 @@ function MarkdownView({ markdownText }: Props) {
       {markdownText}
     </Markdown>
   );
+}
+
+function getColor(markdownStyleType: MarkdownStyleType): string {
+  switch (markdownStyleType) {
+    case MarkdownStyleType.TextPrimary:
+      return 'text-black';
+    case MarkdownStyleType.TextMuted:
+      return 'text-muted-foreground';
+    default:
+      return 'text-black';
+  }
 }
 
 export { MarkdownView };

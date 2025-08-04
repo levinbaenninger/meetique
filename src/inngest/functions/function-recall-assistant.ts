@@ -1,49 +1,88 @@
-import { createAgent } from '@inngest/agent-kit';
+import { createAgent, TextMessage } from '@inngest/agent-kit';
 
+import { db } from '@/db';
+import { meeting_chat_message_agent } from '@/db/schema';
 import {
   addSpeakersToTranscript,
+  addTimesInSecondsToTranscript,
   fetchTranscript,
   getFunctionModel,
   parseTranscript,
-} from '@/inngest/functions/utils';
+} from '@/inngest/utils';
 
 import { inngest } from '../client';
 
-const meetingRecallAssistant = createAgent({
-  name: 'Recall Assistant',
-  system: `You are an AI assistant designed to answer questions about a past meeting. Your primary goal is to provide concise, accurate, and helpful answers about the meeting.
+const defaultSystemPrompt =
+  `You are a cutting-edge AI assistant specifically designed for meeting post-processing. Your primary task is to provide users with precise and context-aware answers based on meeting information, flexibly responding to their questions and requests.
   
-  Instructions:
-  1.  **Answer Directly:** Provide a direct and concise answer to the User's Question.
-  2.  **Prioritize Transcript:** For questions specifically about the meeting, always refer *first and foremost* to the provided Meeting Transcript.
-  3.  **Use General Knowledge Sparingly:** If the question is not about the meeting itself (e.g., a general knowledge question, a definition, or a request for "other information you know"), you may use your broader general knowledge from your training data to answer. But say that explicitly, e.g., "Based on my general knowledge, ...".
-  4.  **Handle Unanswerable Questions (Transcript):** If a question *about the meeting* cannot be found in the transcript, state: "I cannot find the answer to this question in the provided meeting transcript."
-  5.  **Handle Unanswerable Questions (General Knowledge):** If a general question is outside your capabilities, state: "I'm sorry, I don't have information on that topic."
-  6.  **Attribute Speakers (Meeting Info):** If quoting or referencing specific points from the meeting transcript, mention the speaker, e.g., "John said..." or "According to Sarah, ...".
-  `,
+  Always respond to the last user message (latest_user_message). 
+  Take into account the entire chat history (chat_history) to maintain context and continuity in your responses.
+
+    **Your core functions and behaviors are:**
+    
+    - **Information Source:** Your primary information source is the provided meeting transcript (**meeting_transcript**). You use it to answer direct questions, create summaries, and facilitate discussions.
+    - **Contextual Understanding:** You understand the context of the meeting and the user's questions based on the provided meeting transcript (**meeting_transcript**) and the chat history (**chat_history**).
+    - **Language Adaptation:** Always write in the language of the last user message (**latest_user_message**). If the user writes in English, you respond in English; if they write in Spanish, you respond in Spanish, and so on.
+    - **Attribution:** When using information from the meeting transcript, you always mention the participant who made the corresponding statement (e.g., "According to Sarah..." or "John said...").
+    - **Handling Missing Information:** If information is not found in the meeting transcript, you clearly and explicitly inform the user (e.g., "Unfortunately, this topic was not mentioned in the meeting transcript." or "This information is not available in the transcript.").
+    - **General Questions:** You also answer more general questions that are not directly from the meeting transcript. In such cases, you make it clear that the answer does not originate directly from the meeting (e.g., "This is general information and not directly from the meeting transcript." or "Please note this is general knowledge, not from the meeting.").
+    - **Discussion:** You are not just a Q&A system but can also lead discussions about the meeting content and related topics and help the user delve deeper into specific points.
+    - **Clarity and Precision:** Your answers are always clear, precise, and easy to understand. Avoid unnecessary jargon.
+    - **Flexibility:** You are flexible in interpreting user requests and always strive to provide the best possible answer, even if the question is not perfectly formulated.
+    `.trim();
+
+const chatBotAssistant = createAgent({
+  name: 'Chat Bot Assistant',
+  system: defaultSystemPrompt,
   model: getFunctionModel(),
 });
-export const meetingsChat = inngest.createFunction(
-  { id: 'meetings/chat' },
-  { event: 'meetings/chat' },
+
+export const functionGenerateAgentMessage = inngest.createFunction(
+  { id: 'meetings/generate-agent-message' },
+  { event: 'meetings/generate-agent-message' },
   async ({ event, step }) => {
-    const response = await step.run('fetch-transcript', async () =>
-      fetchTranscript(event.data.transcriptUrl),
+    const { transcriptUrl, meetingChatId, agentId, chatMessages, lastMessage } =
+      event.data;
+
+    const response = await step.run(
+      'generate-agent-message/fetch-transcript',
+      async () => fetchTranscript(transcriptUrl),
+    );
+    const transcript = await step.run(
+      'generate-agent-message/parse-transcript',
+      async () => parseTranscript(response),
+    );
+    const transcriptWithSpeaker = await step.run(
+      'generate-agent-message/add-speakers',
+      async () => addSpeakersToTranscript(transcript),
+    );
+    const transcriptWithSecondTimes = await step.run(
+      'generate-agent-message/add-second-times',
+      async () => addTimesInSecondsToTranscript(transcriptWithSpeaker),
     );
 
-    const transcript = await step.run('parse-transcript', async () =>
-      parseTranscript(response),
+    const { output } = await chatBotAssistant.run(
+      JSON.stringify({
+        meeting_transcript: transcriptWithSecondTimes,
+        chat_history: chatMessages,
+        latest_user_message: lastMessage,
+      }),
     );
 
-    const transcriptWithSpeaker = await step.run('add-speakers', async () =>
-      addSpeakersToTranscript(transcript),
-    );
+    console.log(output);
 
-    const { output } = await meetingRecallAssistant.run(
-      `Respond to this user message: ${event.data.message}.
-      
-      Use the following transcript as an information source while responding:
-      ${JSON.stringify(transcriptWithSpeaker)}`,
+    await step.run(
+      'generate-agent-message/save-agent-chat-message',
+      async () => {
+        await db
+          .insert(meeting_chat_message_agent)
+          .values({
+            meetingChatId: meetingChatId,
+            agentId: agentId,
+            message: (output[0] as TextMessage).content as string,
+          })
+          .returning();
+      },
     );
 
     return {

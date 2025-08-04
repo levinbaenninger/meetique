@@ -8,7 +8,7 @@ import {
   fetchTranscript,
   getFunctionModel,
   parseTranscript,
-} from '@/inngest/functions/utils';
+} from '@/inngest/utils';
 
 import { inngest } from '../client';
 
@@ -37,27 +37,28 @@ const summarizer = createAgent({
   model: getFunctionModel(),
 });
 
-export const meetingsProcessing = inngest.createFunction(
+export const functionSummarizer = inngest.createFunction(
   { id: 'meetings/processing' },
   { event: 'meetings/processing' },
   async ({ event, step }) => {
-    const response = await step.run('fetch-transcript', async () =>
+    const response = await step.run('processing/fetch-transcript', async () =>
       fetchTranscript(event.data.transcriptUrl),
     );
 
-    const transcript = await step.run('parse-transcript', async () =>
+    const transcript = await step.run('processing/parse-transcript', async () =>
       parseTranscript(response),
     );
 
-    const transcriptWithSpeaker = await step.run('add-speakers', async () =>
-      addSpeakersToTranscript(transcript),
+    const transcriptWithSpeaker = await step.run(
+      'processing/add-speakers',
+      async () => addSpeakersToTranscript(transcript),
     );
 
     const { output } = await summarizer.run(
       `Summarize the following meeting transcript: ${JSON.stringify(transcriptWithSpeaker)}`,
     );
 
-    await step.run('save-summary', async () => {
+    await step.run('processing/save-summary', async () => {
       await db
         .update(meeting)
         .set({

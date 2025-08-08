@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, getTableColumns } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '@/db';
@@ -23,6 +23,7 @@ import {
   MeetingChatAgentMessage,
   MeetingChatUserMessage,
 } from '@/modules/meetingchats/types';
+import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 import { hasUserMeetingAccess, hasUserMeetingChatAccess } from '@/utils/access';
@@ -145,10 +146,9 @@ export const meetingChatsRouter = router({
 
       return createdChat;
     }),
-  createUserMessage: protectedProcedure
+  createUserMessage: premiumProcedure('meetingChatMessage')
     .input(createChatUserMessageSchema)
     .mutation(async ({ input, ctx }) => {
-      console.log(input);
       if (
         !(await hasUserMeetingChatAccess(
           ctx.session.user.id,
@@ -170,9 +170,11 @@ export const meetingChatsRouter = router({
         })
         .returning();
 
+      await incrementChatMessageCount(input.meetingChatId);
+
       return createdUserMessage;
     }),
-  generateAgentMessage: protectedProcedure
+  generateAgentMessage: premiumProcedure('meetingChatMessage')
     .input(generateChatAgentMessageSchema)
     .mutation(async ({ input, ctx }) => {
       const [meetingChat] = await db
@@ -313,4 +315,14 @@ async function getAgentMessages(
           : null,
       })),
     );
+}
+
+export async function incrementChatMessageCount(meetingChatId: string) {
+  await db
+    .update(meeting_chat)
+    .set({
+      messageCount: sql`${meeting_chat.messageCount}
+      + 1`,
+    })
+    .where(and(eq(meeting_chat.id, meetingChatId)));
 }

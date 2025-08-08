@@ -1,4 +1,11 @@
-import { boolean, pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  numeric,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 import { nanoid } from 'nanoid';
 
 export const user = pgTable('user', {
@@ -116,6 +123,7 @@ export const meeting_chat = pgTable('meeting_chat', {
     .references(() => user.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  messageCount: numeric('message_count').notNull().default('0'),
 });
 
 export const meeting_chat_message_agent = pgTable(

@@ -47,40 +47,12 @@ export const MeetingChat = ({ meeting }: Props) => {
     }),
   );
 
-  /*const [messages, setMessages] = useState<Array<BaseMessage>>([]);
-
-  useEffect(() => {
-    setMessages(userMessages?.map((message) => {
-        return {
-          author: message.userName!,
-          isCurrentUser: message.userId === userId,
-          message: message.message,
-          date: message.createdAt!,
-        };
-      }) || []
-    );
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      ...agentMessages?.map((message) => {
-        return {
-          author: message.agentName!,
-          message: message.message,
-          date: message.createdAt!,
-        };
-      }) || [],
-    ]);
-    setMessages((prevMessages) =>
-      prevMessages.sort((a, b) => a.date.getTime() - b.date.getTime()),
-    );
-  }, [userMessages, agentMessages]);*/
-
   const createChatMutation = useMutation(
     trpc.meetings.chats.createChat.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries(
           trpc.meetings.chats.getChats.queryOptions({ meetingId: meeting.id }),
         );
-        // ToDo: handle free usage (10 messages per meeting)
       },
       onError: (error) => {
         toast.error(error.message);
@@ -99,9 +71,12 @@ export const MeetingChat = ({ meeting }: Props) => {
     trpc.meetings.chats.generateAgentMessage.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries(
-          trpc.meetings.chats.getAgentMessages.queryOptions({
+          trpc.meetings.chats.getMessages.queryOptions({
             meetingChatId: chat?.id || '',
           }),
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
         );
       },
       onError: (error) => {
@@ -120,6 +95,9 @@ export const MeetingChat = ({ meeting }: Props) => {
           trpc.meetings.chats.getMessages.queryOptions({
             meetingChatId: chat?.id || '',
           }),
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions(),
         );
         form.reset();
         generateAgentMessageMutation.mutate({

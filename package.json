@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:web": "next dev --turbopack",
+    "dev:web": "next dev",
     "build": "next build",
     "start": "next start",
     "lint:check": "next lint",
@@ -15,7 +15,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "dev:webhook": "ngrok http --url=decent-gently-cow.ngrok-free.app 3000",
+    "dev:webhook": "ngrok http --url=evident-model-labrador.ngrok-free.app 3000",
     "dev:inngest": "pnpm dlx inngest-cli@latest dev",
     "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:inngest\" \"pnpm dev:webhook\"",
     "prepare": "husky"
@@ -73,6 +73,7 @@
     "drizzle-orm": "^0.44.2",
     "embla-carousel-react": "^8.6.0",
     "humanize-duration": "^3.33.0",
+    "import-in-the-middle": "^1.14.2",
     "inngest": "^3.40.1",
     "input-otp": "^1.4.2",
     "jsonl-parse-stringify": "^1.0.3",

@@ -1,7 +1,13 @@
-import { and, count, eq, gte, lte } from 'drizzle-orm';
+import { and, count, eq, gte, inArray, lte } from 'drizzle-orm';
 
 import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
+import {
+  agent,
+  meeting,
+  meeting_chat,
+  meeting_chat_message_agent,
+  meeting_chat_message_user,
+} from '@/db/schema';
 import { polarClient } from '@/lib/polar';
 
 import { type SubscriptionTier, TIER_LIMITS } from './constants';
@@ -20,6 +26,7 @@ export interface TierInfo {
   limits: {
     agents: number;
     meetings: number;
+    meetingChatMessages: number;
   };
 }
 
@@ -99,7 +106,7 @@ export async function checkMeetingLimit(
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const endOfMonth = new Date(now.getFullYear(), (now.getMonth() + 1) % 12, 0);
 
   const [userMeetings] = await db
     .select({ count: count(meeting.id) })
@@ -118,5 +125,56 @@ export async function checkMeetingLimit(
     allowed,
     current: userMeetings.count,
     limit: tierInfo.limits.meetings,
+  };
+}
+
+export async function checkMeetingChatMessageLimit(
+  userId: string,
+): Promise<{ allowed: boolean; current: number; limit: number }> {
+  const tierInfo = await getTierInfo(userId);
+
+  if (tierInfo.limits.meetingChatMessages === -1) {
+    return { allowed: true, current: 0, limit: -1 };
+  }
+
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), (now.getMonth() + 1) % 12, 0);
+
+  const userChats = await db
+    .select({ id: meeting_chat.id })
+    .from(meeting_chat)
+    .where(and(eq(meeting_chat.createdByUserId, userId)))
+    .then((chats) => chats.map((chat) => chat.id));
+
+  const [agentMessages] = await db
+    .select({ count: count(meeting_chat_message_agent.id) })
+    .from(meeting_chat_message_agent)
+    .where(
+      and(
+        inArray(meeting_chat_message_agent.meetingChatId, userChats),
+        gte(meeting_chat_message_agent.createdAt, startOfMonth),
+        lte(meeting_chat_message_agent.createdAt, endOfMonth),
+      ),
+    );
+
+  const [userMessages] = await db
+    .select({ count: count(meeting_chat_message_user.id) })
+    .from(meeting_chat_message_user)
+    .where(
+      and(
+        inArray(meeting_chat_message_user.meetingChatId, userChats),
+        gte(meeting_chat_message_user.createdAt, startOfMonth),
+        lte(meeting_chat_message_user.createdAt, endOfMonth),
+      ),
+    );
+
+  const messageCount = agentMessages.count + userMessages.count;
+  const allowed = messageCount < tierInfo.limits.meetingChatMessages;
+
+  return {
+    allowed,
+    current: messageCount,
+    limit: tierInfo.limits.meetingChatMessages,
   };
 }

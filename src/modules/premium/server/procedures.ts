@@ -1,7 +1,7 @@
-import { count, eq } from 'drizzle-orm';
+import { count, eq, sum } from 'drizzle-orm';
 
 import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
+import { agent, meeting, meeting_chat } from '@/db/schema';
 import { polarClient } from '@/lib/polar';
 import { getTierInfo } from '@/modules/premium/utils';
 import protectedProcedure from '@/trpc/procedures/protected';
@@ -21,9 +21,17 @@ export const premiumRouter = router({
       .from(agent)
       .where(eq(agent.userId, ctx.session.user.id));
 
+    const [userMeetingChatMessages] = await db
+      .select({ count: sum(meeting_chat.messageCount) })
+      .from(meeting_chat)
+      .where(eq(meeting_chat.createdByUserId, ctx.session.user.id));
+
     return {
       agentCount: userAgents.count,
       meetingCount: userMeetings.count,
+      meetingChatMessagesCount: userMeetingChatMessages.count
+        ? parseInt(userMeetingChatMessages.count)
+        : 0,
       tier: tierInfo.tier,
       limits: tierInfo.limits,
     };

@@ -82,7 +82,7 @@ export const DashboardTrial = () => {
         </div>
         <div className='flex flex-col gap-y-2'>
           <p className='text-xs'>
-            {freeUsage.meetingChatMessagesCount}/
+            {freeUsage.meetingChatMessageCount}/
             {formatLimit(freeUsage.limits.meetingChatMessages)} Meeting Chat
             Messages
             {freeUsage.tier === 'starter' ||
@@ -91,7 +91,7 @@ export const DashboardTrial = () => {
           {freeUsage.limits.meetingChatMessages !== -1 && (
             <Progress
               value={calculateProgress(
-                freeUsage.meetingChatMessagesCount,
+                freeUsage.meetingChatMessageCount,
                 freeUsage.limits.meetingChatMessages,
               )}
             />

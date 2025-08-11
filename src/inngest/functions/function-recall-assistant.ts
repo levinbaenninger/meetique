@@ -1,8 +1,7 @@
 import { createAgent, TextMessage } from '@inngest/agent-kit';
-import { and, eq, sql } from 'drizzle-orm';
 
 import { db } from '@/db';
-import { meeting_chat, meeting_chat_message_agent } from '@/db/schema';
+import { meeting_chat_message_agent } from '@/db/schema';
 import {
   addSpeakersToTranscript,
   addTimesInSecondsToTranscript,
@@ -81,19 +80,6 @@ export const functionGenerateAgentMessage = inngest.createFunction(
             message: (output[0] as TextMessage).content as string,
           })
           .returning();
-      },
-    );
-
-    await step.run(
-      'generate-agent-message/increment-message-count',
-      async () => {
-        await db
-          .update(meeting_chat)
-          .set({
-            messageCount: sql`${meeting_chat.messageCount}
-        + 1`,
-          })
-          .where(and(eq(meeting_chat.id, meetingChatId)));
       },
     );
 

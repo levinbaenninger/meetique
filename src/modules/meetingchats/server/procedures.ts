@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { db } from '@/db';
@@ -170,8 +170,6 @@ export const meetingChatsRouter = router({
         })
         .returning();
 
-      await incrementChatMessageCount(input.meetingChatId);
-
       return createdUserMessage;
     }),
   generateAgentMessage: premiumProcedure('meetingChatMessage')
@@ -315,14 +313,4 @@ async function getAgentMessages(
           : null,
       })),
     );
-}
-
-export async function incrementChatMessageCount(meetingChatId: string) {
-  await db
-    .update(meeting_chat)
-    .set({
-      messageCount: sql`${meeting_chat.messageCount}
-      + 1`,
-    })
-    .where(and(eq(meeting_chat.id, meetingChatId)));
 }

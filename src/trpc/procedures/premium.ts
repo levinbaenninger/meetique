@@ -42,7 +42,7 @@ const premiumProcedure = (entity: 'agent' | 'meeting' | 'meetingChatMessage') =>
       );
 
       if (!meetingChatMessageLimit.allowed) {
-        const message = `You have reached your message limit of ${meetingChatMessageLimit.limit} for your meeting chats.`;
+        const message = `You have reached your limit of ${meetingChatMessageLimit.limit} messages for your meeting chats.`;
 
         throw new TRPCError({
           code: 'FORBIDDEN',

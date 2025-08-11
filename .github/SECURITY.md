@@ -35,8 +35,7 @@ For **critical security vulnerabilities** that could affect user data or system 
 
 - **Better Auth**: Secure session management with industry standards
 - **OAuth Integration**: GitHub and Google OAuth with proper scopes
-- **Email/Password**: Secure password hashing with bcrypt
-- **Session Management**: Secure, httpOnly cookies with CSRF protection
+- **Magic Links**: Passwordless authentication via secure email links
 
 #### Authorization Layers
 
@@ -48,13 +47,6 @@ export const withAuth = middleware(async ({ ctx, next }) => {
   return next({ ctx: { ...ctx, session } });
 });
 ```
-
-#### Session Security
-
-- **Secure Cookies**: HttpOnly, Secure, SameSite attributes
-- **Session Rotation**: Regular session ID rotation
-- **Expiration**: Configurable session timeouts
-- **Cleanup**: Automatic cleanup of expired sessions
 
 ### 🗄️ Database Security
 
@@ -88,7 +80,6 @@ CREATE TABLE "user" (
 #### Stream Video Integration
 
 - **API Key Security**: Separate public/private key management
-- **Token-based Auth**: JWT tokens for video session access
 - **Call Permissions**: User-based call access controls
 - **Recording Security**: Encrypted storage of call recordings
 
@@ -118,6 +109,14 @@ CREATE TABLE "user" (
 - **Input Sanitization**: All inputs validated and sanitized
 - **Error Handling**: Secure error messages without data leakage
 
+#### Arcjet Security
+
+- **Bot Protection**: Advanced bot detection with allow/deny lists
+- **Shield Protection**: Multi-layered security against common attacks
+- **Rate Limiting**: Token bucket and sliding window algorithms
+- **Email Validation**: Blocks disposable and invalid email addresses
+- **IP Analysis**: Intelligent IP reputation and geolocation analysis
+
 #### Webhook Security
 
 ```typescript
@@ -137,15 +136,6 @@ export const TRUSTED_ORIGINS = getTrustedOrigins();
 ```
 
 ### 🔒 Environment Security
-
-#### Environment Variables
-
-```bash
-# Secure environment variable patterns
-DATABASE_URL="postgresql://..." # Never log full URL
-OPENAI_API_KEY="sk-..."         # API keys with proper prefixes
-STREAM_VIDEO_API_SECRET="..."   # Separate from public keys
-```
 
 #### Secret Management
 
@@ -175,6 +165,14 @@ const securityHeaders = [
 ];
 ```
 
+#### Sentry Security
+
+- **Data Scrubbing**: Automatic removal of sensitive data from error reports
+- **Sample Rate Control**: Configurable sampling to prevent data overexposure
+- **Access Controls**: Team-based access to error data
+- **Data Retention**: Configurable retention periods for error data
+- **Tunnel Route**: Ad-blocker circumvention without exposing DSN
+
 ## 🔍 Security Monitoring
 
 ### 📊 Logging & Monitoring
@@ -185,12 +183,15 @@ const securityHeaders = [
 - **Authorization Events**: Access denials, privilege escalations
 - **API Events**: Rate limiting, suspicious requests
 - **Payment Events**: Transaction attempts, failures
+- **Security Events**: Arcjet protection triggers, bot detections
+- **User Behavior**: PostHog analytics for anomaly detection
 
 #### Error Tracking
 
+- **Sentry Integration**: Real-time error tracking with detailed context
 - **Structured Logging**: Consistent log format for security events
-- **Error Monitoring**: Integration with error tracking services
-- **Alert System**: Automated alerts for security incidents
+- **Error Monitoring**: Comprehensive error monitoring with stack traces
+- **Alert System**: Automated alerts for security incidents via Sentry
 - **Audit Trails**: Comprehensive audit logs for compliance
 
 ### 🚨 Incident Response
@@ -213,27 +214,6 @@ const securityHeaders = [
 ## 🎯 Security Best Practices
 
 ### 👨‍💻 For Developers
-
-#### Code Security
-
-```typescript
-// Input validation example
-const createAgentSchema = z.object({
-  name: z.string().min(1).max(100), // Length limits
-  instructions: z.string().min(1).max(5000), // Prevent abuse
-});
-
-// Secure API endpoint
-export const createAgent = protectedProcedure
-  .input(createAgentSchema)
-  .mutation(async ({ input, ctx }) => {
-    // Additional authorization checks
-    if (!hasPermission(ctx.session.user, 'CREATE_AGENT')) {
-      throw new TRPCError({ code: 'FORBIDDEN' });
-    }
-    // Secure implementation
-  });
-```
 
 #### Authentication Checks
 
@@ -260,8 +240,8 @@ export const createAgent = protectedProcedure
 
 #### Account Security
 
-- **Strong passwords** with complexity requirements
-- **Two-factor authentication** (when available)
+- **Magic link authentication** for passwordless security
+- **Secure email delivery** via trusted email providers
 - **Secure OAuth providers** for social authentication
 
 ## 🔐 Data Protection
@@ -271,7 +251,7 @@ export const createAgent = protectedProcedure
 #### Sensitive Data
 
 - **PII**: Email addresses, names, profile information
-- **Authentication**: Passwords, session tokens, API keys
+- **Authentication**: Session tokens, API keys, magic link tokens
 - **Financial**: Payment information, subscription details
 - **Communication**: Meeting transcripts, recordings, summaries
 
@@ -334,6 +314,7 @@ npm audit --audit-level moderate
 
 #### Monitoring Tools
 
+- **Sentry**: Error tracking, performance monitoring, and session replay
 - **Vercel Analytics**: Performance and error monitoring
 - **Database Monitoring**: Connection and query monitoring
 - **API Monitoring**: Request tracking and rate limiting
@@ -400,9 +381,9 @@ npm audit --audit-level moderate
 ### 📋 Security Resources
 
 - **Security Policy**: This document
-- **Code of Conduct**: [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)
-- **Contributing Guidelines**: [CONTRIBUTING.md](../CONTRIBUTING.md)
-- **Issue Templates**: [.github/ISSUE_TEMPLATE/](.github/ISSUE_TEMPLATE/)
+- **Code of Conduct**: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- **Contributing Guidelines**: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **Issue Templates**: [ISSUE_TEMPLATE/](./ISSUE_TEMPLATE/)
 
 ## 🔗 External Security Resources
 

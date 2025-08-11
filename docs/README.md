@@ -12,9 +12,9 @@ Welcome to the Meetique documentation! This directory contains detailed guides a
 
 ### For Contributors
 
-- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to the project
-- **[Code of Conduct](../CODE_OF_CONDUCT.md)** - Community guidelines
-- **[Security Policy](security.md)** - Security guidelines and vulnerability reporting
+- **[Contributing Guide](../.github/CONTRIBUTING.md)** - How to contribute to the project
+- **[Code of Conduct](../.github/CODE_OF_CONDUCT.md)** - Community guidelines
+- **[Security Policy](../.github/SECURITY.md)** - Security guidelines and vulnerability reporting
 - **[License](../LICENSE)** - MIT License details
 
 ## 📋 Documentation Index
@@ -33,8 +33,8 @@ Welcome to the Meetique documentation! This directory contains detailed guides a
 
 ### 📝 Guides
 
-- **[Environment Variables](setup.md#environment-variables)** - All required environment variables
-- **[External Services](setup.md#external-services)** - Setup for third-party integrations
+- **[Environment Variables](setup.md)** - All required environment variables
+- **[External Services](setup.md)** - Setup for third-party integrations
 - **[Development Workflow](../README.md#development-workflow)** - Best practices for development
 
 ### 🔧 Reference
@@ -65,7 +65,7 @@ Welcome to the Meetique documentation! This directory contains detailed guides a
 
 ### Contributing
 
-- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute
+- **[Contributing Guide](../.github/CONTRIBUTING.md)** - How to contribute
 - **[Issue Templates](../.github/ISSUE_TEMPLATE/)** - Bug reports and feature requests
 - **[Pull Request Template](../.github/pull_request_template.md)** - PR guidelines
 

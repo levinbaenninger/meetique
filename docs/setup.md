@@ -122,6 +122,35 @@ This guide provides detailed step-by-step instructions for setting up all extern
 2. Set a monthly limit to avoid unexpected charges
 3. Set up email notifications for usage alerts
 
+## 📧 Resend Setup (Magic Link Emails)
+
+### 1. Create Resend Account
+
+1. Go to [Resend.com](https://resend.com/)
+2. Sign up for a free account
+3. Complete email verification
+
+### 2. Get API Key
+
+1. Go to **API Keys** section
+2. Click "Create API Key"
+3. Give it a name (e.g., "Meetique Development")
+4. Copy the key and add to your `.env` file:
+   ```bash
+   RESEND_API_KEY="re_your_api_key_here"
+   ```
+
+### 3. Verify Domain (Production)
+
+For production use:
+
+1. Go to **Domains** section
+2. Add your domain (e.g., `meetique.com`)
+3. Add the required DNS records
+4. Wait for verification
+
+For development, you can use the default `resend.dev` domain.
+
 ## 💳 Polar Setup (Payments)
 
 ### 1. Create Polar Account
@@ -147,6 +176,78 @@ This guide provides detailed step-by-step instructions for setting up all extern
    - **Starter**: $15/month
    - **Pro**: $30/month
    - **Enterprise**: $200/month
+
+## 🔍 Sentry Setup (Error Tracking)
+
+### 1. Create Sentry Account
+
+1. Go to [Sentry.io](https://sentry.io/)
+2. Sign up for a free account
+3. Create a new project
+
+### 2. Get DSN (Data Source Name)
+
+1. In your Sentry project dashboard, go to **Settings > Client Keys (DSN)**
+2. Copy the **DSN** value
+3. Add to your `.env` file:
+   ```bash
+   NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
+   SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
+   ```
+
+## 🛡️ Arcjet Setup (Security & Bot Protection)
+
+### 1. Create Arcjet Account
+
+1. Go to [Arcjet.com](https://arcjet.com/)
+2. Sign up for a free account
+3. Create a new site/project
+
+### 2. Get API Key
+
+1. In your Arcjet dashboard, go to **API Keys**
+2. Copy your site key
+3. Add to your `.env` file:
+   ```bash
+   ARCJET_KEY="your_arcjet_api_key"
+   ```
+
+### 3. Configure Security Rules
+
+The project is pre-configured with:
+
+- **Shield Protection**: General security protection
+- **Bot Detection**: Blocks malicious bots while allowing legitimate ones
+- **Rate Limiting**: Token bucket and sliding window rate limiting
+- **Email Protection**: Validates emails during signup (blocks disposable emails)
+
+## 📊 PostHog Setup (Analytics & Feature Flags)
+
+### 1. Create PostHog Account
+
+1. Go to [PostHog.com](https://posthog.com/)
+2. Sign up for a free account
+3. Create a new project
+4. Choose EU region for GDPR compliance
+
+### 2. Get Project API Key
+
+1. In your PostHog dashboard, go to **Project Settings**
+2. Copy your **Project API Key**
+3. Add to your `.env` file:
+   ```bash
+   NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
+   NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
+   ```
+
+### 3. Verify Analytics Setup
+
+The project includes:
+
+- **Automatic Page Tracking**: All page views are tracked
+- **Exception Capture**: Errors are automatically sent to PostHog
+- **EU Compliance**: Configured for EU region with proxy routes
+- **Feature Flags**: Ready for A/B testing and feature rollouts
 
 ## 🚀 Project Setup
 
@@ -192,27 +293,52 @@ pnpm dev:webhook  # Webhook tunnel
 ### 1. Basic Application Test
 
 - Visit `http://localhost:3000`
-- Sign up with email/password
+- Sign up with magic link (email)
 - Create a test agent
 - Schedule a test meeting
 
-### 2. OAuth Test
+### 2. Magic Link Authentication Test
+
+- Enter your email address on sign-up or sign-in page
+- Check your email inbox for the magic link
+- Click the magic link to authenticate
+- Verify you're redirected to the dashboard
+
+### 3. OAuth Test
 
 - Try signing in with GitHub
 - Try signing in with Google
 - Verify user data is saved correctly
 
-### 3. Video Calling Test
+### 4. Video Calling Test
 
 - Join a test meeting
 - Verify video/audio works
 - Test screen sharing
 
-### 4. Background Jobs Test
+### 5. Background Jobs Test
 
 - End a meeting
 - Verify transcript processing
 - Check meeting summary generation
+
+### 6. Error Tracking Test
+
+- Trigger an intentional error
+- Verify error appears in Sentry dashboard
+- Check error details and context
+
+### 7. Security Protection Test
+
+- Visit `/api/arcjet` endpoint multiple times to test rate limiting
+- Verify bot protection is working
+- Check Arcjet dashboard for security events
+
+### 8. Analytics Test
+
+- Navigate through different pages
+- Verify events appear in PostHog dashboard
+- Test feature flags (if configured)
 
 ## 🔍 Troubleshooting
 
@@ -244,6 +370,12 @@ pnpm db:studio
 - Check billing status
 - Verify usage limits
 
+#### Sentry Issues
+
+- Verify DSN is correct format
+- Check project settings and quotas
+- Ensure errors are being captured
+
 ### Getting Help
 
 - Check the [Troubleshooting Guide](troubleshooting.md)
@@ -254,9 +386,8 @@ pnpm db:studio
 
 After completing setup:
 
-1. Read the [Development Workflow](development.md) guide
-2. Review the [Contributing Guidelines](../CONTRIBUTING.md)
-3. Explore the [Architecture Documentation](architecture.md)
+1. Review the [Contributing Guidelines](../CONTRIBUTING.md)
+2. Explore the [Architecture Documentation](architecture.md)
 
 ---
 

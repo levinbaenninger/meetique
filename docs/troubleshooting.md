@@ -227,6 +227,73 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
    curl -X POST http://localhost:3000/api/webhook
    ```
 
+### 🛡️ Arcjet Security Issues
+
+#### "Arcjet protection not working"
+
+**Problem**: Security features not blocking threats
+
+**Solutions**:
+
+1. **Check API key configuration**:
+
+   ```bash
+   # Verify environment variable
+   echo $ARCJET_KEY | head -c 20
+   ```
+
+2. **Test protection endpoint**:
+
+   ```bash
+   # Test rate limiting
+   for i in {1..10}; do curl http://localhost:3000/api/arcjet; done
+   ```
+
+3. **Check Arcjet dashboard**:
+   - Verify site is active
+   - Check security events and logs
+
+#### "Rate limiting too strict"
+
+**Problem**: Legitimate users being blocked
+
+**Solutions**:
+
+1. **Adjust rate limits**:
+
+   - Modify token bucket capacity in `/api/arcjet/route.ts`
+   - Increase refill rate if needed
+
+2. **Whitelist IPs**:
+   - Add trusted IPs to allow list
+   - Configure custom characteristics
+
+### 📊 PostHog Analytics Issues
+
+#### "Events not appearing in PostHog"
+
+**Problem**: Analytics data not being captured
+
+**Solutions**:
+
+1. **Check API key configuration**:
+
+   ```bash
+   # Verify environment variable
+   echo $NEXT_PUBLIC_POSTHOG_KEY | head -c 20
+   ```
+
+2. **Verify network connectivity**:
+
+   ```bash
+   # Test PostHog endpoint
+   curl -X POST https://eu.i.posthog.com/e/ -H "Content-Type: application/json"
+   ```
+
+3. **Check browser console**:
+   - Look for PostHog initialization messages
+   - Verify no network errors
+
 ### 🚀 Build & Deployment Issues
 
 #### "Build failed"
@@ -277,6 +344,95 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
    # Test production build locally
    pnpm build
    pnpm start
+   ```
+
+### 🔍 Sentry Issues
+
+#### "Sentry not capturing errors"
+
+**Problem**: Errors not appearing in Sentry dashboard
+
+**Solutions**:
+
+1. **Check DSN configuration**:
+
+   ```bash
+   # Verify DSN is set
+   echo $NEXT_PUBLIC_SENTRY_DSN
+   ```
+
+2. **Verify environment**:
+
+   ```bash
+   # Check if Sentry is initialized
+   # Look for Sentry initialization in browser console
+   ```
+
+3. **Test error capture**:
+   ```bash
+   # Add to any component
+   import * as Sentry from '@sentry/nextjs';
+   Sentry.captureException(new Error('Test error'));
+   ```
+
+#### "High error volume in Sentry"
+
+**Problem**: Too many errors being captured
+
+**Solutions**:
+
+1. **Adjust sample rates**:
+
+   ```typescript
+   // In sentry config files
+   tracesSampleRate: 0.1, // Reduce to 10%
+   replaysSessionSampleRate: 0.1,
+   ```
+
+2. **Filter out known errors**:
+
+   ```typescript
+   // Add to Sentry config
+   beforeSend(event) {
+     // Filter out specific errors
+     if (event.exception) {
+       const error = event.exception.values?.[0];
+       if (error?.type === 'ChunkLoadError') {
+         return null;
+       }
+     }
+     return event;
+   }
+   ```
+
+3. **Set up error boundaries**:
+   ```typescript
+   // Use React error boundaries to catch and handle errors
+   ```
+
+#### "Source maps not uploading"
+
+**Problem**: Stack traces not showing original source code
+
+**Solutions**:
+
+1. **Check build configuration**:
+
+   ```bash
+   # Verify Sentry webpack plugin is configured
+   # Check next.config.ts
+   ```
+
+2. **Verify auth token**:
+
+   ```bash
+   # Check if SENTRY_AUTH_TOKEN is set for CI/CD
+   ```
+
+3. **Manual source map upload**:
+   ```bash
+   # Upload source maps manually
+   npx @sentry/cli sourcemaps upload --org your-org --project your-project .next/static/
    ```
 
 ### 🔧 Development Issues
@@ -381,6 +537,46 @@ DEBUG=inngest:* pnpm dev:inngest
 # Check Inngest dashboard
 ```
 
+### 6. **Sentry Debugging**
+
+```bash
+# Enable Sentry SDK debug logging
+SENTRY_DEBUG=1 pnpm dev
+
+# Check Sentry dashboard
+# https://sentry.io/organizations/your-org/projects/
+
+# Test error capture
+import * as Sentry from '@sentry/nextjs'
+Sentry.captureException(new Error('Test error for Sentry'))
+```
+
+### 7. **Arcjet Security Debugging**
+
+```bash
+# Test Arcjet protection
+curl -X GET http://localhost:3000/api/arcjet
+
+# Check Arcjet dashboard
+# https://app.arcjet.com/
+
+# Enable debug logging
+DEBUG=arcjet:* pnpm dev
+```
+
+### 8. **PostHog Analytics Debugging**
+
+```bash
+# Test PostHog events in browser console
+posthog.capture('test_event', { property: 'value' })
+
+# Check PostHog dashboard
+# https://eu.posthog.com/
+
+# Enable debug logging
+POSTHOG_DEBUG=1 pnpm dev
+```
+
 ## 🚨 Emergency Fixes
 
 ### 1. **Reset Database**
@@ -424,6 +620,9 @@ pnpm install
    - [Stream Status](https://status.getstream.io/)
    - [OpenAI Status](https://status.openai.com/)
    - [Vercel Status](https://vercel-status.com/)
+   - [Sentry Status](https://status.sentry.io/)
+   - [Arcjet Status](https://status.arcjet.com/)
+   - [PostHog Status](https://status.posthog.com/)
 
 ### How to Ask for Help
 
@@ -470,9 +669,10 @@ pnpm list --depth=0
 
 ### 3. **Monitoring**
 
-- Set up error tracking (Sentry)
+- Monitor Sentry dashboard for errors and performance
+- Set up Sentry alerts for critical issues
 - Monitor API usage limits
-- Track performance metrics
+- Track performance metrics with Sentry performance monitoring
 - Set up alerts for failures
 
 ---

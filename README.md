@@ -14,7 +14,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **📞 Video Meetings**: Real-time video calling with AI agents using Stream Video SDK
 - **📝 Auto Transcription**: Automatic meeting transcription with closed captions
 - **🎯 AI Summaries**: GPT-4 powered meeting summaries with detailed notes and insights
-- **🔐 Authentication**: Secure authentication with email/password and social OAuth (Google, GitHub)
+- **🔐 Authentication**: Secure authentication with magic links and social OAuth (Google, GitHub)
 - **💰 Premium Tiers**: Subscription-based model with different usage limits
 
 ### Premium Tiers
@@ -39,7 +39,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 
 - **API**: tRPC for type-safe API layer
 - **Database**: PostgreSQL with Drizzle ORM
-- **Authentication**: Better Auth with social providers
+- **Authentication**: Better Auth with magic links and social providers
 - **Video**: Stream Video SDK
 - **AI**: OpenAI GPT-4 for summarization
 - **Background Jobs**: Inngest for async processing
@@ -50,7 +50,9 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **Hosting**: Vercel
 - **Database**: Neon PostgreSQL
 - **CDN**: Vercel Edge Network
-- **Monitoring**: Built-in Vercel Analytics
+- **Monitoring**: Sentry for error tracking and performance monitoring
+- **Analytics**: PostHog for user analytics and feature flags
+- **Security**: Arcjet for bot protection and rate limiting
 
 ## 📋 Prerequisites
 
@@ -59,8 +61,12 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - Neon database
 - Stream Video account
 - OpenAI API key
+- Resend account for magic link emails
 - Polar account for payments
 - GitHub and/or Google OAuth apps
+- Sentry account for error tracking
+- Arcjet account for security protection
+- PostHog account for analytics
 
 ## 🔧 Environment Variables
 
@@ -85,9 +91,23 @@ STREAM_VIDEO_API_SECRET="your_stream_video_secret"
 # OpenAI
 OPENAI_API_KEY="your_openai_api_key"
 
+# Email Service (Resend) - for magic links
+RESEND_API_KEY="your_resend_api_key"
+
 # Polar Payments
 POLAR_ACCESS_TOKEN="your_polar_access_token"
 POLAR_SERVER="sandbox"
+
+# Sentry Error Tracking
+NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
+SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
+
+# Arcjet Security
+ARCJET_KEY="your_arcjet_api_key"
+
+# PostHog Analytics
+NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
+NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
 ```
 
 ## 🚀 Getting Started
@@ -256,10 +276,11 @@ pnpm start
 
 ## 🔐 Authentication Flow
 
-1. **Sign Up/Sign In**: Email/password or social OAuth
-2. **Session Management**: Better Auth handles session creation
-3. **Authorization**: tRPC middleware checks authentication
-4. **Premium Features**: Polar integration for subscription management
+1. **Sign Up/Sign In**: Magic links via email or social OAuth (GitHub, Google)
+2. **Magic Link Delivery**: Secure email delivery via Resend
+3. **Session Management**: Better Auth handles session creation
+4. **Authorization**: tRPC middleware checks authentication
+5. **Premium Features**: Polar integration for subscription management
 
 ## 🎥 Video Calling Architecture
 
@@ -284,6 +305,9 @@ pnpm start
 - **Input Validation**: Zod schemas for all inputs
 - **CORS**: Configured trusted origins
 - **Webhook Security**: Signature verification for webhooks
+- **Bot Protection**: Arcjet shield and bot detection for API endpoints
+- **Rate Limiting**: Arcjet token bucket and sliding window rate limiting
+- **Email Protection**: Arcjet email validation for signup protection
 
 ## 🎨 UI/UX Features
 
@@ -351,7 +375,7 @@ This project welcomes contributions! Please see our [Contributing Guide](CONTRIB
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 - **[Contributing](.github/CONTRIBUTING.md)** - How to contribute to the project
 - **[Code of Conduct](.github/CODE_OF_CONDUCT.md)** - Community guidelines
-- **[License](.github/LICENSE)** - MIT License details
+- **[License](LICENSE)** - MIT License details
 - **[Code Owners](.github/CODEOWNERS)** - Code owners of this project
 
 ## 🔗 Useful Links

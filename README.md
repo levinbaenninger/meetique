@@ -1,8 +1,8 @@
 # Meetique 🤖
 
-**Meet with an agent. Get a clear summary. Stay focused.**
+**Meet with an agent. Get a clear summary. Analyze the meeting. Stay focused.**
 
-Meetique is an AI-powered meeting platform that enables users to schedule and conduct video meetings with custom AI agents. The platform provides real-time video calling, automatic transcription, and AI-powered meeting summaries to enhance productivity and focus.
+Meetique is an AI-powered meeting platform that enables users to schedule and conduct video meetings with custom AI agents. The platform provides real-time video calling, automatic transcription, AI-powered meeting summaries, and chats with the agent about the meeting to enhance productivity and focus.
 
 ![Screenshot of App](./assets/preview.png)
 
@@ -309,11 +309,11 @@ pnpm start
 4. **AI Processing**: GPT-4 generates structured summary
 5. **Summary Storage**: Store in database and display to user
 
-## AI Chats
+## 💬 AI Chats
 
 1. **Chat Creation**: Create chat for meeting
 2. **User Message Creation**: User sends message to chat
-3. **Agent Response**: AI agent responds with the meeting transcript as context
+3. **Agent Response**: GPT-4 responds to the user message with the message history and meeting transcript as context
 
 ## 🛡 Security Features
 

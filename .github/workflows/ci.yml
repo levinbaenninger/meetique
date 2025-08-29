@@ -17,7 +17,6 @@ jobs:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
           ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
@@ -43,7 +42,6 @@ jobs:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
           ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm

@@ -7,6 +7,8 @@ on:
   pull_request_target:
     branches:
       - main
+permissions:
+  contents: read
 
 jobs:
   lint:
@@ -15,7 +17,8 @@ jobs:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
+          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -40,7 +43,8 @@ jobs:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
+          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -61,14 +65,15 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    if: github.actor != 'depandabot[bot]'
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+         with:
+          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
+          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4

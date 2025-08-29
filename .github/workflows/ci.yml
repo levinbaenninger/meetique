@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+  pull_request_target:
+    branches:
+      - main
 
 jobs:
   lint:
@@ -11,6 +14,8 @@ jobs:
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -34,6 +39,8 @@ jobs:
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -54,11 +61,14 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
+    if: github.actor != 'depandabot[bot]'
     permissions:
       contents: write
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4

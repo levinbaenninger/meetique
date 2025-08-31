@@ -1,8 +1,8 @@
 # Meetique 🤖
 
-**Meet with an agent. Get a clear summary. Stay focused.**
+**Meet with an agent. Get a clear summary. Analyze the meeting. Stay focused.**
 
-Meetique is an AI-powered meeting platform that enables users to schedule and conduct video meetings with custom AI agents. The platform provides real-time video calling, automatic transcription, and AI-powered meeting summaries to enhance productivity and focus.
+Meetique is an AI-powered meeting platform that enables users to schedule and conduct video meetings with custom AI agents. The platform provides real-time video calling, automatic transcription, AI-powered meeting summaries, and chats with the agent about the meeting to enhance productivity and focus.
 
 ![Screenshot of App](./assets/preview.png)
 
@@ -14,15 +14,16 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **📞 Video Meetings**: Real-time video calling with AI agents using Stream Video SDK
 - **📝 Auto Transcription**: Automatic meeting transcription with closed captions
 - **🎯 AI Summaries**: GPT-4 powered meeting summaries with detailed notes and insights
+- **💬 Meeting Chats**: GPT-4 powered chat for analyzing meeting content and generating insights
 - **🔐 Authentication**: Secure authentication with magic links and social OAuth (Google, GitHub)
 - **💰 Premium Tiers**: Subscription-based model with different usage limits
 
 ### Premium Tiers
 
-- **🆓 Free**: 3 agents, 5 meetings
-- **🚀 Starter**: Unlimited agents, 30 meetings/month
-- **💎 Pro**: Unlimited agents, unlimited meetings
-- **🏢 Enterprise**: Unlimited agents, unlimited meetings
+- **🆓 Free**: 3 agents, 5 meetings, 20 meeting chat messages
+- **🚀 Starter**: Unlimited agents, 30 meetings per month, 100 meeting chat messages per month
+- **💎 Pro**: Unlimited agents, unlimited meetings, 500 meeting chat messages per month
+- **🏢 Enterprise**: Unlimited agents, unlimited meetings, unlimited meeting chat messages
 
 ## 🛠 Tech Stack
 
@@ -41,7 +42,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **Database**: PostgreSQL with Drizzle ORM
 - **Authentication**: Better Auth with magic links and social providers
 - **Video**: Stream Video SDK
-- **AI**: OpenAI GPT-4 for summarization
+- **AI**: OpenAI GPT-4 for summarization and chat
 - **Background Jobs**: Inngest for async processing
 - **Payments**: Polar for subscription management
 
@@ -164,7 +165,7 @@ http://localhost:3000
 
 ```
 src/
-├── app/                    # Next.js App Router
+├── app/                   # Next.js App Router
 │   ├── (auth)/            # Authentication pages
 │   ├── (dashboard)/       # Dashboard pages
 │   ├── api/               # API routes
@@ -182,6 +183,7 @@ src/
 │   ├── auth/              # Authentication
 │   ├── call/              # Video calling
 │   ├── dashboard/         # Dashboard components
+│   ├── meetingchats/      # Meeting chat functionality
 │   ├── meetings/          # Meeting management
 │   └── premium/           # Subscription features
 └── trpc/                  # tRPC configuration
@@ -200,6 +202,12 @@ src/
 - **Purpose**: Schedule and manage meetings with AI agents
 - **Features**: Create meetings, video calling, transcription, summaries
 - **Location**: `src/modules/meetings/`
+
+### Meeting Chats Module
+
+- **Purpose**: AI-powered chat for meeting content analysis
+- **Features**: Generate insights, analyze transcripts, chat with AI about past meeting
+- **Location**: `src/modules/meetingchats/`
 
 ### Call Module
 
@@ -265,6 +273,9 @@ pnpm start
 - **accounts**: Social authentication accounts
 - **agents**: AI agents with custom instructions
 - **meetings**: Meeting records with status and metadata
+- **meeting_chats**: Meeting chats
+- **meeting_chat_message_agent**: Messages sent by agents in meeting chats
+- **meeting_chat_message_user**: Messages sent by users in meeting chats
 
 ### Meeting Statuses
 
@@ -297,6 +308,12 @@ pnpm start
 3. **Speaker Identification**: Match speaker IDs to users/agents
 4. **AI Processing**: GPT-4 generates structured summary
 5. **Summary Storage**: Store in database and display to user
+
+## 💬 AI Chats
+
+1. **Chat Creation**: Create chat for meeting
+2. **User Message Creation**: User sends message to chat
+3. **Agent Response**: GPT-4 responds to the user message with the message history and meeting transcript as context
 
 ## 🛡 Security Features
 
@@ -365,7 +382,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Contributing
 
-This project welcomes contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to get started. All contributions require maintainer approval to ensure project quality and direction.
+This project welcomes contributions! Please see our [Contributing Guide](.github/CONTRIBUTING.md) for details on how to get started. All contributions require maintainer approval to ensure project quality and direction.
 
 ## 📚 Documentation
 

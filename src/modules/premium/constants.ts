@@ -1,8 +1,8 @@
 export const TIER_LIMITS = {
   free: {
-    agents: 3,
-    meetings: 5,
-    meetingChatMessages: 20,
+    agents: 3, // overall
+    meetings: 5, // overall
+    meetingChatMessages: 20, // overall
   },
   starter: {
     agents: -1, // unlimited
@@ -22,3 +22,9 @@ export const TIER_LIMITS = {
 } as const;
 
 export type SubscriptionTier = keyof typeof TIER_LIMITS;
+
+export enum PREMIUM_ENTITY {
+  AGENT,
+  MEETING,
+  MEETING_CHAT_MESSAGE,
+}

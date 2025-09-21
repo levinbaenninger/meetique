@@ -8,6 +8,7 @@ import {
   MessageCircleIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { GeneratedAvatar } from '@/components/generated-avatar';
 import { Badge } from '@/components/ui/badge';
@@ -25,9 +26,14 @@ interface Props {
 }
 
 export const CompletedState = ({ meeting }: Props) => {
+  const [currentTab, setCurrentTab] = useState<string>();
+
   return (
     <div className='flex flex-col gap-y-4'>
-      <Tabs defaultValue='summary'>
+      <Tabs
+        defaultValue='summary'
+        onValueChange={(value) => setCurrentTab(value)}
+      >
         <div className='rounded-lg border bg-white px-3'>
           <ScrollArea>
             <TabsList className='bg-background h-13 justify-start rounded-none p-0'>
@@ -64,55 +70,68 @@ export const CompletedState = ({ meeting }: Props) => {
           </ScrollArea>
         </div>
         <TabsContent value='summary'>
-          <div className='rounded-lg border bg-white'>
-            <div className='col-span-5 flex flex-col gap-y-5 px-4 py-5'>
-              <h2 className='text-2xl font-medium capitalize'>
-                {meeting.name}
-              </h2>
-              <div className='flex items-center gap-x-2'>
-                <Link
-                  href={`/agents/${meeting.agent.id}`}
-                  className='flex items-center gap-x-2 capitalize underline underline-offset-4'
+          {currentTab === 'summary' && (
+            <div className='rounded-lg border bg-white'>
+              <div className='col-span-5 flex flex-col gap-y-5 px-4 py-5'>
+                <h2 className='text-2xl font-medium capitalize'>
+                  {meeting.name}
+                </h2>
+                <div className='flex items-center gap-x-2'>
+                  <Link
+                    href={`/agents/${meeting.agent.id}`}
+                    className='flex items-center gap-x-2 capitalize underline underline-offset-4'
+                  >
+                    <GeneratedAvatar
+                      variant='botttsNeutral'
+                      seed={meeting.agent.name}
+                      className='size-6'
+                    />
+                    {meeting.agent.name}
+                  </Link>
+                  <p className='text-muted-foreground text-sm'>
+                    {meeting.startedAt ? format(meeting.startedAt, 'PPP') : ''}
+                  </p>
+                </div>
+                <Badge
+                  variant='outline'
+                  className='flex items-center gap-x-2 [&>svg]:size-4'
                 >
-                  <GeneratedAvatar
-                    variant='botttsNeutral'
-                    seed={meeting.agent.name}
-                    className='size-6'
-                  />
-                  {meeting.agent.name}
-                </Link>
-                <p className='text-muted-foreground text-sm'>
-                  {meeting.startedAt ? format(meeting.startedAt, 'PPP') : ''}
-                </p>
-              </div>
-              <Badge
-                variant='outline'
-                className='flex items-center gap-x-2 [&>svg]:size-4'
-              >
-                <ClockFadingIcon className='text-primary' />
-                {meeting.duration
-                  ? formatDuration(meeting.duration)
-                  : 'No duration'}
-              </Badge>
-              <div>
-                <MarkdownView
-                  markdownText={meeting.summary}
-                  type={MarkdownStyleType.TextMuted}
-                />
+                  <ClockFadingIcon className='text-primary' />
+                  {meeting.duration
+                    ? formatDuration(meeting.duration)
+                    : 'No duration'}
+                </Badge>
+                <div>
+                  {meeting.summary === null ? (
+                    <p className='text-primary text-sm'>
+                      No summary available.
+                    </p>
+                  ) : (
+                    <MarkdownView
+                      markdownText={
+                        meeting.summary || '_No summary available._'
+                      }
+                      type={MarkdownStyleType.TextMuted}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </TabsContent>
         <TabsContent value='transcript'>
+          {currentTab}
           <Transcript meetingId={meeting.id} />
         </TabsContent>
         <TabsContent value='recording'>
-          <div className='rounded-lg border bg-white px-4 py-5'>
-            <VideoPlayer src={meeting.recordingUrl!} />
-          </div>
+          {currentTab === 'recording' && (
+            <div className='rounded-lg border bg-white px-4 py-5'>
+              <VideoPlayer src={meeting.recordingUrl!} />
+            </div>
+          )}
         </TabsContent>
         <TabsContent value='chat'>
-          <MeetingChat meeting={meeting} />
+          {currentTab === 'chat' && <MeetingChat meeting={meeting} />}
         </TabsContent>
       </Tabs>
     </div>

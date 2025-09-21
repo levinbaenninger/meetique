@@ -12,12 +12,12 @@ export const premiumRouter = router({
   getFreeUsage: protectedProcedure.query(async ({ ctx }) => {
     const tierInfo = await getTierInfo(ctx.session.user.id);
 
-    const meetingLimit = await checkMeetingLimit(ctx.session.user.id, tierInfo);
-    const agentLimit = await checkAgentLimit(ctx.session.user.id, tierInfo);
-    const meetingChatMessageLimit = await checkMeetingChatMessageLimit(
-      ctx.session.user.id,
-      tierInfo,
-    );
+    const [meetingLimit, agentLimit, meetingChatMessageLimit] =
+      await Promise.all([
+        checkMeetingLimit(ctx.session.user.id, tierInfo),
+        checkAgentLimit(ctx.session.user.id, tierInfo),
+        checkMeetingChatMessageLimit(ctx.session.user.id, tierInfo),
+      ]);
 
     return {
       agentCount: agentLimit.current,

@@ -41,25 +41,10 @@ export async function parseTranscript(transcriptionResponse: string) {
 export async function addSpeakersToTranscript(transcript: Transcript[]) {
   const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
 
-  const userSpeakers = await db
-    .select()
-    .from(user)
-    .where(inArray(user.id, speakerIds))
-    .then((users) =>
-      users.map((user) => ({
-        ...user,
-      })),
-    );
-
-  const agentSpeakers = await db
-    .select()
-    .from(agent)
-    .where(inArray(agent.id, speakerIds))
-    .then((agents) =>
-      agents.map((agent) => ({
-        ...agent,
-      })),
-    );
+  const [userSpeakers, agentSpeakers] = await Promise.all([
+    db.select().from(user).where(inArray(user.id, speakerIds)),
+    db.select().from(agent).where(inArray(agent.id, speakerIds)),
+  ]);
 
   const speakers = [...userSpeakers, ...agentSpeakers];
 

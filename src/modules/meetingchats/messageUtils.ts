@@ -1,5 +1,6 @@
 import { generateAvatarUri } from '@/lib/avatar';
 import {
+  AuthorType,
   BaseMessage,
   MeetingChatAgentMessage,
   MeetingChatUserMessage,
@@ -16,12 +17,12 @@ export function mergeMessagesIntoBaseMessages(
     messages.push({
       author: {
         name: message.user?.name ?? '?',
-        type: 'user',
+        type: AuthorType.USER,
         isCurrentUser: message.user?.id === userId,
         image:
           message.user?.image ??
           generateAvatarUri({
-            seed: 'X', // deleted
+            seed: message.user?.name ?? '?', // deleted
             variant: 'initials',
           }),
       },
@@ -34,12 +35,12 @@ export function mergeMessagesIntoBaseMessages(
     messages.push({
       author: {
         name: message.agent?.name ?? '?',
-        type: 'agent',
+        type: AuthorType.AGENT,
         isCurrentUser: false,
         image:
           message.agent?.image ??
           generateAvatarUri({
-            seed: 'X', // deleted
+            seed: message.agent?.name ?? '?', // deleted
             variant: 'initials',
           }),
       },

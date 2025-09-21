@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 
+import { PREMIUM_ENTITY } from '@/modules/premium/constants';
 import {
   checkAgentLimit,
   checkMeetingChatMessageLimit,
@@ -8,9 +9,9 @@ import {
 
 import protectedProcedure from './protected';
 
-const premiumProcedure = (entity: 'agent' | 'meeting' | 'meetingChatMessage') =>
+const premiumProcedure = (entity: PREMIUM_ENTITY) =>
   protectedProcedure.use(async ({ ctx, next }) => {
-    if (entity === 'meeting') {
+    if (entity === PREMIUM_ENTITY.MEETING) {
       const meetingLimit = await checkMeetingLimit(ctx.session.user.id);
 
       if (!meetingLimit.allowed) {
@@ -23,7 +24,7 @@ const premiumProcedure = (entity: 'agent' | 'meeting' | 'meetingChatMessage') =>
       }
     }
 
-    if (entity === 'agent') {
+    if (entity === PREMIUM_ENTITY.AGENT) {
       const agentLimit = await checkAgentLimit(ctx.session.user.id);
 
       if (!agentLimit.allowed) {
@@ -36,7 +37,7 @@ const premiumProcedure = (entity: 'agent' | 'meeting' | 'meetingChatMessage') =>
       }
     }
 
-    if (entity === 'meetingChatMessage') {
+    if (entity === PREMIUM_ENTITY.MEETING_CHAT_MESSAGE) {
       const meetingChatMessageLimit = await checkMeetingChatMessageLimit(
         ctx.session.user.id,
       );

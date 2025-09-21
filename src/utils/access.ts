@@ -3,14 +3,18 @@ import { and, eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { meeting, meeting_chat } from '@/db/schema';
 
-export async function hasUserMeetingAccess(userId: string, meetingId: string) {
+export async function hasUserMeetingAccess(
+  userId: string,
+  meetingId: string,
+): Promise<boolean> {
   const [foundMeeting] = await db
     .select({
       id: meeting.id,
       userId: meeting.userId,
     })
     .from(meeting)
-    .where(and(eq(meeting.id, meetingId), eq(meeting.userId, userId)));
+    .where(and(eq(meeting.id, meetingId), eq(meeting.userId, userId)))
+    .limit(1);
 
   return foundMeeting != null;
 }
@@ -18,7 +22,7 @@ export async function hasUserMeetingAccess(userId: string, meetingId: string) {
 export async function hasUserMeetingChatAccess(
   userId: string,
   meetingChatId: string,
-) {
+): Promise<boolean> {
   const [foundMeetingChat] = await db
     .select({
       id: meeting_chat.id,
@@ -30,7 +34,8 @@ export async function hasUserMeetingChatAccess(
         eq(meeting_chat.id, meetingChatId),
         eq(meeting_chat.createdByUserId, userId),
       ),
-    );
+    )
+    .limit(1);
 
   return foundMeetingChat != null;
 }

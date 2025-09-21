@@ -23,6 +23,7 @@ import {
   MeetingChatAgentMessage,
   MeetingChatUserMessage,
 } from '@/modules/meetingchats/types';
+import { PREMIUM_ENTITY } from '@/modules/premium/constants';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -146,7 +147,7 @@ export const meetingChatsRouter = router({
 
       return createdChat;
     }),
-  createUserMessage: premiumProcedure('meetingChatMessage')
+  createUserMessage: premiumProcedure(PREMIUM_ENTITY.MEETING_CHAT_MESSAGE)
     .input(createChatUserMessageSchema)
     .mutation(async ({ input, ctx }) => {
       if (
@@ -172,7 +173,7 @@ export const meetingChatsRouter = router({
 
       return createdUserMessage;
     }),
-  generateAgentMessage: premiumProcedure('meetingChatMessage')
+  generateAgentMessage: premiumProcedure(PREMIUM_ENTITY.MEETING_CHAT_MESSAGE)
     .input(generateChatAgentMessageSchema)
     .mutation(async ({ input, ctx }) => {
       const [meetingChat] = await db

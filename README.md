@@ -92,6 +92,9 @@ STREAM_VIDEO_API_SECRET="your_stream_video_secret"
 # OpenAI
 OPENAI_API_KEY="your_openai_api_key"
 
+# Google Gemini (optional for meeting summarization and chat)
+GEMINI_API_KEY="your_gemini_api_key"
+
 # Email Service (Resend) - for magic links
 RESEND_API_KEY="your_resend_api_key"
 
@@ -130,7 +133,7 @@ pnpm install
 
 ```bash
 cp .env.example .env
-# Edit .env.local with your values
+# Edit .env. with your values
 ```
 
 4. **Set up the database**

@@ -23,6 +23,7 @@ import {
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
 import { meetingStatus, Transcript } from '@/modules/meetings/types';
+import { PREMIUM_ENTITY } from '@/modules/premium/constants';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -115,7 +116,7 @@ export const meetingsRouter = router({
         totalPages,
       };
     }),
-  create: premiumProcedure('meeting')
+  create: premiumProcedure(PREMIUM_ENTITY.MEETING)
     .input(createMeetingSchema)
     .mutation(async ({ input, ctx }) => {
       const [existingAgent] = await db

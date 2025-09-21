@@ -6,12 +6,15 @@ export type MeetingChat = NonNullable<
   inferRouterOutputs<typeof appRouter>['meetings']['chats']['getChats'][0]
 >;
 
-export interface MeetingChatUserMessage {
+interface BaseMeetingChatMessage {
   id: string;
   meetingChatId: string;
   message: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface MeetingChatUserMessage extends BaseMeetingChatMessage {
   user: {
     id: string;
     name: string;
@@ -19,12 +22,7 @@ export interface MeetingChatUserMessage {
   } | null;
 }
 
-export interface MeetingChatAgentMessage {
-  id: string;
-  meetingChatId: string;
-  message: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface MeetingChatAgentMessage extends BaseMeetingChatMessage {
   agent: {
     id: string;
     name: string;
@@ -36,10 +34,15 @@ export type Meeting = NonNullable<
   inferRouterOutputs<typeof appRouter>['meetings']['get']
 >;
 
+export enum AuthorType {
+  USER,
+  AGENT,
+}
+
 export interface BaseMessage {
   author: {
     name: string;
-    type: 'user' | 'agent';
+    type: AuthorType;
     isCurrentUser: boolean;
     image: string;
   };

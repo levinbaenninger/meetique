@@ -112,7 +112,10 @@ export const MeetingChat = ({ meeting }: Props) => {
         );
         console.log(messagesScrollArea);
         console.log(messagesScrollAreaBottom);
-        messagesScrollArea!.scrollTo(0, messagesScrollAreaBottom!.offsetTop);
+        messagesScrollArea!.scrollTo({
+          top: messagesScrollAreaBottom!.offsetTop,
+          behavior: 'smooth',
+        });
       },
       onError: (error) => {
         toast.error(error.message);

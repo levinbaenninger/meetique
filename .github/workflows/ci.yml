@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - main
-  pull_request_target:
-    branches:
-      - main
 permissions:
   contents: read
 
@@ -16,8 +13,6 @@ jobs:
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -41,8 +36,6 @@ jobs:
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -63,15 +56,9 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
-    permissions:
-      contents: write
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: ${{ github.event_name == 'pull_request_target' }}
-          ref: ${{ (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.head.sha || github.sha }}
 
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
@@ -88,20 +75,4 @@ jobs:
         run: pnpm install
 
       - name: 🔬 Format
-        run: pnpm format:fix
-
-      - name: 🔧 Stash changes before pull
-        run: git stash --include-untracked
-
-      - name: 🔄 Pull latest changes (rebase)
-        env:
-          PR_HEAD_REF: ${{ github.head_ref }}
-        run: git pull --rebase origin "$PR_HEAD_REF"
-
-      - name: 🔧 Pop stash after pull
-        run: git stash pop || true
-
-      - name: 📸 Commit
-        uses: stefanzweifel/git-auto-commit-action@v6
-        with:
-          commit_message: 'chore: format code'
+        run: pnpm format:check

@@ -41,6 +41,13 @@ export const MeetingView = ({ meetingId }: Props) => {
     'Delete Meeting',
   );
 
+  const [CancelConfirmDialog, confirmCancel] = useConfirm(
+    'Are you absolutely sure?',
+    `This action cannot be undone. This will permanently cancel this meeting.`,
+    'Cancel Meeting',
+  );
+  const [isCancelling, setIsCancelling] = useState(false);
+
   const removeMeeting = useMutation(
     trpc.meetings.delete.mutationOptions({
       onSuccess: async () => {
@@ -58,11 +65,33 @@ export const MeetingView = ({ meetingId }: Props) => {
     }),
   );
 
+  const cancelMeeting = useMutation(
+    trpc.meetings.cancel.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.meetings.list.queryOptions({}),
+        );
+        router.refresh();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }),
+  );
+
   const handleRemove = async () => {
     const confirmed = await confirmRemove();
     if (!confirmed) return;
 
     await removeMeeting.mutateAsync({ id: meetingId });
+  };
+
+  const handleCancel = async () => {
+    const confirmed = await confirmCancel();
+    if (!confirmed) return;
+
+    setIsCancelling(true);
+    await cancelMeeting.mutateAsync({ id: meetingId });
   };
 
   const isUpcoming = meeting.status === 'upcoming';
@@ -74,6 +103,7 @@ export const MeetingView = ({ meetingId }: Props) => {
   return (
     <>
       <RemoveConfirmDialog />
+      <CancelConfirmDialog />
       <UpdateMeetingDialog
         open={updateMeetingDialogOpen}
         onOpenChange={setUpdateMeetingDialogOpen}
@@ -88,8 +118,8 @@ export const MeetingView = ({ meetingId }: Props) => {
         {isUpcoming && (
           <UpcomingState
             meetingId={meetingId}
-            onCancel={handleRemove}
-            isCancelling={false}
+            onCancel={handleCancel}
+            isCancelling={isCancelling}
           />
         )}
         {isActive && <ActiveState meetingId={meetingId} />}

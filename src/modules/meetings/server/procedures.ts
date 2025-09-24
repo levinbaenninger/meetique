@@ -264,6 +264,29 @@ export const meetingsRouter = router({
 
       return deletedMeeting;
     }),
+  cancel: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const [canceledMeeting] = await db
+        .update(meeting)
+        .set({ status: 'cancelled' })
+        .where(
+          and(
+            eq(meeting.id, input.id),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+
+      if (!canceledMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      return canceledMeeting;
+    }),
   generateToken: protectedProcedure.mutation(async ({ ctx }) => {
     await streamVideo.upsertUsers([
       {

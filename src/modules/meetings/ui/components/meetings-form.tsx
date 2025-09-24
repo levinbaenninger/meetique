@@ -25,6 +25,9 @@ import { useTRPC } from '@/lib/trpc';
 import { NewAgentDialog } from '@/modules/agents/ui/components/new-agent-dialog';
 import { createMeetingSchema } from '@/modules/meetings/schemas';
 import type { Meeting } from '@/modules/meetings/types';
+import { AgentFieldDescription } from '@/modules/meetings/ui/components/agent-field-description';
+import { NewMeetingDialog } from '@/modules/meetings/ui/components/new-meeting-dialog';
+import { isLockedStatus } from '@/modules/meetings/utils';
 
 interface Props {
   onSuccess?: (id: string) => void;
@@ -38,6 +41,7 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const queryClient = useQueryClient();
 
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
+  const [openNewMeetingDialog, setOpenNewMeetingDialog] = useState(false);
   const [agentSearch, setAgentSearch] = useState('');
 
   const { data: agents } = useQuery(
@@ -98,6 +102,8 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
 
   const isEdit = !!initialValues?.id;
   const isPending = createMeeting.isPending || updateMeeting.isPending;
+  const isAgentEditDisabled =
+    isEdit && initialValues?.status && isLockedStatus(initialValues.status);
 
   const onSubmit = (values: z.infer<typeof createMeetingSchema>) => {
     if (isEdit) {
@@ -112,6 +118,10 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
 
   return (
     <>
+      <NewMeetingDialog
+        open={openNewMeetingDialog}
+        onOpenChange={setOpenNewMeetingDialog}
+      />
       <NewAgentDialog
         open={openNewAgentDialog}
         onOpenChange={setOpenNewAgentDialog}
@@ -160,20 +170,17 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
                     onSearch={(value) => setAgentSearch(value)}
                     value={field.value}
                     placeholder='Search for an agent...'
+                    disabled={isAgentEditDisabled}
                     ariaInvalid={!!fieldState.error}
                     ariaDescribedBy={fieldState.error?.message}
                   />
                 </FormControl>
                 <FormDescription>
-                  Not found what you&apos;re looking for?{' '}
-                  <Button
-                    variant='link'
-                    type='button'
-                    onClick={() => setOpenNewAgentDialog(true)}
-                    className='p-0'
-                  >
-                    Create a new agent
-                  </Button>
+                  <AgentFieldDescription
+                    isDisabled={isAgentEditDisabled}
+                    onCreateNewAgent={() => setOpenNewAgentDialog(true)}
+                    onCreateNewMeeting={() => setOpenNewMeetingDialog(true)}
+                  />
                 </FormDescription>
                 <FormMessage />
               </FormItem>

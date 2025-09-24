@@ -8,7 +8,7 @@ import {
 
 import { CommandSelect } from '@/components/command-select';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
-import { meetingStatus } from '@/modules/meetings/types';
+import { type MeetingStatus, meetingStatus } from '@/modules/meetings/types';
 
 const options = meetingStatus.map((status) => ({
   id: status,
@@ -42,9 +42,7 @@ export const MeetingsStatusFilter = () => {
       placeholder='Status'
       className='h-9'
       options={options}
-      onSelect={(value) =>
-        setFilters({ status: value as (typeof meetingStatus)[number] })
-      }
+      onSelect={(value) => setFilters({ status: value as MeetingStatus })}
       value={filters.status ?? ''}
     />
   );

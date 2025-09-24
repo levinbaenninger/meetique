@@ -22,6 +22,7 @@ import {
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
 import { meetingStatus, Transcript } from '@/modules/meetings/types';
+import { isLockedStatus } from '@/modules/meetings/utils';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -180,6 +181,31 @@ export const meetingsRouter = router({
   update: protectedProcedure
     .input(updateMeetingSchema)
     .mutation(async ({ input, ctx }) => {
+      const [currentMeeting] = await db
+        .select()
+        .from(meeting)
+        .where(
+          and(
+            eq(meeting.id, input.id),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        );
+
+      if (!currentMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      if (isLockedStatus(currentMeeting.status)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message:
+            'Cannot update a meeting once it has started (active, processing, completed, or cancelled)',
+        });
+      }
+
       const [existingAgent] = await db
         .select()
         .from(agent)
@@ -238,6 +264,29 @@ export const meetingsRouter = router({
       }
 
       return deletedMeeting;
+    }),
+  cancel: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const [canceledMeeting] = await db
+        .update(meeting)
+        .set({ status: 'cancelled' })
+        .where(
+          and(
+            eq(meeting.id, input.id),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        )
+        .returning();
+
+      if (!canceledMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      return canceledMeeting;
     }),
   generateToken: protectedProcedure.mutation(async ({ ctx }) => {
     await streamVideo.upsertUsers([

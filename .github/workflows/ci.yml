@@ -6,6 +6,7 @@ on:
       - main
 permissions:
   contents: read
+  actions: read
 
 jobs:
   lint:
@@ -26,7 +27,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🔬 Lint
         run: pnpm lint:check
@@ -49,7 +50,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🔬 Type Check
         run: pnpm typecheck
@@ -72,7 +73,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: 🔬 Format
         run: pnpm format:check

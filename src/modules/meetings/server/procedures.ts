@@ -22,7 +22,7 @@ import {
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
 import { meetingStatus, Transcript } from '@/modules/meetings/types';
-import { isMeetingStarted } from '@/modules/meetings/utils';
+import { isLockedStatus } from '@/modules/meetings/utils';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -198,7 +198,7 @@ export const meetingsRouter = router({
         });
       }
 
-      if (isMeetingStarted(currentMeeting.status)) {
+      if (isLockedStatus(currentMeeting.status)) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Cannot update a meeting that has already ended',

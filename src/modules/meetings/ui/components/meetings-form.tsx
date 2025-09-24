@@ -27,7 +27,7 @@ import { createMeetingSchema } from '@/modules/meetings/schemas';
 import type { Meeting } from '@/modules/meetings/types';
 import { AgentFieldDescription } from '@/modules/meetings/ui/components/agent-field-description';
 import { NewMeetingDialog } from '@/modules/meetings/ui/components/new-meeting-dialog';
-import { isMeetingStarted } from '@/modules/meetings/utils';
+import { isLockedStatus } from '@/modules/meetings/utils';
 
 interface Props {
   onSuccess?: (id: string) => void;
@@ -103,7 +103,7 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const isEdit = !!initialValues?.id;
   const isPending = createMeeting.isPending || updateMeeting.isPending;
   const isAgentEditDisabled =
-    isEdit && initialValues?.status && isMeetingStarted(initialValues.status);
+    isEdit && initialValues?.status && isLockedStatus(initialValues.status);
 
   const onSubmit = (values: z.infer<typeof createMeetingSchema>) => {
     if (isEdit) {

@@ -46,7 +46,6 @@ export const MeetingView = ({ meetingId }: Props) => {
     `This action cannot be undone. This will permanently cancel this meeting.`,
     'Cancel Meeting',
   );
-  const [isCancelling, setIsCancelling] = useState(false);
 
   const removeMeeting = useMutation(
     trpc.meetings.delete.mutationOptions({
@@ -90,7 +89,6 @@ export const MeetingView = ({ meetingId }: Props) => {
     const confirmed = await confirmCancel();
     if (!confirmed) return;
 
-    setIsCancelling(true);
     await cancelMeeting.mutateAsync({ id: meetingId });
   };
 
@@ -119,7 +117,7 @@ export const MeetingView = ({ meetingId }: Props) => {
           <UpcomingState
             meetingId={meetingId}
             onCancel={handleCancel}
-            isCancelling={isCancelling}
+            isCancelling={cancelMeeting.isPending}
           />
         )}
         {isActive && <ActiveState meetingId={meetingId} />}

@@ -24,10 +24,13 @@ export const AgentFieldDescription = ({
       <>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              <span className='cursor-help p-0 underline decoration-dotted'>
-                Agent locked once meeting starts.
-              </span>
+            <TooltipTrigger asChild>
+              <button
+                type='button'
+                className='focus:ring-ring cursor-help rounded p-0 underline decoration-dotted focus:ring-2 focus:outline-none'
+              >
+                Agent is locked once the meeting starts.
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>

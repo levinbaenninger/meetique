@@ -201,7 +201,8 @@ export const meetingsRouter = router({
       if (isLockedStatus(currentMeeting.status)) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: 'Cannot update a meeting that has already ended',
+          message:
+            'Cannot update a meeting once it has started (active, processing, completed, or cancelled)',
         });
       }
 

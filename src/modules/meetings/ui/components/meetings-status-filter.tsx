@@ -8,7 +8,7 @@ import {
 
 import { CommandSelect } from '@/components/command-select';
 import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
-import { type MeetingStatus,meetingStatus } from '@/modules/meetings/types';
+import { type MeetingStatus, meetingStatus } from '@/modules/meetings/types';
 
 const options = meetingStatus.map((status) => ({
   id: status,

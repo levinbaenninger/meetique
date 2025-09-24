@@ -21,6 +21,7 @@ interface Props {
   onSearch?: (value: string) => void;
   value: string;
   placeholder?: string;
+  disabled?: boolean;
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
   className?: string;
@@ -32,6 +33,7 @@ export const CommandSelect = ({
   onSearch,
   value,
   placeholder = 'Select an option',
+  disabled,
   ariaInvalid,
   ariaDescribedBy,
   className,
@@ -45,6 +47,7 @@ export const CommandSelect = ({
         type='button'
         variant='outline'
         onClick={() => setIsOpen(true)}
+        disabled={disabled}
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
         className={cn(

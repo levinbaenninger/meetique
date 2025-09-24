@@ -22,6 +22,7 @@ import {
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
 import { meetingStatus, Transcript } from '@/modules/meetings/types';
+import { isMeetingStarted } from '@/modules/meetings/utils';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
@@ -180,6 +181,30 @@ export const meetingsRouter = router({
   update: protectedProcedure
     .input(updateMeetingSchema)
     .mutation(async ({ input, ctx }) => {
+      const [currentMeeting] = await db
+        .select()
+        .from(meeting)
+        .where(
+          and(
+            eq(meeting.id, input.id),
+            eq(meeting.userId, ctx.session.user.id),
+          ),
+        );
+
+      if (!currentMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found',
+        });
+      }
+
+      if (isMeetingStarted(currentMeeting.status)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Cannot update a meeting that has already ended',
+        });
+      }
+
       const [existingAgent] = await db
         .select()
         .from(agent)

@@ -14,6 +14,8 @@ export const meetingStatus = [
   'cancelled',
 ] as const;
 
+export type MeetingStatus = (typeof meetingStatus)[number];
+
 export type Transcript = {
   speaker_id: string;
   type: string;

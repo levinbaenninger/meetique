@@ -13,10 +13,11 @@ import arcjet, {
 import { toNextJsHandler } from 'better-auth/next-js';
 import { NextRequest } from 'next/server';
 
+import { env } from '@/env';
 import { auth } from '@/lib/auth';
 
 const aj = arcjet({
-  key: process.env.ARCJET_KEY!,
+  key: env.ARCJET_KEY,
   characteristics: ['userId'],
   rules: [
     shield({

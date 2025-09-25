@@ -1,7 +1,13 @@
-import { withSentryConfig } from '@sentry/nextjs';
-import type { NextConfig } from 'next';
+import { fileURLToPath } from 'node:url';
 
-const nextConfig: NextConfig = {
+import { withSentryConfig } from '@sentry/nextjs';
+import { createJiti } from 'jiti';
+
+const jiti = createJiti(fileURLToPath(import.meta.url));
+jiti.import('./src/env');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   async redirects() {
     return [
       {

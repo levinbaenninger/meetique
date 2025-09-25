@@ -4,6 +4,7 @@ import JSONL from 'jsonl-parse-stringify';
 
 import { db } from '@/db';
 import { agent, meeting, user } from '@/db/schema';
+import { env } from '@/env';
 import { Transcript } from '@/modules/meetings/types';
 
 import { inngest } from './client';
@@ -30,7 +31,7 @@ const summarizer = createAgent({
   #### Next Section
   - Feature X automatically does Y
   - Mention of integration with Z`.trim(),
-  model: openai({ model: 'gpt-4o', apiKey: process.env.OPENAI_API_KEY! }),
+  model: openai({ model: 'gpt-4o', apiKey: env.OPENAI_API_KEY }),
 });
 
 export const meetingsProcessing = inngest.createFunction(

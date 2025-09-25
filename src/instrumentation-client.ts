@@ -5,8 +5,10 @@
 import * as Sentry from '@sentry/nextjs';
 import posthog from 'posthog-js';
 
+import { env } from '@/env';
+
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || '',
+  dsn: env.NEXT_PUBLIC_SENTRY_DSN || '',
 
   // Add optional integrations for additional features
   integrations: [
@@ -32,7 +34,7 @@ Sentry.init({
 });
 
 // Initialize PostHog for analytics
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
   api_host: '/ingest',
   ui_host: 'https://eu.posthog.com',
   defaults: '2025-05-24',

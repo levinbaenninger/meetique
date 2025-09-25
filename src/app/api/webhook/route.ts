@@ -10,6 +10,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/db';
 import { agent, meeting } from '@/db/schema';
+import { env } from '@/env';
 import { inngest } from '@/inngest/client';
 import { streamVideo } from '@/lib/stream-video';
 
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
     const call = streamVideo.video.call('default', meetingId);
     const realtimeClient = await streamVideo.video.connectOpenAi({
       call,
-      openAiApiKey: process.env.OPENAI_API_KEY!,
+      openAiApiKey: env.OPENAI_API_KEY,
       agentUserId: existingAgent.id,
     });
 

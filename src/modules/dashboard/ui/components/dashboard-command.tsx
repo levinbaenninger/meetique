@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/command';
 import { useTRPC } from '@/lib/trpc';
 
+import { DEBOUNCE_MS } from '../../constants';
+
 interface Props {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -22,23 +24,29 @@ interface Props {
 export const DashboardCommand = ({ open, setOpen }: Props) => {
   const router = useRouter();
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 300);
+  const debouncedSearch = useDebounce(search.trim(), DEBOUNCE_MS);
 
   const trpc = useTRPC();
 
-  const { data: meetings } = useQuery(
-    trpc.meetings.list.queryOptions({
+  const { data: meetings, isFetching: isFetchingMeetings } = useQuery({
+    ...trpc.meetings.list.queryOptions({
       search: debouncedSearch,
       limit: 100,
     }),
-  );
+    placeholderData: (prev) => prev,
+    refetchOnWindowFocus: false,
+    enabled: debouncedSearch.length > 0,
+  });
 
-  const { data: agents } = useQuery(
-    trpc.agents.list.queryOptions({
+  const { data: agents, isFetching: isFetchingAgents } = useQuery({
+    ...trpc.agents.list.queryOptions({
       search: debouncedSearch,
       limit: 100,
     }),
-  );
+    placeholderData: (prev) => prev,
+    refetchOnWindowFocus: false,
+    enabled: debouncedSearch.length > 0,
+  });
 
   return (
     <CommandResponsiveDialog
@@ -57,7 +65,7 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
         <CommandGroup heading='Meetings'>
           <CommandEmpty>
             <span className='text-muted-foreground text-sm'>
-              No meetings found.
+              {isFetchingMeetings ? 'Searching…' : 'No meetings found.'}{' '}
             </span>
           </CommandEmpty>
           {meetings?.items.map((meeting) => (
@@ -75,7 +83,7 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
         <CommandGroup heading='Agents'>
           <CommandEmpty>
             <span className='text-muted-foreground text-sm'>
-              No agents found.
+              {isFetchingAgents ? 'Searching…' : 'No agents found.'}{' '}
             </span>
           </CommandEmpty>
           {agents?.items.map((agent) => (

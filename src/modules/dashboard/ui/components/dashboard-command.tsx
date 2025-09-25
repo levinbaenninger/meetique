@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@uidotdev/usehooks';
 import { useRouter } from 'next/navigation';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 
@@ -21,19 +22,20 @@ interface Props {
 export const DashboardCommand = ({ open, setOpen }: Props) => {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
 
   const trpc = useTRPC();
 
   const { data: meetings } = useQuery(
     trpc.meetings.list.queryOptions({
-      search,
+      search: debouncedSearch,
       limit: 100,
     }),
   );
 
   const { data: agents } = useQuery(
     trpc.agents.list.queryOptions({
-      search,
+      search: debouncedSearch,
       limit: 100,
     }),
   );

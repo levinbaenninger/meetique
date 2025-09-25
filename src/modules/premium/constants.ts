@@ -2,18 +2,22 @@ export const TIER_LIMITS = {
   free: {
     agents: 3,
     meetings: 5,
+    meetingChatMessages: 20,
   },
   starter: {
     agents: -1, // unlimited
     meetings: 30, // per month
+    meetingChatMessages: 100, // per month
   },
   pro: {
     agents: -1, // unlimited
     meetings: -1, // unlimited
+    meetingChatMessages: 500, // per month
   },
   enterprise: {
     agents: -1, // unlimited
     meetings: -1, // unlimited
+    meetingChatMessages: -1, // unlimited
   },
 } as const;
 

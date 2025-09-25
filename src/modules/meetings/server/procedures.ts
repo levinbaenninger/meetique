@@ -17,6 +17,7 @@ import { db } from '@/db';
 import { agent, meeting, user } from '@/db/schema';
 import { generateAvatarUri } from '@/lib/avatar';
 import { streamVideo } from '@/lib/stream-video';
+import { meetingChatsRouter } from '@/modules/meetingchats/server/procedures';
 import {
   createMeetingSchema,
   updateMeetingSchema,
@@ -28,6 +29,8 @@ import protectedProcedure from '@/trpc/procedures/protected';
 import { router } from '@/trpc/trpc';
 
 export const meetingsRouter = router({
+  chats: meetingChatsRouter,
+
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {

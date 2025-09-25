@@ -25,27 +25,26 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search.trim(), DEBOUNCE_MS);
+  const hasDebouncedSearch = debouncedSearch.length > 0;
 
   const trpc = useTRPC();
 
-  const { data: meetings, isFetching: isFetchingMeetings } = useQuery({
+  const { data: meetings } = useQuery({
     ...trpc.meetings.list.queryOptions({
       search: debouncedSearch,
       limit: 100,
     }),
     placeholderData: (prev) => prev,
     refetchOnWindowFocus: false,
-    enabled: debouncedSearch.length > 0,
   });
 
-  const { data: agents, isFetching: isFetchingAgents } = useQuery({
+  const { data: agents } = useQuery({
     ...trpc.agents.list.queryOptions({
       search: debouncedSearch,
       limit: 100,
     }),
     placeholderData: (prev) => prev,
     refetchOnWindowFocus: false,
-    enabled: debouncedSearch.length > 0,
   });
 
   return (
@@ -62,47 +61,46 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
         onValueChange={(value) => setSearch(value)}
       />
       <CommandList>
-        <CommandGroup heading='Meetings'>
-          <CommandEmpty>
-            <span className='text-muted-foreground text-sm'>
-              {isFetchingMeetings ? 'Searching…' : 'No meetings found.'}{' '}
-            </span>
-          </CommandEmpty>
-          {meetings?.items.map((meeting) => (
-            <CommandItem
-              key={meeting.id}
-              onSelect={() => {
-                router.push(`/meetings/${meeting.id}`);
-                setOpen(false);
-              }}
-            >
-              {meeting.name}
-            </CommandItem>
-          ))}
-        </CommandGroup>
-        <CommandGroup heading='Agents'>
-          <CommandEmpty>
-            <span className='text-muted-foreground text-sm'>
-              {isFetchingAgents ? 'Searching…' : 'No agents found.'}{' '}
-            </span>
-          </CommandEmpty>
-          {agents?.items.map((agent) => (
-            <CommandItem
-              key={agent.id}
-              onSelect={() => {
-                router.push(`/agents/${agent.id}`);
-                setOpen(false);
-              }}
-            >
-              <GeneratedAvatar
-                seed={agent.name}
-                variant='botttsNeutral'
-                className='size-4'
-              />
-              {agent.name}
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        <CommandEmpty>
+          {hasDebouncedSearch
+            ? 'No results found.'
+            : 'No meetings or agents available.'}
+        </CommandEmpty>
+        {meetings?.items && meetings.items.length > 0 && (
+          <CommandGroup heading='Meetings'>
+            {meetings.items.map((meeting) => (
+              <CommandItem
+                key={meeting.id}
+                onSelect={() => {
+                  router.push(`/meetings/${meeting.id}`);
+                  setOpen(false);
+                }}
+              >
+                {meeting.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+        {agents?.items && agents.items.length > 0 && (
+          <CommandGroup heading='Agents'>
+            {agents.items.map((agent) => (
+              <CommandItem
+                key={agent.id}
+                onSelect={() => {
+                  router.push(`/agents/${agent.id}`);
+                  setOpen(false);
+                }}
+              >
+                <GeneratedAvatar
+                  seed={agent.name}
+                  variant='botttsNeutral'
+                  className='size-4'
+                />
+                {agent.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
       </CommandList>
     </CommandResponsiveDialog>
   );

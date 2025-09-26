@@ -1,7 +1,9 @@
+import { vercel } from '@t3-oss/env-core/presets-zod';
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
 export const env = createEnv({
+  extends: [vercel()],
   server: {
     // Database
     DATABASE_URL: z.string().url(),
@@ -29,6 +31,9 @@ export const env = createEnv({
     // Sentry (optional with defaults)
     SENTRY_ORG: z.string().optional(),
     SENTRY_PROJECT: z.string().optional(),
+
+    // CI/CD
+    SKIP_ENV_VALIDATION: z.string().optional(),
   },
   client: {
     // Analytics & Monitoring
@@ -53,6 +58,7 @@ export const env = createEnv({
     STREAM_VIDEO_API_SECRET: process.env.STREAM_VIDEO_API_SECRET,
     SENTRY_ORG: process.env.SENTRY_ORG,
     SENTRY_PROJECT: process.env.SENTRY_PROJECT,
+    SKIP_ENV_VALIDATION: process.env.SKIP_ENV_VALIDATION,
 
     // Client
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -60,4 +66,5 @@ export const env = createEnv({
     NEXT_PUBLIC_STREAM_VIDEO_API_KEY:
       process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY,
   },
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

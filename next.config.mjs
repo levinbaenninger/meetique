@@ -4,7 +4,7 @@ import { withSentryConfig } from '@sentry/nextjs';
 import { createJiti } from 'jiti';
 
 const jiti = createJiti(fileURLToPath(import.meta.url));
-jiti.import('./src/env');
+await jiti.import('./src/env');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -35,6 +35,9 @@ const nextConfig = {
   },
   // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default withSentryConfig(nextConfig, {

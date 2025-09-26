@@ -2,8 +2,10 @@ import { isSpoofedBot } from '@arcjet/inspect';
 import arcjet, { detectBot, shield, tokenBucket } from '@arcjet/next';
 import { NextResponse } from 'next/server';
 
+import { env } from '@/env';
+
 const aj = arcjet({
-  key: process.env.ARCJET_KEY!,
+  key: env.ARCJET_KEY,
   characteristics: ['ip.src'],
   rules: [
     shield({ mode: 'LIVE' }),

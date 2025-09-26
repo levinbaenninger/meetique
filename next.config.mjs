@@ -3,8 +3,9 @@ import { fileURLToPath } from 'node:url';
 import { withSentryConfig } from '@sentry/nextjs';
 import { createJiti } from 'jiti';
 
-const jiti = createJiti(fileURLToPath(import.meta.url));
-await jiti.import('./src/env');
+const jiti = createJiti(fileURLToPath(import.meta.url), { fsCache: true });
+/** @type {{ env: Record<string, string | undefined> }} */
+const { env } = await jiti.import('./src/env');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -44,11 +45,11 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: process.env.SENTRY_ORG || 'meetique',
-  project: process.env.SENTRY_PROJECT || 'app',
+  org: env.SENTRY_ORG || 'meetique',
+  project: env.SENTRY_PROJECT || 'app',
 
   // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  silent: !env.CI,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/

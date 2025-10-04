@@ -331,65 +331,73 @@ export const meetingsRouter = router({
         return [];
       }
 
-      const transcript = await fetch(existingMeeting.transcriptUrl)
-        .then((res) => res.text())
-        .then((text) => JSONL.parse<Transcript>(text))
-        .catch(() => []);
+      try {
+        const transcript = await fetch(existingMeeting.transcriptUrl)
+          .then((res) => res.text())
+          .then((text) => JSONL.parse<Transcript>(text))
+          .catch(() => []);
 
-      const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
+        const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
 
-      const userSpeakers = await db
-        .select()
-        .from(user)
-        .where(inArray(user.id, speakerIds))
-        .then((users) =>
-          users.map((user) => ({
-            ...user,
-            image:
-              user.image ??
-              generateAvatarUri({ seed: user.name, variant: 'initials' }),
-          })),
-        );
+        const userSpeakers = await db
+          .select()
+          .from(user)
+          .where(inArray(user.id, speakerIds))
+          .then((users) =>
+            users.map((user) => ({
+              ...user,
+              image:
+                user.image ??
+                generateAvatarUri({ seed: user.name, variant: 'initials' }),
+            })),
+          );
 
-      const agentSpeakers = await db
-        .select()
-        .from(agent)
-        .where(inArray(agent.id, speakerIds))
-        .then((agents) =>
-          agents.map((agent) => ({
-            ...agent,
-            image: generateAvatarUri({
-              seed: agent.name,
-              variant: 'botttsNeutral',
-            }),
-          })),
-        );
+        const agentSpeakers = await db
+          .select()
+          .from(agent)
+          .where(inArray(agent.id, speakerIds))
+          .then((agents) =>
+            agents.map((agent) => ({
+              ...agent,
+              image: generateAvatarUri({
+                seed: agent.name,
+                variant: 'botttsNeutral',
+              }),
+            })),
+          );
 
-      const speakers = [...userSpeakers, ...agentSpeakers];
+        const speakers = [...userSpeakers, ...agentSpeakers];
 
-      return transcript.map((t) => {
-        const speaker = speakers.find((s) => s.id === t.speaker_id);
+        return transcript.map((t) => {
+          const speaker = speakers.find((s) => s.id === t.speaker_id);
 
-        if (!speaker) {
+          if (!speaker) {
+            return {
+              ...t,
+              user: {
+                name: 'Unknown',
+                image: generateAvatarUri({
+                  seed: 'Unknown',
+                  variant: 'initials',
+                }),
+              },
+            };
+          }
+
           return {
             ...t,
             user: {
-              name: 'Unknown',
-              image: generateAvatarUri({
-                seed: 'Unknown',
-                variant: 'initials',
-              }),
+              name: speaker.name,
+              image: speaker.image,
             },
           };
-        }
-
-        return {
-          ...t,
-          user: {
-            name: speaker.name,
-            image: speaker.image,
-          },
-        };
-      });
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Transcript expired.',
+          cause: error,
+        });
+      }
     }),
 });

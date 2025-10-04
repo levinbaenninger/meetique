@@ -13,18 +13,29 @@ import { GeneratedAvatar } from '@/components/generated-avatar';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs';
-import { VideoPlayer } from '@/components/ui/video-player';
 import { formatDuration } from '@/lib/utils';
 import { Meeting } from '@/modules/meetings/types';
+import { Recording } from '@/modules/meetings/ui/components/recording';
+import { ResourceAvailabilityBanner } from '@/modules/meetings/ui/components/resource-availability-banner';
 import { Transcript } from '@/modules/meetings/ui/components/transcript';
+import { areResourcesAvailable } from '@/modules/meetings/utils';
 
 interface Props {
   meeting: Meeting;
 }
 
 export const CompletedState = ({ meeting }: Props) => {
+  const resourcesAvailable = areResourcesAvailable(meeting.endedAt);
+  const hasTranscript = !!meeting.transcriptUrl && resourcesAvailable;
+  const hasRecording = !!meeting.recordingUrl && resourcesAvailable;
+
   return (
     <div className='flex flex-col gap-y-4'>
+      <ResourceAvailabilityBanner
+        endedAt={meeting.endedAt}
+        hasTranscript={!!meeting.transcriptUrl}
+        hasRecording={!!meeting.recordingUrl}
+      />
       <Tabs defaultValue='summary'>
         <div className='rounded-lg border bg-white px-3'>
           <ScrollArea>
@@ -36,20 +47,24 @@ export const CompletedState = ({ meeting }: Props) => {
                 <BookOpenTextIcon />
                 Summary
               </TabsTrigger>
-              <TabsTrigger
-                value='transcript'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-              >
-                <FileTextIcon />
-                Transcript
-              </TabsTrigger>
-              <TabsTrigger
-                value='recording'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-              >
-                <FileVideoIcon />
-                Recording
-              </TabsTrigger>
+              {hasTranscript && (
+                <TabsTrigger
+                  value='transcript'
+                  className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
+                >
+                  <FileTextIcon />
+                  Transcript
+                </TabsTrigger>
+              )}
+              {hasRecording && (
+                <TabsTrigger
+                  value='recording'
+                  className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
+                >
+                  <FileVideoIcon />
+                  Recording
+                </TabsTrigger>
+              )}
             </TabsList>
             <ScrollBar orientation='horizontal' />
           </ScrollArea>
@@ -151,14 +166,19 @@ export const CompletedState = ({ meeting }: Props) => {
             </div>
           </div>
         </TabsContent>
-        <TabsContent value='transcript'>
-          <Transcript meetingId={meeting.id} />
-        </TabsContent>
-        <TabsContent value='recording'>
-          <div className='rounded-lg border bg-white px-4 py-5'>
-            <VideoPlayer src={meeting.recordingUrl!} />
-          </div>
-        </TabsContent>
+        {hasTranscript && (
+          <TabsContent value='transcript'>
+            <Transcript meetingId={meeting.id} />
+          </TabsContent>
+        )}
+        {hasRecording && (
+          <TabsContent value='recording'>
+            <Recording
+              meetingId={meeting.id}
+              recordingUrl={meeting.recordingUrl!}
+            />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

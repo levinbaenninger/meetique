@@ -41,6 +41,13 @@ export async function GET(
       );
     }
 
+    if (!existingMeeting.endedAt) {
+      return NextResponse.json(
+        { error: 'Transcript not yet available' },
+        { status: 409 },
+      );
+    }
+
     if (!areResourcesAvailable(existingMeeting.endedAt)) {
       return NextResponse.json(
         {

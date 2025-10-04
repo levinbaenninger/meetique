@@ -52,7 +52,7 @@ export const ResourceAvailabilityBanner = ({
       <AlertTitle>Resources No Longer Available</AlertTitle>
       <AlertDescription>
         The transcript and recording are no longer available. Stream resources
-        are retained for 14 days after the meeting ends.
+        are retained for {RESOURCE_RETENTION_DAYS} days after the meeting ends.
       </AlertDescription>
     </Alert>
   );

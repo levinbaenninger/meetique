@@ -26,15 +26,33 @@ export const useDownload = ({
 
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
+
       const a = document.createElement('a');
       a.href = objectUrl;
-      a.download =
-        response.headers
-          .get('content-disposition')
-          ?.split('filename=')[1]
-          ?.replace(/"/g, '') || 'download';
+
+      const cd = response.headers.get('content-disposition') || '';
+      const m = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i);
+
+      let filename = 'download';
+
+      if (m) {
+        filename = decodeURIComponent(m[1] || m[2]);
+      } else {
+        try {
+          const u = new URL(response.url);
+          const base = u.pathname.split('/').pop();
+          if (base) filename = base;
+        } catch {}
+      }
+
+      a.download = filename;
+
+      document.body.appendChild(a);
+
       a.click();
-      URL.revokeObjectURL(objectUrl);
+      a.remove();
+
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 
       toast.success(successMessage);
     } catch (error) {

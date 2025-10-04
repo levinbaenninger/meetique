@@ -332,45 +332,60 @@ export const meetingsRouter = router({
       }
 
       try {
-        const transcript = await fetch(existingMeeting.transcriptUrl)
-          .then((res) => res.text())
-          .then((text) => JSONL.parse<Transcript>(text))
-          .catch(() => []);
+        const res = await fetch(existingMeeting.transcriptUrl);
 
-        const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
+        if (!res.ok) {
+          throw new Error('Transcript fetch failed');
+        }
 
-        const userSpeakers = await db
-          .select()
-          .from(user)
-          .where(inArray(user.id, speakerIds))
-          .then((users) =>
-            users.map((user) => ({
-              ...user,
-              image:
-                user.image ??
-                generateAvatarUri({ seed: user.name, variant: 'initials' }),
-            })),
-          );
+        const text = await res.text();
+        const transcript = JSONL.parse<Transcript>(text);
 
-        const agentSpeakers = await db
-          .select()
-          .from(agent)
-          .where(inArray(agent.id, speakerIds))
-          .then((agents) =>
-            agents.map((agent) => ({
-              ...agent,
-              image: generateAvatarUri({
-                seed: agent.name,
-                variant: 'botttsNeutral',
-              }),
-            })),
-          );
+        if (transcript.length === 0) {
+          return [];
+        }
+
+        const speakerIds = [
+          ...new Set(transcript.map((t) => t.speaker_id).filter(Boolean)),
+        ];
+
+        const userSpeakers =
+          speakerIds.length === 0
+            ? []
+            : await db
+                .select()
+                .from(user)
+                .where(inArray(user.id, speakerIds))
+                .then((users) =>
+                  users.map((u) => ({
+                    ...u,
+                    image:
+                      u.image ??
+                      generateAvatarUri({ seed: u.name, variant: 'initials' }),
+                  })),
+                );
+
+        const agentSpeakers =
+          speakerIds.length === 0
+            ? []
+            : await db
+                .select()
+                .from(agent)
+                .where(inArray(agent.id, speakerIds))
+                .then((agents) =>
+                  agents.map((a) => ({
+                    ...a,
+                    image: generateAvatarUri({
+                      seed: a.name,
+                      variant: 'botttsNeutral',
+                    }),
+                  })),
+                );
 
         const speakers = [...userSpeakers, ...agentSpeakers];
 
         return transcript.map((t) => {
           const speaker = speakers.find((s) => s.id === t.speaker_id);
-
           if (!speaker) {
             return {
               ...t,

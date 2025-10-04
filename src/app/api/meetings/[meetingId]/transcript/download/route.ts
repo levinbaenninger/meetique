@@ -5,11 +5,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { meeting } from '@/db/schema';
 import { auth } from '@/lib/auth';
+import { RESOURCE_RETENTION_DAYS } from '@/modules/meetings/constants';
 import { areResourcesAvailable } from '@/modules/meetings/utils';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ meetingId: string }> },
+  { params }: { params: { meetingId: string } },
 ) {
   try {
     const session = await auth.api.getSession({
@@ -20,7 +21,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { meetingId } = await params;
+    const { meetingId } = params;
 
     const [existingMeeting] = await db
       .select()
@@ -42,7 +43,9 @@ export async function GET(
 
     if (!areResourcesAvailable(existingMeeting.endedAt)) {
       return NextResponse.json(
-        { error: 'Transcript has expired (14-day retention period)' },
+        {
+          error: `Transcript has expired (${RESOURCE_RETENTION_DAYS}-day retention period)`,
+        },
         { status: 410 },
       );
     }
@@ -56,16 +59,28 @@ export async function GET(
       );
     }
 
-    const transcriptData = await response.text();
+    const safeBase =
+      String(existingMeeting.name)
+        .replace(/[^a-zA-Z0-9 _.\-]/g, '')
+        .trim()
+        .replace(/\s+/g, '_') || 'meeting';
 
-    const filename = `transcript-${existingMeeting.name}-${format(existingMeeting.startedAt || new Date(), 'yyyy-MM-dd')}.txt`;
+    const filename = `transcript-${safeBase}-${format(
+      existingMeeting.startedAt || new Date(),
+      'yyyy-MM-dd',
+    )}.txt`;
 
-    return new NextResponse(transcriptData, {
+    const headers: Record<string, string> = {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Cache-Control': 'private, no-store',
+    };
+    const len = response.headers.get('content-length');
+    if (len) headers['Content-Length'] = len;
+
+    return new NextResponse(response.body, {
       status: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-      },
+      headers,
     });
   } catch (error) {
     console.error('Transcript download error:', error);

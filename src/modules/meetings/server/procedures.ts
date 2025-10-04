@@ -331,65 +331,88 @@ export const meetingsRouter = router({
         return [];
       }
 
-      const transcript = await fetch(existingMeeting.transcriptUrl)
-        .then((res) => res.text())
-        .then((text) => JSONL.parse<Transcript>(text))
-        .catch(() => []);
+      try {
+        const res = await fetch(existingMeeting.transcriptUrl);
 
-      const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
+        if (!res.ok) {
+          throw new Error('Transcript fetch failed');
+        }
 
-      const userSpeakers = await db
-        .select()
-        .from(user)
-        .where(inArray(user.id, speakerIds))
-        .then((users) =>
-          users.map((user) => ({
-            ...user,
-            image:
-              user.image ??
-              generateAvatarUri({ seed: user.name, variant: 'initials' }),
-          })),
-        );
+        const text = await res.text();
+        const transcript = JSONL.parse<Transcript>(text);
 
-      const agentSpeakers = await db
-        .select()
-        .from(agent)
-        .where(inArray(agent.id, speakerIds))
-        .then((agents) =>
-          agents.map((agent) => ({
-            ...agent,
-            image: generateAvatarUri({
-              seed: agent.name,
-              variant: 'botttsNeutral',
-            }),
-          })),
-        );
+        if (transcript.length === 0) {
+          return [];
+        }
 
-      const speakers = [...userSpeakers, ...agentSpeakers];
+        const speakerIds = [
+          ...new Set(transcript.map((t) => t.speaker_id).filter(Boolean)),
+        ];
 
-      return transcript.map((t) => {
-        const speaker = speakers.find((s) => s.id === t.speaker_id);
+        const userSpeakers =
+          speakerIds.length === 0
+            ? []
+            : await db
+                .select()
+                .from(user)
+                .where(inArray(user.id, speakerIds))
+                .then((users) =>
+                  users.map((u) => ({
+                    ...u,
+                    image:
+                      u.image ??
+                      generateAvatarUri({ seed: u.name, variant: 'initials' }),
+                  })),
+                );
 
-        if (!speaker) {
+        const agentSpeakers =
+          speakerIds.length === 0
+            ? []
+            : await db
+                .select()
+                .from(agent)
+                .where(inArray(agent.id, speakerIds))
+                .then((agents) =>
+                  agents.map((a) => ({
+                    ...a,
+                    image: generateAvatarUri({
+                      seed: a.name,
+                      variant: 'botttsNeutral',
+                    }),
+                  })),
+                );
+
+        const speakers = [...userSpeakers, ...agentSpeakers];
+
+        return transcript.map((t) => {
+          const speaker = speakers.find((s) => s.id === t.speaker_id);
+          if (!speaker) {
+            return {
+              ...t,
+              user: {
+                name: 'Unknown',
+                image: generateAvatarUri({
+                  seed: 'Unknown',
+                  variant: 'initials',
+                }),
+              },
+            };
+          }
+
           return {
             ...t,
             user: {
-              name: 'Unknown',
-              image: generateAvatarUri({
-                seed: 'Unknown',
-                variant: 'initials',
-              }),
+              name: speaker.name,
+              image: speaker.image,
             },
           };
-        }
-
-        return {
-          ...t,
-          user: {
-            name: speaker.name,
-            image: speaker.image,
-          },
-        };
-      });
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Transcript expired.',
+          cause: error,
+        });
+      }
     }),
 });

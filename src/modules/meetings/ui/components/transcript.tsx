@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { SearchIcon } from 'lucide-react';
+import { DownloadIcon, Loader2Icon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import Highlighter from 'react-highlight-words';
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTRPC } from '@/lib/trpc';
+import { useDownload } from '@/modules/meetings/hooks/use-download';
 
 interface Props {
   meetingId: string;
@@ -20,13 +22,35 @@ export const Transcript = ({ meetingId }: Props) => {
   );
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { isDownloading, handleDownload } = useDownload({
+    url: `/api/meetings/${meetingId}/transcript/download`,
+    successMessage: 'Transcript downloaded successfully',
+    errorMessage: 'Failed to download transcript',
+  });
+
   const filteredData = (transcript ?? []).filter((t) =>
     t.text.toString().toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
     <div className='flex w-full flex-col gap-y-4 rounded-lg border bg-white px-4 py-5'>
-      <p className='text-sm font-medium'>Transcript</p>
+      <div className='flex items-center justify-between'>
+        <p className='text-sm font-medium'>Transcript</p>
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={handleDownload}
+          disabled={isDownloading}
+        >
+          {isDownloading ? (
+            <Loader2Icon className='size-4 animate-spin' />
+          ) : (
+            <DownloadIcon />
+          )}
+          {isDownloading ? 'Downloading...' : 'Download'}
+        </Button>
+      </div>
       <div className='relative'>
         <Input
           placeholder='Search Transcript'

@@ -2,12 +2,12 @@ import { format } from 'date-fns';
 import { AlertCircleIcon, InfoIcon } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { RESOURCE_RETENTION_DAYS } from '@/modules/meetings/constants';
 import {
   areResourcesAvailable,
   getDaysUntilExpiry,
   getResourcesExpiryDate,
 } from '@/modules/meetings/utils';
-
 interface Props {
   endedAt: Date | null;
   hasTranscript: boolean;

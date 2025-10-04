@@ -10,7 +10,7 @@ import { areResourcesAvailable } from '@/modules/meetings/utils';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { meetingId: string } },
+  { params }: { params: Promise<{ meetingId: string }> },
 ) {
   try {
     const session = await auth.api.getSession({
@@ -21,7 +21,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { meetingId } = params;
+    const { meetingId } = await params;
 
     const [existingMeeting] = await db
       .select()

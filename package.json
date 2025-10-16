@@ -15,7 +15,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "dev:webhook": "ngrok http --url=decent-gently-cow.ngrok-free.app 3000",
+    "dev:webhook": "ngrok http --url=unquick-unarticulative-arlene.ngrok-free.dev 3000",
     "dev:inngest": "pnpm dlx inngest-cli@latest dev",
     "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:inngest\" \"pnpm dev:webhook\"",
     "prepare": "husky"

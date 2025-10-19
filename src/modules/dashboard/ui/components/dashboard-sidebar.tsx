@@ -17,6 +17,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { DashboardUserButton } from '@/modules/dashboard/ui/components/dashboard-user-button';
@@ -57,12 +58,17 @@ const groups = [
 
 export const DashboardSidebar = () => {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
   const isActive = (href: string) => pathname === href;
 
   return (
     <Sidebar>
       <SidebarHeader className='text-sidebar-accent-foreground'>
-        <Link href='/' className='flex items-center gap-2 px-2 pt-2'>
+        <Link
+          href='/'
+          className='flex items-center gap-2 px-2 pt-2'
+          onClick={() => setOpenMobile(false)}
+        >
           <Image src='/logo.svg' alt='logo' width={36} height={36} />
           <p className='text-2xl font-bold'>Meetique</p>
         </Link>
@@ -87,7 +93,10 @@ export const DashboardSidebar = () => {
                         )}
                         isActive={isActive(item.href)}
                       >
-                        <Link href={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={() => setOpenMobile(false)}
+                        >
                           <item.icon className='size-5' />
                           <span className='text-sm font-medium tracking-tight'>
                             {item.label}

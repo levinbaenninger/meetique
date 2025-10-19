@@ -4,10 +4,12 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useSidebar } from '@/components/ui/sidebar';
 import { useTRPC } from '@/lib/trpc';
 
 export const DashboardTrial = () => {
   const trpc = useTRPC();
+  const { setOpenMobile } = useSidebar();
   const { data: freeUsage } = useQuery(
     trpc.premium.getFreeUsage.queryOptions(),
   );
@@ -88,7 +90,9 @@ export const DashboardTrial = () => {
         asChild
         className='border-border/10 cursor-default rounded-t-none border-t bg-transparent hover:bg-white/10'
       >
-        <Link href='/upgrade'>Manage Subscription</Link>
+        <Link href='/upgrade' onClick={() => setOpenMobile(false)}>
+          Manage Subscription
+        </Link>
       </Button>
     </div>
   );

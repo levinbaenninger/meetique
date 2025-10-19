@@ -1,6 +1,10 @@
 'use client';
 
-import { PanelLeftCloseIcon, PanelLeftIcon, SearchIcon } from 'lucide-react';
+import {
+  PanelLeftCloseIcon,
+  PanelLeftOpenIcon,
+  SearchIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -29,7 +33,7 @@ export const DashboardNavbar = () => {
       <nav className='bg-background flex items-center gap-x-2 border-b px-4 py-3'>
         <Button className='size-9' variant='outline' onClick={toggleSidebar}>
           {state === 'collapsed' || isMobile ? (
-            <PanelLeftIcon className='size-4' />
+            <PanelLeftOpenIcon className='size-4' />
           ) : (
             <PanelLeftCloseIcon className='size-4' />
           )}

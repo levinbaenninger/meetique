@@ -66,13 +66,15 @@ export const CallLobby = ({ onJoin }: Props) => {
               Set up your camera and microphone to join the call.
             </p>
           </div>
-          <VideoPreview
-            DisabledVideoPreview={
-              hasBrowserMediaPermission
-                ? DisabledVideoPreview
-                : AllowBrowserPermissions
-            }
-          />
+          <div className='aspect-[4/3] w-full max-w-[280px] overflow-hidden md:max-w-[500px] [&_*]:!max-h-full [&_*]:!max-w-full'>
+            <VideoPreview
+              DisabledVideoPreview={
+                hasBrowserMediaPermission
+                  ? DisabledVideoPreview
+                  : AllowBrowserPermissions
+              }
+            />
+          </div>
           <div className='flex gap-x-2'>
             <ToggleAudioPreviewButton />
             <ToggleVideoPreviewButton />

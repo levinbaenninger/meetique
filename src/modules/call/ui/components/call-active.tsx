@@ -9,7 +9,7 @@ interface Props {
 
 export const CallActive = ({ onLeave, meetingName }: Props) => {
   return (
-    <div className='text-secondary flex h-full flex-col justify-between p-4'>
+    <div className='text-secondary flex h-full flex-col justify-between gap-y-4 p-4'>
       <div className='bg-secondary-foreground flex items-center gap-4 rounded-full p-4'>
         <Link
           href='/'

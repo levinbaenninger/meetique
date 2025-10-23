@@ -5,7 +5,7 @@ This guide provides detailed step-by-step instructions for setting up all extern
 ## 📋 Prerequisites
 
 - **Node.js 18+** - [Download](https://nodejs.org/)
-- **pnpm** - Install with `npm install -g pnpm`
+- **Bun** - Install with `curl -fsSL https://bun.sh/install | bash`
 - **Git** - [Download](https://git-scm.com/)
 
 ## 🗄️ Database Setup (Neon PostgreSQL)
@@ -256,7 +256,7 @@ The project includes:
 ```bash
 git clone https://github.com/levinbaenninger/meetique.git
 cd meetique
-pnpm install
+bun install
 ```
 
 ### 2. Environment Variables
@@ -270,22 +270,22 @@ cp .env.example .env
 
 ```bash
 # Run database migrations
-pnpm db:migrate
+bun db:migrate
 
 # Optional: Open Drizzle Studio to view database
-pnpm db:studio
+bun db:studio
 ```
 
 ### 4. Start Development
 
 ```bash
 # Start all services
-pnpm dev
+bun dev
 
 # Or start individual services
-pnpm dev:web      # Next.js app
-pnpm dev:inngest  # Background jobs
-pnpm dev:webhook  # Webhook tunnel
+bun dev:web      # Next.js app
+bun dev:inngest  # Background jobs
+bun dev:webhook  # Webhook tunnel
 ```
 
 ## 🧪 Testing Your Setup
@@ -348,7 +348,7 @@ pnpm dev:webhook  # Webhook tunnel
 
 ```bash
 # Check if DATABASE_URL is correct
-pnpm db:studio
+bun db:studio
 # Should open Drizzle Studio
 ```
 

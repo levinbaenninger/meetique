@@ -57,7 +57,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 ## 📋 Prerequisites
 
 - Node.js 18+
-- pnpm
+- Bun
 - Neon database
 - Stream Video account
 - OpenAI API key
@@ -122,7 +122,7 @@ cd meetique
 2. **Install dependencies**
 
 ```bash
-pnpm install
+bun install
 ```
 
 3. **Set up environment variables**
@@ -136,22 +136,22 @@ cp .env.example .env
 
 ```bash
 # Run database migrations
-pnpm db:migrate
+bun db:migrate
 
 # Optional: Open Drizzle Studio to view database
-pnpm db:studio
+bun db:studio
 ```
 
 5. **Start the development server**
 
 ```bash
 # Start all development services
-pnpm dev
+bun dev
 
 # Or start individual services
-pnpm dev:web      # Next.js development server
-pnpm dev:inngest  # Inngest background jobs
-pnpm dev:webhook  # Webhook tunnel with ngrok
+bun dev:web      # Next.js development server
+bun dev:inngest  # Inngest background jobs
+bun dev:webhook  # Webhook tunnel with ngrok
 ```
 
 6. **Open the application**
@@ -219,41 +219,41 @@ src/
 
 ```bash
 # Generate new migration after schema changes
-pnpm db:generate
+bun db:generate
 
 # Apply migrations to database
-pnpm db:migrate
+bun db:migrate
 
 # Push schema changes directly (development only)
-pnpm db:push
+bun db:push
 
 # Open Drizzle Studio
-pnpm db:studio
+bun db:studio
 ```
 
 ### Code Quality
 
 ```bash
 # Run type checking
-pnpm typecheck
+bun typecheck
 
 # Run linting
-pnpm lint:check
-pnpm lint:fix
+bun lint:check
+bun lint:fix
 
 # Run formatting
-pnpm format:check
-pnpm format:fix
+bun format:check
+bun format:fix
 ```
 
 ### Testing
 
 ```bash
 # Build the application
-pnpm build
+bun build
 
 # Start production server
-pnpm start
+bun start
 ```
 
 ## 📊 Database Schema
@@ -330,7 +330,7 @@ Uses Inngest for reliable background processing:
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
 3. **Make your changes**: Follow the existing code style
-4. **Run tests**: `pnpm typecheck && pnpm lint:check`
+4. **Run tests**: `bun typecheck && bun lint:check`
 5. **Commit your changes**: `git commit -m 'Add amazing feature'`
 6. **Push to the branch**: `git push origin feature/amazing-feature`
 7. **Open a Pull Request**
@@ -350,14 +350,7 @@ Uses Inngest for reliable background processing:
 1. **Database Connection**: Ensure DATABASE_URL is correct
 2. **Stream Video**: Check API keys and video setup
 3. **Authentication**: Verify OAuth app configuration
-4. **Build Errors**: Run `pnpm typecheck` to identify issues
-
-### Debug Mode
-
-```bash
-# Enable debug logging
-DEBUG=* pnpm dev
-```
+4. **Build Errors**: Run `bun typecheck` to identify issues
 
 ## 📄 License
 

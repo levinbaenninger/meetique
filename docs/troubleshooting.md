@@ -23,7 +23,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
    ```bash
    # Test connection with Drizzle Studio
-   pnpm db:studio
+   bun db:studio
    ```
 
 3. **Check network connectivity**:
@@ -42,7 +42,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
    ```bash
    # Drop database and recreate
-   pnpm db:push --force
+   bun db:push --force
    ```
 
 2. **Check migration files**:
@@ -55,7 +55,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 3. **Manual migration**:
    ```bash
    # Run specific migration
-   pnpm db:migrate --to=0001
+   bun db:migrate --to=0001
    ```
 
 ### 🔐 Authentication Issues
@@ -104,7 +104,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 3. **Check database sessions table**:
    ```bash
    # Open database studio
-   pnpm db:studio
+   bun db:studio
    # Check sessions table
    ```
 
@@ -143,7 +143,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
    ```bash
    # Verify ngrok is running
-   pnpm dev:webhook
+   bun dev:webhook
    # Check webhook URL in Stream dashboard
    ```
 
@@ -306,21 +306,21 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
    ```bash
    # Run type checking
-   pnpm typecheck
+   bun typecheck
    ```
 
 2. **Check ESLint errors**:
 
    ```bash
    # Run linting
-   pnpm lint:check
+   bun lint:check
    ```
 
 3. **Clear build cache**:
    ```bash
    # Clear Next.js cache
    rm -rf .next
-   pnpm build
+   bun build
    ```
 
 #### "Environment variables not available"
@@ -342,8 +342,8 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 3. **Test locally**:
    ```bash
    # Test production build locally
-   pnpm build
-   pnpm start
+   bun build
+   bun start
    ```
 
 ### 🔍 Sentry Issues
@@ -432,12 +432,12 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 3. **Manual source map upload**:
    ```bash
    # Upload source maps manually
-   npx @sentry/cli sourcemaps upload --org your-org --project your-project .next/static/
+   bunx @sentry/cli sourcemaps upload --org your-org --project your-project .next/static/
    ```
 
 ### 🔧 Development Issues
 
-#### "pnpm dev not working"
+#### "bun dev not working"
 
 **Problem**: Development server won't start
 
@@ -452,8 +452,8 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 2. **Clear node_modules**:
 
    ```bash
-   rm -rf node_modules pnpm-lock.yaml
-   pnpm install
+   rm -rf node_modules bun.lockb
+   bun install
    ```
 
 3. **Check port availability**:
@@ -480,7 +480,7 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
    ```bash
    # Stop and restart
-   pnpm dev
+   bun dev
    ```
 
 3. **Check browser cache**:
@@ -493,17 +493,17 @@ This guide helps you diagnose and fix common issues when developing with Meetiqu
 
 ```bash
 # Open Drizzle Studio
-pnpm db:studio
+bun db:studio
 
 # Check database logs
-DEBUG=drizzle:* pnpm dev
+DEBUG=drizzle:* bun dev
 ```
 
 ### 2. **API Debugging**
 
 ```bash
 # Enable tRPC debugging
-DEBUG=trpc:* pnpm dev
+DEBUG=trpc:* bun dev
 
 # Check API logs
 tail -f .next/server.log
@@ -513,7 +513,7 @@ tail -f .next/server.log
 
 ```bash
 # Enable auth debugging
-DEBUG=better-auth:* pnpm dev
+DEBUG=better-auth:* bun dev
 
 # Check auth logs
 console.log(session) // Add to components
@@ -523,7 +523,7 @@ console.log(session) // Add to components
 
 ```bash
 # Enable Stream Video debugging
-DEBUG=stream-video:* pnpm dev
+DEBUG=stream-video:* bun dev
 
 # Check browser console for WebRTC errors
 ```
@@ -532,7 +532,7 @@ DEBUG=stream-video:* pnpm dev
 
 ```bash
 # Enable Inngest debugging
-DEBUG=inngest:* pnpm dev:inngest
+DEBUG=inngest:* bun dev:inngest
 
 # Check Inngest dashboard
 ```
@@ -541,7 +541,7 @@ DEBUG=inngest:* pnpm dev:inngest
 
 ```bash
 # Enable Sentry SDK debug logging
-SENTRY_DEBUG=1 pnpm dev
+SENTRY_DEBUG=1 bun dev
 
 # Check Sentry dashboard
 # https://sentry.io/organizations/your-org/projects/
@@ -561,7 +561,7 @@ curl -X GET http://localhost:3000/api/arcjet
 # https://app.arcjet.com/
 
 # Enable debug logging
-DEBUG=arcjet:* pnpm dev
+DEBUG=arcjet:* bun dev
 ```
 
 ### 8. **PostHog Analytics Debugging**
@@ -574,7 +574,7 @@ posthog.capture('test_event', { property: 'value' })
 # https://eu.posthog.com/
 
 # Enable debug logging
-POSTHOG_DEBUG=1 pnpm dev
+POSTHOG_DEBUG=1 bun dev
 ```
 
 ## 🚨 Emergency Fixes
@@ -583,7 +583,7 @@ POSTHOG_DEBUG=1 pnpm dev
 
 ```bash
 # ⚠️ This will delete all data
-pnpm db:push --force
+bun db:push --force
 ```
 
 ### 2. **Reset Authentication**
@@ -605,8 +605,8 @@ pnpm db:push --force
 
 ```bash
 # Start fresh
-rm -rf node_modules .next pnpm-lock.yaml
-pnpm install
+rm -rf node_modules .next bun.lock
+bun install
 ```
 
 ## 📞 Getting Help
@@ -632,7 +632,7 @@ pnpm install
 4. **Include environment information**:
    - OS version
    - Node.js version
-   - pnpm version
+   - Bun version
    - Browser (if applicable)
 
 ### Debug Information to Include
@@ -640,7 +640,7 @@ pnpm install
 ```bash
 # System info
 node --version
-pnpm --version
+bun --version
 git --version
 
 # Environment check
@@ -648,7 +648,7 @@ echo $NODE_ENV
 echo $DATABASE_URL | head -c 20  # Don't share full URL
 
 # Package versions
-pnpm list --depth=0
+bun pm ls
 ```
 
 ## 🎯 Prevention Tips

@@ -6,10 +6,8 @@
     "dev:web": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint:check": "eslint .",
-    "format:check": "prettier --check .",
-    "lint:fix": "eslint --fix .",
-    "format:fix": "prettier --write .",
+    "check": "bun x ultracite check",
+    "fix": "bun x ultracite fix",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -132,10 +130,6 @@
     "ultracite": "6.0.0"
   },
   "lint-staged": {
-    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
       "bun x ultracite fix"
     ]

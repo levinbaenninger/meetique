@@ -38,7 +38,6 @@ export const env = createEnv({
   client: {
     // Analytics & Monitoring
     NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
-    NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
 
     // Stream Video
     NEXT_PUBLIC_STREAM_VIDEO_API_KEY: z.string().min(1),
@@ -62,7 +61,6 @@ export const env = createEnv({
 
     // Client
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_STREAM_VIDEO_API_KEY:
       process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY,
   },

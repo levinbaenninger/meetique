@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Markdown from "react-markdown";
-
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -152,12 +151,12 @@ export const CompletedState = ({ meeting }: Props) => {
                       />
                     ),
                     img: (props) => (
-                      <Image
+                      // biome-ignore lint/performance/noImgElement: Markdown component uses img element
+                      <img
                         {...props}
                         alt={props.alt}
                         className="mb-2 rounded-md"
                         height={props.height}
-                        src={props.src}
                         width={props.width}
                       />
                     ),

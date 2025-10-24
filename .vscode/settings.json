@@ -1,10 +1,5 @@
 {
-  "cSpell.words": [
-    "bottts",
-    "ilike",
-    "uidotdev",
-    "usehooks"
-  ],
+  "cSpell.words": ["bottts", "ilike", "uidotdev", "usehooks"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface UseDownloadOptions {
   url: string;
@@ -7,10 +7,34 @@ interface UseDownloadOptions {
   errorMessage?: string;
 }
 
+const FILENAME_REGEX = /filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i;
+const SECONDS_TO_MILLISECONDS = 1000;
+
+const extractFilename = (response: Response): string => {
+  const cd = response.headers.get("content-disposition") || "";
+  const m = cd.match(FILENAME_REGEX);
+
+  if (m) {
+    return decodeURIComponent(m[1] || m[2]);
+  }
+
+  try {
+    const u = new URL(response.url);
+    const base = u.pathname.split("/").pop();
+    if (base) {
+      return base;
+    }
+  } catch {
+    // Ignore error
+  }
+
+  return "download";
+};
+
 export const useDownload = ({
   url,
-  successMessage = 'Downloaded successfully',
-  errorMessage = 'Failed to download',
+  successMessage = "Downloaded successfully",
+  errorMessage = "Failed to download",
 }: UseDownloadOptions) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -27,32 +51,16 @@ export const useDownload = ({
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
 
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = objectUrl;
-
-      const cd = response.headers.get('content-disposition') || '';
-      const m = cd.match(/filename\*=UTF-8''([^;]+)|filename="?([^"]+)"?/i);
-
-      let filename = 'download';
-
-      if (m) {
-        filename = decodeURIComponent(m[1] || m[2]);
-      } else {
-        try {
-          const u = new URL(response.url);
-          const base = u.pathname.split('/').pop();
-          if (base) filename = base;
-        } catch {}
-      }
-
-      a.download = filename;
+      a.download = extractFilename(response);
 
       document.body.appendChild(a);
 
       a.click();
       a.remove();
 
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), SECONDS_TO_MILLISECONDS);
 
       toast.success(successMessage);
     } catch (error) {

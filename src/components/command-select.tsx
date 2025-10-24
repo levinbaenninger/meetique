@@ -1,15 +1,15 @@
-import { ChevronsUpDownIcon } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronsUpDownIcon } from "lucide-react";
+import { useState } from "react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
   CommandResponsiveDialog,
-} from '@/components/ui/command';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 interface Props {
   options: {
@@ -32,7 +32,7 @@ export const CommandSelect = ({
   onSelect,
   onSearch,
   value,
-  placeholder = 'Select an option',
+  placeholder = "Select an option",
   disabled,
   ariaInvalid,
   ariaDescribedBy,
@@ -44,42 +44,42 @@ export const CommandSelect = ({
   return (
     <>
       <Button
-        type='button'
-        variant='outline'
-        onClick={() => setIsOpen(true)}
-        disabled={disabled}
-        aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
+        aria-invalid={ariaInvalid}
         className={cn(
-          'hover:text-foreground h-9 justify-between px-2 font-normal',
-          'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+          "h-9 justify-between px-2 font-normal hover:text-foreground",
+          "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
           !selectedOption &&
-            'text-muted-foreground hover:text-muted-foreground',
-          className,
+            "text-muted-foreground hover:text-muted-foreground",
+          className
         )}
+        disabled={disabled}
+        onClick={() => setIsOpen(true)}
+        type="button"
+        variant="outline"
       >
-        <span className='truncate text-base md:text-sm'>
+        <span className="truncate text-base md:text-sm">
           {selectedOption?.children ?? placeholder}
         </span>
         <ChevronsUpDownIcon />
       </Button>
       <CommandResponsiveDialog
-        shouldFilter={!onSearch}
-        open={isOpen}
         onOpenChange={setIsOpen}
+        open={isOpen}
+        shouldFilter={!onSearch}
       >
-        <CommandInput placeholder='Search...' onValueChange={onSearch} />
+        <CommandInput onValueChange={onSearch} placeholder="Search..." />
         <CommandList>
           <CommandEmpty>No options found.</CommandEmpty>
           {options.map((option) => (
             <CommandItem
               key={option.id}
-              value={option.value}
               onSelect={() => {
                 onSelect(option.value);
-                onSearch?.('');
+                onSearch?.("");
                 setIsOpen(false);
               }}
+              value={option.value}
             >
               {option.children}
             </CommandItem>

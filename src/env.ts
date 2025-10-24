@@ -1,6 +1,6 @@
-import { vercel } from '@t3-oss/env-core/presets-zod';
-import { createEnv } from '@t3-oss/env-nextjs';
-import { z } from 'zod';
+import { vercel } from "@t3-oss/env-core/presets-zod";
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
 
 export const env = createEnv({
   extends: [vercel()],
@@ -13,7 +13,7 @@ export const env = createEnv({
 
     // External Services
     POLAR_ACCESS_TOKEN: z.string().min(1),
-    POLAR_SERVER: z.enum(['sandbox', 'production']),
+    POLAR_SERVER: z.enum(["sandbox", "production"]),
     RESEND_API_KEY: z.string().min(1),
 
     // Auth Providers

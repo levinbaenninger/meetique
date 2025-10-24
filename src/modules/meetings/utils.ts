@@ -1,18 +1,18 @@
-import { addDays, differenceInDays, isBefore } from 'date-fns';
+import { addDays, differenceInDays, isBefore } from "date-fns";
 
-import { RESOURCE_RETENTION_DAYS } from '@/modules/meetings/constants';
-import type { MeetingStatus } from '@/modules/meetings/types';
+import { RESOURCE_RETENTION_DAYS } from "@/modules/meetings/constants";
+import type { MeetingStatus } from "@/modules/meetings/types";
 
-export const isLockedStatus = (status: MeetingStatus): boolean => {
-  return status !== 'upcoming';
-};
+export const isLockedStatus = (status: MeetingStatus): boolean =>
+  status !== "upcoming";
 
-export const getResourcesExpiryDate = (endedAt: Date): Date => {
-  return addDays(endedAt, RESOURCE_RETENTION_DAYS);
-};
+export const getResourcesExpiryDate = (endedAt: Date): Date =>
+  addDays(endedAt, RESOURCE_RETENTION_DAYS);
 
 export const areResourcesAvailable = (endedAt: Date | null): boolean => {
-  if (!endedAt) return false;
+  if (!endedAt) {
+    return false;
+  }
   const expiryDate = getResourcesExpiryDate(endedAt);
   return isBefore(new Date(), expiryDate);
 };

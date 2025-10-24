@@ -1,23 +1,22 @@
-import { JSX, useState } from 'react';
+import { type JSX, useState } from "react";
 
-import { ResponsiveDialog } from '@/components/responsive-dialog';
-import { Button } from '@/components/ui/button';
+import { ResponsiveDialog } from "@/components/responsive-dialog";
+import { Button } from "@/components/ui/button";
 
 export const useConfirm = (
   title: string,
   description: string,
   confirmText?: string,
-  cancelText?: string,
+  cancelText?: string
 ): [() => JSX.Element, () => Promise<unknown>] => {
   const [promise, setPromise] = useState<{
     resolve: (value: boolean) => void;
   } | null>(null);
 
-  const confirm = () => {
-    return new Promise((resolve) => {
+  const confirm = () =>
+    new Promise((resolve) => {
       setPromise({ resolve });
     });
-  };
 
   const handleClose = () => {
     promise?.resolve(false);
@@ -36,21 +35,21 @@ export const useConfirm = (
 
   const ConfirmDialog = () => (
     <ResponsiveDialog
-      title={title}
       description={description}
-      open={promise !== null}
       onOpenChange={handleClose}
+      open={promise !== null}
+      title={title}
     >
-      <div className='flex w-full flex-col-reverse items-center justify-end gap-x-2 gap-y-2 pt-4 lg:flex-row'>
+      <div className="flex w-full flex-col-reverse items-center justify-end gap-x-2 gap-y-2 pt-4 lg:flex-row">
         <Button
-          variant='outline'
+          className="w-full lg:w-auto"
           onClick={handleCancel}
-          className='w-full lg:w-auto'
+          variant="outline"
         >
-          {cancelText ?? 'Cancel'}
+          {cancelText ?? "Cancel"}
         </Button>
-        <Button onClick={handleConfirm} className='w-full lg:w-auto'>
-          {confirmText ?? 'Confirm'}
+        <Button className="w-full lg:w-auto" onClick={handleConfirm}>
+          {confirmText ?? "Confirm"}
         </Button>
       </div>
     </ResponsiveDialog>

@@ -1,7 +1,7 @@
-import { inferRouterOutputs } from '@trpc/server';
+import type { inferRouterOutputs } from "@trpc/server";
 
-import { appRouter } from '@/trpc/routers/_app';
+import type { appRouter } from "@/trpc/routers/_app";
 
 export type Agent = NonNullable<
-  inferRouterOutputs<typeof appRouter>['agents']['get']
+  inferRouterOutputs<typeof appRouter>["agents"]["get"]
 >;

@@ -1,18 +1,18 @@
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from "node:url";
 
-import { withSentryConfig } from '@sentry/nextjs';
-import { createJiti } from 'jiti';
+import { withSentryConfig } from "@sentry/nextjs";
+import { createJiti } from "jiti";
 
 const jiti = createJiti(fileURLToPath(import.meta.url), { fsCache: true });
-await jiti.import('./src/env');
+await jiti.import("./src/env");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/meetings',
+        source: "/",
+        destination: "/meetings",
         permanent: false,
       },
     ];
@@ -20,16 +20,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/ingest/static/:path*',
-        destination: 'https://eu-assets.i.posthog.com/static/:path*',
+        source: "/ingest/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*",
       },
       {
-        source: '/ingest/:path*',
-        destination: 'https://eu.i.posthog.com/:path*',
+        source: "/ingest/:path*",
+        destination: "https://eu.i.posthog.com/:path*",
       },
       {
-        source: '/ingest/decide',
-        destination: 'https://eu.i.posthog.com/decide',
+        source: "/ingest/decide",
+        destination: "https://eu.i.posthog.com/decide",
       },
     ];
   },
@@ -44,8 +44,8 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: process.env.SENTRY_ORG || 'meetique',
-  project: process.env.SENTRY_PROJECT || 'app',
+  org: process.env.SENTRY_ORG || "meetique",
+  project: process.env.SENTRY_PROJECT || "app",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -60,7 +60,7 @@ export default withSentryConfig(nextConfig, {
   // This can increase your server load as well as your hosting bill.
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: '/monitoring',
+  tunnelRoute: "/monitoring",
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,

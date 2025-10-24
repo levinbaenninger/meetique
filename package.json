@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev:web": "next dev",
+    "dev:webhook": "ngrok http --url=unquick-unarticulative-arlene.ngrok-free.dev 3000",
+    "dev:inngest": "bun x inngest-cli@latest dev",
+    "dev": "concurrently \"bun dev:web\" \"bun dev:inngest\" \"bun dev:webhook\"",
     "build": "next build",
     "start": "next start",
     "check": "bun x ultracite check",
@@ -13,9 +16,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
-    "dev:webhook": "ngrok http --url=unquick-unarticulative-arlene.ngrok-free.dev 3000",
-    "dev:inngest": "pnpm dlx inngest-cli@latest dev",
-    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:inngest\" \"pnpm dev:webhook\"",
     "prepare": "husky"
   },
   "dependencies": {

@@ -7,8 +7,8 @@ import {
   addTimesInSecondsToTranscript,
   fetchTranscript,
   getFunctionModel,
-  parseTranscript,
 } from '@/inngest/utils';
+import { Transcript } from '@/modules/meetings/types';
 
 import { inngest } from '../client';
 
@@ -44,13 +44,9 @@ export const functionGenerateAgentMessage = inngest.createFunction(
     const { transcriptUrl, meetingChatId, agentId, chatMessages, lastMessage } =
       event.data;
 
-    const response = await step.run(
+    const transcript: Transcript[] = await step.run(
       'generate-agent-message/fetch-transcript',
       async () => fetchTranscript(transcriptUrl),
-    );
-    const transcript = await step.run(
-      'generate-agent-message/parse-transcript',
-      async () => parseTranscript(response),
     );
     const transcriptWithSpeaker = await step.run(
       'generate-agent-message/add-speakers',
@@ -69,22 +65,35 @@ export const functionGenerateAgentMessage = inngest.createFunction(
       }),
     );
 
+    let agentMessage = '';
+
+    if (!output || output.length === 0 || !(output[0] as TextMessage).content) {
+      agentMessage =
+        "I'm sorry, I couldn't generate a message for you. Please try again.";
+    } else {
+      agentMessage = (output[0] as TextMessage).content as string;
+    }
+
     await step.run(
       'generate-agent-message/save-agent-chat-message',
       async () => {
-        await db
-          .insert(meeting_chat_message_agent)
-          .values({
-            meetingChatId: meetingChatId,
-            agentId: agentId,
-            message: (output[0] as TextMessage).content as string,
-          })
-          .returning();
+        try {
+          await db
+            .insert(meeting_chat_message_agent)
+            .values({
+              meetingChatId: meetingChatId,
+              agentId: agentId,
+              message: agentMessage,
+            })
+            .returning();
+        } catch (error) {
+          throw new Error(
+            `Failed to save agent message: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          );
+        }
       },
     );
 
-    return {
-      agentMessage: output,
-    };
+    return output;
   },
 );

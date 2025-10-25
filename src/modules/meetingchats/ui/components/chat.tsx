@@ -100,6 +100,9 @@ export const MeetingChat = ({ meeting }: Props) => {
           trpc.premium.getFreeUsage.queryOptions(),
         );
         form.reset();
+        if (!chat) {
+          return;
+        }
         generateAgentMessageMutation.mutate({
           meetingChatId: chat.id,
           agentId: meeting.agentId,
@@ -110,12 +113,12 @@ export const MeetingChat = ({ meeting }: Props) => {
         const messagesScrollAreaBottom = document.getElementById(
           'messages-scroll-area-bottom',
         );
-        console.log(messagesScrollArea);
-        console.log(messagesScrollAreaBottom);
-        messagesScrollArea!.scrollTo({
-          top: messagesScrollAreaBottom!.offsetTop,
-          behavior: 'smooth',
-        });
+        if (messagesScrollArea && messagesScrollAreaBottom) {
+          messagesScrollArea!.scrollTo({
+            top: messagesScrollAreaBottom!.offsetTop,
+            behavior: 'smooth',
+          });
+        }
       },
       onError: (error) => {
         toast.error(error.message);
@@ -138,7 +141,7 @@ export const MeetingChat = ({ meeting }: Props) => {
     return (
       <div className='flex flex-col items-center justify-center gap-y-4'>
         <EmptyState
-          title='No chat created yet'
+          title='No chat created yet or access denied'
           description='Create a chat to ask questions about the meeting and get answers from the agent.'
         />
         <Button onClick={createChatHandler}>Create chat</Button>
@@ -164,7 +167,7 @@ export const MeetingChat = ({ meeting }: Props) => {
       >
         {messages.map((message) => (
           <Message
-            key={`${message.author}_${message.date.toISOString()}`}
+            key={`${message.author.type}_${message.author.name}_${message.date.toISOString()}`}
             message={message}
             classNames={
               message.author.isCurrentUser
@@ -173,7 +176,7 @@ export const MeetingChat = ({ meeting }: Props) => {
             }
           />
         ))}
-        <a id='messages-scroll-area-bottom' />
+        <div id='messages-scroll-area-bottom' />
       </ScrollArea>
     );
   }

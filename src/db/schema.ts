@@ -111,9 +111,9 @@ export const meeting_chat = pgTable('meeting_chat', {
   meetingId: text('meeting_id')
     .notNull()
     .references(() => meeting.id, { onDelete: 'cascade' }),
-  createdByUserId: text('created_by_user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'set null' }),
+  createdByUserId: text('created_by_user_id').references(() => user.id, {
+    onDelete: 'set null',
+  }),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -143,9 +143,7 @@ export const meeting_chat_message_user = pgTable('meeting_chat_message_user', {
   meetingChatId: text('meeting_chat_id')
     .notNull()
     .references(() => meeting_chat.id, { onDelete: 'cascade' }),
-  userId: text('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'set null' }),
+  userId: text('user_id').references(() => user.id, { onDelete: 'set null' }),
   message: text('message').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),

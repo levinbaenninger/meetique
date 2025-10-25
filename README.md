@@ -42,7 +42,7 @@ Meetique is an AI-powered meeting platform that enables users to schedule and co
 - **Database**: PostgreSQL with Drizzle ORM
 - **Authentication**: Better Auth with magic links and social providers
 - **Video**: Stream Video SDK
-- **AI**: OpenAI GPT-4 for summarization and chat
+- **AI**: OpenAI GPT-4 with optional Google Gemini 2.0 Flash fallback for summarization and chat
 - **Background Jobs**: Inngest for async processing
 - **Payments**: Polar for subscription management
 
@@ -112,7 +112,20 @@ ARCJET_KEY="your_arcjet_api_key"
 # PostHog Analytics
 NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
 NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
+
+# Transcript Security
+ALLOWED_TRANSCRIPT_HOSTS="ohio.stream-io-cdn.com"
 ```
+
+### Environment Variable Details
+
+#### ALLOWED_TRANSCRIPT_HOSTS
+
+A comma-separated list of allowed hostnames for transcript URLs. This security feature ensures that transcript fetching is only allowed from trusted sources.
+
+- **Production**: `ohio.stream-io-cdn.com` (Stream Video CDN for meeting transcripts)
+- **Format**: Comma-separated list without spaces (e.g., `"host1.com,host2.com,localhost"`)
+- **Security**: Only HTTPS URLs are allowed, and hostnames must be in this allowlist
 
 ## 🚀 Getting Started
 

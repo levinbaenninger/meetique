@@ -7,7 +7,6 @@ import {
   addSpeakersToTranscript,
   fetchTranscript,
   getFunctionModel,
-  parseTranscript,
 } from '@/inngest/utils';
 
 import { inngest } from '../client';
@@ -41,12 +40,8 @@ export const functionSummarizer = inngest.createFunction(
   { id: 'meetings/processing' },
   { event: 'meetings/processing' },
   async ({ event, step }) => {
-    const response = await step.run('processing/fetch-transcript', async () =>
+    const transcript = await step.run('processing/fetch-transcript', async () =>
       fetchTranscript(event.data.transcriptUrl),
-    );
-
-    const transcript = await step.run('processing/parse-transcript', async () =>
-      parseTranscript(response),
     );
 
     const transcriptWithSpeaker = await step.run(
@@ -59,11 +54,20 @@ export const functionSummarizer = inngest.createFunction(
     );
 
     await step.run('processing/save-summary', async () => {
+      if (!Array.isArray(output) || output.length === 0) {
+        throw new Error('Summarizer returned no content');
+      }
+      const first = output[0] as Partial<TextMessage>;
+      const content =
+        typeof first?.content === 'string'
+          ? first.content
+          : JSON.stringify(first ?? {});
       await db
         .update(meeting)
         .set({
-          summary: (output[0] as TextMessage).content as string,
+          summary: content,
           status: 'completed',
+          updatedAt: new Date(),
         })
         .where(eq(meeting.id, event.data.meetingId));
     });

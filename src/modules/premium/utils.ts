@@ -119,13 +119,7 @@ export async function checkMeetingLimit(
     userMeetingCount = userMeetings.count;
   } else {
     // paid tiers with monthly limits
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(
-      now.getFullYear(),
-      (now.getMonth() + 1) % 12,
-      0,
-    );
+    const { startOfMonth, endOfMonth } = getMonthBoundaries();
 
     const [userMeetings] = await db
       .select({ count: count(meeting.id) })
@@ -168,25 +162,23 @@ export async function checkMeetingChatMessageLimit(
       .where(eq(meeting_chat.createdByUserId, userId))
       .then((chats) => chats.map((chat) => chat.id));
 
-    const [agentMessages] = await db
-      .select({ count: count(meeting_chat_message_agent.id) })
-      .from(meeting_chat_message_agent)
-      .where(inArray(meeting_chat_message_agent.meetingChatId, userChats));
-    const [userMessages] = await db
-      .select({ count: count(meeting_chat_message_user.id) })
-      .from(meeting_chat_message_user)
-      .where(inArray(meeting_chat_message_user.meetingChatId, userChats));
+    if (userChats.length == 0) {
+      userMeetingChatMessageCount = 0;
+    } else {
+      const [agentMessages] = await db
+        .select({ count: count(meeting_chat_message_agent.id) })
+        .from(meeting_chat_message_agent)
+        .where(inArray(meeting_chat_message_agent.meetingChatId, userChats));
+      const [userMessages] = await db
+        .select({ count: count(meeting_chat_message_user.id) })
+        .from(meeting_chat_message_user)
+        .where(inArray(meeting_chat_message_user.meetingChatId, userChats));
 
-    userMeetingChatMessageCount = agentMessages.count + userMessages.count;
+      userMeetingChatMessageCount = agentMessages.count + userMessages.count;
+    }
   } else {
     // paid tiers with monthly limits
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(
-      now.getFullYear(),
-      (now.getMonth() + 1) % 12,
-      0,
-    );
+    const { startOfMonth, endOfMonth } = getMonthBoundaries();
 
     const userChats = await db
       .select({ id: meeting_chat.id })
@@ -194,29 +186,33 @@ export async function checkMeetingChatMessageLimit(
       .where(and(eq(meeting_chat.createdByUserId, userId)))
       .then((chats) => chats.map((chat) => chat.id));
 
-    const [agentMessages] = await db
-      .select({ count: count(meeting_chat_message_agent.id) })
-      .from(meeting_chat_message_agent)
-      .where(
-        and(
-          inArray(meeting_chat_message_agent.meetingChatId, userChats),
-          gte(meeting_chat_message_agent.createdAt, startOfMonth),
-          lte(meeting_chat_message_agent.createdAt, endOfMonth),
-        ),
-      );
+    if (userChats.length === 0) {
+      userMeetingChatMessageCount = 0;
+    } else {
+      const [agentMessages] = await db
+        .select({ count: count(meeting_chat_message_agent.id) })
+        .from(meeting_chat_message_agent)
+        .where(
+          and(
+            inArray(meeting_chat_message_agent.meetingChatId, userChats),
+            gte(meeting_chat_message_agent.createdAt, startOfMonth),
+            lte(meeting_chat_message_agent.createdAt, endOfMonth),
+          ),
+        );
 
-    const [userMessages] = await db
-      .select({ count: count(meeting_chat_message_user.id) })
-      .from(meeting_chat_message_user)
-      .where(
-        and(
-          inArray(meeting_chat_message_user.meetingChatId, userChats),
-          gte(meeting_chat_message_user.createdAt, startOfMonth),
-          lte(meeting_chat_message_user.createdAt, endOfMonth),
-        ),
-      );
+      const [userMessages] = await db
+        .select({ count: count(meeting_chat_message_user.id) })
+        .from(meeting_chat_message_user)
+        .where(
+          and(
+            inArray(meeting_chat_message_user.meetingChatId, userChats),
+            gte(meeting_chat_message_user.createdAt, startOfMonth),
+            lte(meeting_chat_message_user.createdAt, endOfMonth),
+          ),
+        );
 
-    userMeetingChatMessageCount = agentMessages.count + userMessages.count;
+      userMeetingChatMessageCount = agentMessages.count + userMessages.count;
+    }
   }
 
   return {
@@ -224,4 +220,11 @@ export async function checkMeetingChatMessageLimit(
     current: userMeetingChatMessageCount,
     limit: tierInfo.limits.meetingChatMessages,
   };
+}
+
+function getMonthBoundaries() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return { startOfMonth, endOfMonth };
 }

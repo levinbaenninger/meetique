@@ -85,8 +85,8 @@ export const DashboardTrial = () => {
             {freeUsage.meetingChatMessageCount}/
             {formatLimit(freeUsage.limits.meetingChatMessages)} Meeting Chat
             Messages
-            {freeUsage.tier === 'starter' ||
-              (freeUsage.tier === 'pro' && ' (this month)')}
+            {(freeUsage.tier === 'starter' || freeUsage.tier === 'pro') &&
+              ' (this month)'}
           </p>
           {freeUsage.limits.meetingChatMessages !== -1 && (
             <Progress

@@ -45,13 +45,6 @@ export const meetingChatsRouter = router({
           ),
         );
 
-      if (meetingChats === null) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'No chat of this meeting found or access denied',
-        });
-      }
-
       return meetingChats;
     }),
   getUserMessages: protectedProcedure
@@ -207,6 +200,13 @@ export const meetingChatsRouter = router({
           ),
         );
 
+      if (!existingMeeting) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Meeting not found or access denied',
+        });
+      }
+
       const [agentOfMeeting] = await db
         .select({
           id: agent.id,
@@ -215,13 +215,6 @@ export const meetingChatsRouter = router({
         })
         .from(agent)
         .where(eq(agent.id, existingMeeting.agentId));
-
-      if (!existingMeeting) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
-        });
-      }
 
       const chatMessages = await getMessages(
         input.meetingChatId,

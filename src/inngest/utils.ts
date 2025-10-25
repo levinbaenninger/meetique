@@ -18,15 +18,18 @@ export function getFunctionModel() {
       });
 }
 
-export async function fetchTranscript(transcriptUrl: string) {
+export async function fetchTranscript(
+  transcriptUrl: string,
+): Promise<Transcript[]> {
   try {
+    assertAllowedUrl(transcriptUrl);
     const res = await fetch(transcriptUrl);
     if (!res.ok) {
       throw new Error(
         `Failed to fetch transcript: ${res.status} ${res.statusText}`,
       );
     }
-    return await res.text();
+    return await parseTranscript(await res.text());
   } catch (error) {
     throw new Error(
       `Failed to fetch transcript: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -34,8 +37,26 @@ export async function fetchTranscript(transcriptUrl: string) {
   }
 }
 
-export async function parseTranscript(transcriptionResponse: string) {
-  return JSONL.parse<Transcript>(transcriptionResponse);
+function assertAllowedUrl(
+  urlString: string,
+  allowedHosts: string[] = (process.env.ALLOWED_TRANSCRIPT_HOSTS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
+): void {
+  const url = new URL(urlString);
+  if (url.protocol !== 'https:') {
+    throw new Error('Only https:// is allowed for transcript URLs');
+  }
+  if (allowedHosts.length && !allowedHosts.includes(url.hostname)) {
+    throw new Error(`Host ${url.hostname} is not allowed`);
+  }
+}
+
+async function parseTranscript(
+  transcriptionResponse: string,
+): Promise<Transcript[]> {
+  return JSONL.parse<Transcript>(transcriptionResponse) ?? [];
 }
 
 export async function addSpeakersToTranscript(transcript: Transcript[]) {

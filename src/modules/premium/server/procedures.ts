@@ -1,11 +1,11 @@
-import { count, eq } from 'drizzle-orm';
+import { count, eq } from "drizzle-orm";
 
-import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
-import { polarClient } from '@/lib/polar';
-import { getTierInfo } from '@/modules/premium/utils';
-import protectedProcedure from '@/trpc/procedures/protected';
-import { router } from '@/trpc/trpc';
+import { db } from "@/db";
+import { agent, meeting } from "@/db/schema";
+import { polarClient } from "@/lib/polar";
+import { getTierInfo } from "@/modules/premium/utils";
+import protectedProcedure from "@/trpc/procedures/protected";
+import { router } from "@/trpc/trpc";
 
 export const premiumRouter = router({
   getFreeUsage: protectedProcedure.query(async ({ ctx }) => {
@@ -32,7 +32,7 @@ export const premiumRouter = router({
     const products = await polarClient.products.list({
       isArchived: false,
       isRecurring: true,
-      sorting: ['price_amount'],
+      sorting: ["price_amount"],
     });
 
     return products.result.items;
@@ -54,7 +54,7 @@ export const premiumRouter = router({
 
     return product;
   }),
-  getTierInfo: protectedProcedure.query(async ({ ctx }) => {
-    return await getTierInfo(ctx.session.user.id);
-  }),
+  getTierInfo: protectedProcedure.query(
+    async ({ ctx }) => await getTierInfo(ctx.session.user.id)
+  ),
 });

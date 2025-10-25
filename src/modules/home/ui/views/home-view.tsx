@@ -1,5 +1,3 @@
-'use client';
+"use client";
 
-export const HomeView = () => {
-  return <div></div>;
-};
+export const HomeView = () => <div />;

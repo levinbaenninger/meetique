@@ -1,23 +1,23 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import type { SearchParams } from 'nuqs/server';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import type { SearchParams } from "nuqs/server";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-import { auth } from '@/lib/auth';
-import { loadAgentsFiltersParams } from '@/modules/agents/params';
-import { AgentsListHeader } from '@/modules/agents/ui/components/agents-list-header';
+import { auth } from "@/lib/auth";
+import { loadAgentsFiltersParams } from "@/modules/agents/params";
+import { AgentsListHeader } from "@/modules/agents/ui/components/agents-list-header";
 import {
   AgentsView,
   AgentsViewError,
   AgentsViewLoading,
-} from '@/modules/agents/ui/views/agents-view';
-import { getQueryClient, trpc } from '@/trpc/server';
+} from "@/modules/agents/ui/views/agents-view";
+import { getQueryClient, trpc } from "@/trpc/server";
 
 export const metadata: Metadata = {
-  title: 'Agents',
+  title: "Agents",
 };
 
 interface Props {
@@ -30,7 +30,7 @@ const Page = async ({ searchParams }: Props) => {
   });
 
   if (!session) {
-    redirect('/sign-in');
+    redirect("/sign-in");
   }
 
   const filters = await loadAgentsFiltersParams(searchParams);

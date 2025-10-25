@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { useDebounce } from '@uidotdev/usehooks';
-import { useRouter } from 'next/navigation';
-import { type Dispatch, type SetStateAction, useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useRouter } from "next/navigation";
+import { type Dispatch, type SetStateAction, useState } from "react";
 
-import { GeneratedAvatar } from '@/components/generated-avatar';
+import { GeneratedAvatar } from "@/components/generated-avatar";
 import {
   CommandEmpty,
   CommandGroup,
@@ -11,10 +11,10 @@ import {
   CommandItem,
   CommandList,
   CommandResponsiveDialog,
-} from '@/components/ui/command';
-import { useTRPC } from '@/lib/trpc';
+} from "@/components/ui/command";
+import { useTRPC } from "@/lib/trpc";
 
-import { DEBOUNCE_MS } from '../../constants';
+import { DEBOUNCE_MS } from "../../constants";
 
 interface Props {
   open: boolean;
@@ -23,7 +23,7 @@ interface Props {
 
 export const DashboardCommand = ({ open, setOpen }: Props) => {
   const router = useRouter();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search.trim(), DEBOUNCE_MS);
   const hasDebouncedSearch = debouncedSearch.length > 0;
 
@@ -49,25 +49,25 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
 
   return (
     <CommandResponsiveDialog
-      open={open}
+      description="Find a meeting or agent..."
       onOpenChange={setOpen}
-      title='Dashboard'
-      description='Find a meeting or agent...'
+      open={open}
       shouldFilter={false}
+      title="Dashboard"
     >
       <CommandInput
-        placeholder='Find a meeting or agent...'
-        value={search}
         onValueChange={(value) => setSearch(value)}
+        placeholder="Find a meeting or agent..."
+        value={search}
       />
       <CommandList>
         <CommandEmpty>
           {hasDebouncedSearch
-            ? 'No results found.'
-            : 'No meetings or agents available.'}
+            ? "No results found."
+            : "No meetings or agents available."}
         </CommandEmpty>
         {meetings?.items && meetings.items.length > 0 && (
-          <CommandGroup heading='Meetings'>
+          <CommandGroup heading="Meetings">
             {meetings.items.map((meeting) => (
               <CommandItem
                 key={meeting.id}
@@ -82,7 +82,7 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
           </CommandGroup>
         )}
         {agents?.items && agents.items.length > 0 && (
-          <CommandGroup heading='Agents'>
+          <CommandGroup heading="Agents">
             {agents.items.map((agent) => (
               <CommandItem
                 key={agent.id}
@@ -92,9 +92,9 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
                 }}
               >
                 <GeneratedAvatar
+                  className="size-4"
                   seed={agent.name}
-                  variant='botttsNeutral'
-                  className='size-4'
+                  variant="botttsNeutral"
                 />
                 {agent.name}
               </CommandItem>

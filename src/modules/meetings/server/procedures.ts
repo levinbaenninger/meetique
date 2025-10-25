@@ -1,4 +1,4 @@
-import { TRPCError } from '@trpc/server';
+import { TRPCError } from "@trpc/server";
 import {
   and,
   count,
@@ -8,24 +8,24 @@ import {
   ilike,
   inArray,
   sql,
-} from 'drizzle-orm';
-import JSONL from 'jsonl-parse-stringify';
-import { z } from 'zod';
+} from "drizzle-orm";
+import JSONL from "jsonl-parse-stringify";
+import { z } from "zod";
 
-import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
-import { db } from '@/db';
-import { agent, meeting, user } from '@/db/schema';
-import { generateAvatarUri } from '@/lib/avatar';
-import { streamVideo } from '@/lib/stream-video';
+import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from "@/constants";
+import { db } from "@/db";
+import { agent, meeting, user } from "@/db/schema";
+import { generateAvatarUri } from "@/lib/avatar";
+import { streamVideo } from "@/lib/stream-video";
 import {
   createMeetingSchema,
   updateMeetingSchema,
-} from '@/modules/meetings/schemas';
-import { meetingStatus, Transcript } from '@/modules/meetings/types';
-import { isLockedStatus } from '@/modules/meetings/utils';
-import premiumProcedure from '@/trpc/procedures/premium';
-import protectedProcedure from '@/trpc/procedures/protected';
-import { router } from '@/trpc/trpc';
+} from "@/modules/meetings/schemas";
+import { meetingStatus, type Transcript } from "@/modules/meetings/types";
+import { isLockedStatus } from "@/modules/meetings/utils";
+import premiumProcedure from "@/trpc/procedures/premium";
+import protectedProcedure from "@/trpc/procedures/protected";
+import { router } from "@/trpc/trpc";
 
 export const meetingsRouter = router({
   get: protectedProcedure
@@ -34,24 +34,21 @@ export const meetingsRouter = router({
       const [existingMeeting] = await db
         .select({
           ...getTableColumns(meeting),
-          agent: agent,
+          agent,
           duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
-            'duration',
+            "duration"
           ),
         })
         .from(meeting)
         .innerJoin(agent, eq(meeting.agentId, agent.id))
         .where(
-          and(
-            eq(meeting.id, input.id),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+          and(eq(meeting.id, input.id), eq(meeting.userId, ctx.session.user.id))
         );
 
       if (!existingMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found',
+          code: "NOT_FOUND",
+          message: "Meeting not found",
         });
       }
 
@@ -65,7 +62,7 @@ export const meetingsRouter = router({
         search: z.string().nullish(),
         agentId: z.string().nullish(),
         status: z.enum(meetingStatus).nullish(),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
       const { page, limit, search, agentId, status } = input;
@@ -73,9 +70,9 @@ export const meetingsRouter = router({
       const data = await db
         .select({
           ...getTableColumns(meeting),
-          agent: agent,
+          agent,
           duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
-            'duration',
+            "duration"
           ),
         })
         .from(meeting)
@@ -85,8 +82,8 @@ export const meetingsRouter = router({
             eq(meeting.userId, ctx.session.user.id),
             search ? ilike(meeting.name, `%${search}%`) : undefined,
             agentId ? eq(meeting.agentId, agentId) : undefined,
-            status ? eq(meeting.status, status) : undefined,
-          ),
+            status ? eq(meeting.status, status) : undefined
+          )
         )
         .orderBy(desc(meeting.createdAt), desc(meeting.id))
         .limit(limit)
@@ -101,8 +98,8 @@ export const meetingsRouter = router({
             eq(meeting.userId, ctx.session.user.id),
             search ? ilike(meeting.name, `%${search}%`) : undefined,
             agentId ? eq(meeting.agentId, agentId) : undefined,
-            status ? eq(meeting.status, status) : undefined,
-          ),
+            status ? eq(meeting.status, status) : undefined
+          )
         );
 
       const totalPages = Math.ceil(total.count / limit);
@@ -113,7 +110,7 @@ export const meetingsRouter = router({
         totalPages,
       };
     }),
-  create: premiumProcedure('meeting')
+  create: premiumProcedure("meeting")
     .input(createMeetingSchema)
     .mutation(async ({ input, ctx }) => {
       const [existingAgent] = await db
@@ -122,14 +119,14 @@ export const meetingsRouter = router({
         .where(
           and(
             eq(agent.userId, ctx.session.user.id),
-            eq(agent.id, input.agentId),
-          ),
+            eq(agent.id, input.agentId)
+          )
         );
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Agent not found or not accessible.',
+          code: "NOT_FOUND",
+          message: "Agent not found or not accessible.",
         });
       }
 
@@ -141,7 +138,7 @@ export const meetingsRouter = router({
         })
         .returning();
 
-      const call = streamVideo.video.call('default', createdMeeting.id);
+      const call = streamVideo.video.call("default", createdMeeting.id);
 
       await call.create({
         data: {
@@ -152,13 +149,13 @@ export const meetingsRouter = router({
           },
           settings_override: {
             transcription: {
-              language: 'en',
-              mode: 'auto-on',
-              closed_caption_mode: 'auto-on',
+              language: "en",
+              mode: "auto-on",
+              closed_caption_mode: "auto-on",
             },
             recording: {
-              mode: 'auto-on',
-              quality: '1080p',
+              mode: "auto-on",
+              quality: "1080p",
             },
           },
         },
@@ -170,9 +167,9 @@ export const meetingsRouter = router({
           name: existingAgent.name,
           image: generateAvatarUri({
             seed: existingAgent.name,
-            variant: 'botttsNeutral',
+            variant: "botttsNeutral",
           }),
-          role: 'user',
+          role: "user",
         },
       ]);
 
@@ -185,24 +182,21 @@ export const meetingsRouter = router({
         .select()
         .from(meeting)
         .where(
-          and(
-            eq(meeting.id, input.id),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+          and(eq(meeting.id, input.id), eq(meeting.userId, ctx.session.user.id))
         );
 
       if (!currentMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found',
+          code: "NOT_FOUND",
+          message: "Meeting not found",
         });
       }
 
       if (isLockedStatus(currentMeeting.status)) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: "BAD_REQUEST",
           message:
-            'Cannot update a meeting once it has started (active, processing, completed, or cancelled)',
+            "Cannot update a meeting once it has started (active, processing, completed, or cancelled)",
         });
       }
 
@@ -212,14 +206,14 @@ export const meetingsRouter = router({
         .where(
           and(
             eq(agent.userId, ctx.session.user.id),
-            eq(agent.id, input.agentId),
-          ),
+            eq(agent.id, input.agentId)
+          )
         );
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Agent not found or not accessible.',
+          code: "NOT_FOUND",
+          message: "Agent not found or not accessible.",
         });
       }
 
@@ -227,17 +221,14 @@ export const meetingsRouter = router({
         .update(meeting)
         .set(input)
         .where(
-          and(
-            eq(meeting.id, input.id),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+          and(eq(meeting.id, input.id), eq(meeting.userId, ctx.session.user.id))
         )
         .returning();
 
       if (!updatedMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found',
+          code: "NOT_FOUND",
+          message: "Meeting not found",
         });
       }
 
@@ -249,17 +240,14 @@ export const meetingsRouter = router({
       const [deletedMeeting] = await db
         .delete(meeting)
         .where(
-          and(
-            eq(meeting.id, input.id),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+          and(eq(meeting.id, input.id), eq(meeting.userId, ctx.session.user.id))
         )
         .returning();
 
       if (!deletedMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found',
+          code: "NOT_FOUND",
+          message: "Meeting not found",
         });
       }
 
@@ -270,19 +258,16 @@ export const meetingsRouter = router({
     .mutation(async ({ input, ctx }) => {
       const [canceledMeeting] = await db
         .update(meeting)
-        .set({ status: 'cancelled' })
+        .set({ status: "cancelled" })
         .where(
-          and(
-            eq(meeting.id, input.id),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+          and(eq(meeting.id, input.id), eq(meeting.userId, ctx.session.user.id))
         )
         .returning();
 
       if (!canceledMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found',
+          code: "NOT_FOUND",
+          message: "Meeting not found",
         });
       }
 
@@ -297,9 +282,9 @@ export const meetingsRouter = router({
           ctx.session.user.image ??
           generateAvatarUri({
             seed: ctx.session.user.name,
-            variant: 'initials',
+            variant: "initials",
           }),
-        role: 'admin',
+        role: "admin",
       },
     ]);
 
@@ -316,14 +301,14 @@ export const meetingsRouter = router({
         .where(
           and(
             eq(meeting.id, input.meetingId),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+            eq(meeting.userId, ctx.session.user.id)
+          )
         );
 
       if (!existingMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or not accessible.',
+          code: "NOT_FOUND",
+          message: "Meeting not found or not accessible.",
         });
       }
 
@@ -335,7 +320,7 @@ export const meetingsRouter = router({
         const res = await fetch(existingMeeting.transcriptUrl);
 
         if (!res.ok) {
-          throw new Error('Transcript fetch failed');
+          throw new Error("Transcript fetch failed");
         }
 
         const text = await res.text();
@@ -361,8 +346,8 @@ export const meetingsRouter = router({
                     ...u,
                     image:
                       u.image ??
-                      generateAvatarUri({ seed: u.name, variant: 'initials' }),
-                  })),
+                      generateAvatarUri({ seed: u.name, variant: "initials" }),
+                  }))
                 );
 
         const agentSpeakers =
@@ -377,9 +362,9 @@ export const meetingsRouter = router({
                     ...a,
                     image: generateAvatarUri({
                       seed: a.name,
-                      variant: 'botttsNeutral',
+                      variant: "botttsNeutral",
                     }),
-                  })),
+                  }))
                 );
 
         const speakers = [...userSpeakers, ...agentSpeakers];
@@ -390,10 +375,10 @@ export const meetingsRouter = router({
             return {
               ...t,
               user: {
-                name: 'Unknown',
+                name: "Unknown",
                 image: generateAvatarUri({
-                  seed: 'Unknown',
-                  variant: 'initials',
+                  seed: "Unknown",
+                  variant: "initials",
                 }),
               },
             };
@@ -409,8 +394,8 @@ export const meetingsRouter = router({
         });
       } catch (error) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Transcript expired.',
+          code: "NOT_FOUND",
+          message: "Transcript expired.",
           cause: error,
         });
       }

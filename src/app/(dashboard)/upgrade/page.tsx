@@ -1,20 +1,20 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-import { auth } from '@/lib/auth';
+import { auth } from "@/lib/auth";
 import {
   UpgradeView,
   UpgradeViewError,
   UpgradeViewLoading,
-} from '@/modules/premium/ui/views/upgrade-view';
-import { getQueryClient, trpc } from '@/trpc/server';
+} from "@/modules/premium/ui/views/upgrade-view";
+import { getQueryClient, trpc } from "@/trpc/server";
 
 export const metadata: Metadata = {
-  title: 'Upgrade',
+  title: "Upgrade",
 };
 
 const Page = async () => {
@@ -23,12 +23,12 @@ const Page = async () => {
   });
 
   if (!session) {
-    redirect('/sign-in');
+    redirect("/sign-in");
   }
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
-    trpc.premium.getCurrentSubscription.queryOptions(),
+    trpc.premium.getCurrentSubscription.queryOptions()
   );
   void queryClient.prefetchQuery(trpc.premium.getSubscriptions.queryOptions());
 

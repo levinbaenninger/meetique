@@ -1,12 +1,12 @@
-import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { auth } from '@/lib/auth';
-import { CheckEmailView } from '@/modules/auth/ui/views/check-email-view';
+import { auth } from "@/lib/auth";
+import { CheckEmailView } from "@/modules/auth/ui/views/check-email-view";
 
 export const metadata: Metadata = {
-  title: 'Check Email',
+  title: "Check Email",
 };
 
 interface Props {
@@ -19,15 +19,15 @@ const Page = async ({ searchParams }: Props) => {
   });
 
   if (session) {
-    redirect('/');
+    redirect("/");
   }
 
   const params = await searchParams;
   const email = params.email as string;
   const name = params.name as string | undefined;
 
-  if (!email || typeof email !== 'string') {
-    redirect('/sign-in');
+  if (!email || typeof email !== "string") {
+    redirect("/sign-in");
   }
 
   return <CheckEmailView email={email} name={name} />;

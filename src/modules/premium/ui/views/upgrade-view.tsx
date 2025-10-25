@@ -1,66 +1,68 @@
-'use client';
+"use client";
 
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { ErrorState } from '@/components/error-state';
-import { LoadingState } from '@/components/loading-state';
-import { authClient } from '@/lib/auth-client';
-import { useTRPC } from '@/lib/trpc';
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
+import { authClient } from "@/lib/auth-client";
+import { useTRPC } from "@/lib/trpc";
 
-import { PricingCard } from '../components/pricing-card';
-import { UpgradeHeader } from '../components/upgrade-header';
+import { PricingCard } from "../components/pricing-card";
+import { UpgradeHeader } from "../components/upgrade-header";
+
+const DOLLARS_TO_CENTS = 100;
 
 export const UpgradeView = () => {
   const trpc = useTRPC();
   const { data: subscriptions } = useSuspenseQuery(
-    trpc.premium.getSubscriptions.queryOptions(),
+    trpc.premium.getSubscriptions.queryOptions()
   );
 
   const { data: currentSubscription } = useSuspenseQuery(
-    trpc.premium.getCurrentSubscription.queryOptions(),
+    trpc.premium.getCurrentSubscription.queryOptions()
   );
 
   return (
-    <div className='flex flex-1 flex-col gap-y-4 p-4 md:px-8'>
+    <div className="flex flex-1 flex-col gap-y-4 p-4 md:px-8">
       <UpgradeHeader currentSubscription={currentSubscription} />
-      <div className='mx-auto grid w-full grid-cols-1 gap-4 md:grid-cols-3'>
+      <div className="mx-auto grid w-full grid-cols-1 gap-4 md:grid-cols-3">
         {subscriptions.map((subscription) => {
           const isCurrentSubscription =
             subscription.id === currentSubscription?.id;
           const isPremium = !!currentSubscription;
 
-          let buttonText = 'Upgrade';
+          let buttonText = "Upgrade";
           let onClick = () =>
             authClient.checkout({ products: [subscription.id] });
 
           if (isCurrentSubscription) {
-            buttonText = 'Manage';
+            buttonText = "Manage";
             onClick = () => authClient.customer.portal();
           } else if (isPremium) {
-            buttonText = 'Change Plan';
+            buttonText = "Change Plan";
             onClick = () => authClient.customer.portal();
           }
 
           return (
             <PricingCard
+              buttonText={buttonText}
+              description={subscription.description ?? ""}
+              features={subscription.benefits.map(
+                (benefit) => benefit.description
+              )}
               key={subscription.id}
-              title={subscription.name}
-              description={subscription.description ?? ''}
+              onClick={onClick}
               price={
-                subscription.prices[0].amountType === 'fixed'
-                  ? subscription.prices[0].priceAmount / 100
+                subscription.prices[0].amountType === "fixed"
+                  ? subscription.prices[0].priceAmount / DOLLARS_TO_CENTS
                   : 0
               }
               priceSuffix={`/${subscription.prices[0].recurringInterval}`}
-              features={subscription.benefits.map(
-                (benefit) => benefit.description,
-              )}
-              buttonText={buttonText}
-              onClick={onClick}
+              title={subscription.name}
               variant={
-                subscription.metadata.variant === 'highlighted'
-                  ? 'highlighted'
-                  : 'default'
+                subscription.metadata.variant === "highlighted"
+                  ? "highlighted"
+                  : "default"
               }
             />
           );
@@ -70,20 +72,16 @@ export const UpgradeView = () => {
   );
 };
 
-export const UpgradeViewLoading = () => {
-  return (
-    <LoadingState
-      title='Loading your subscription'
-      description='Please wait while we load your subscription.'
-    />
-  );
-};
+export const UpgradeViewLoading = () => (
+  <LoadingState
+    description="Please wait while we load your subscription."
+    title="Loading your subscription"
+  />
+);
 
-export const UpgradeViewError = () => {
-  return (
-    <ErrorState
-      title='Error loading your subscription'
-      description='Please try again later.'
-    />
-  );
-};
+export const UpgradeViewError = () => (
+  <ErrorState
+    description="Please try again later."
+    title="Error loading your subscription"
+  />
+);

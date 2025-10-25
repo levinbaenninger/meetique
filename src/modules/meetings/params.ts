@@ -3,15 +3,15 @@ import {
   parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
-} from 'nuqs/server';
+} from "nuqs/server";
 
-import { DEFAULT_PAGE } from '@/constants';
-import { meetingStatus } from '@/modules/meetings/types';
+import { DEFAULT_PAGE } from "@/constants";
+import { meetingStatus } from "@/modules/meetings/types";
 
 export const meetingsFiltersParams = {
-  search: parseAsString.withDefault(''),
+  search: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(DEFAULT_PAGE),
-  agentId: parseAsString.withDefault(''),
+  agentId: parseAsString.withDefault(""),
   status: parseAsStringLiteral(meetingStatus),
 };
 

@@ -1,4 +1,4 @@
-import { procedure } from '@/trpc/trpc';
+import { procedure } from "@/trpc/trpc";
 
 const publicProcedure = procedure;
 

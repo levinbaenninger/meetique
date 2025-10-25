@@ -1,14 +1,14 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import {
   MeetingView,
   MeetingViewError,
   MeetingViewLoading,
-} from '@/modules/meetings/ui/views/meeting-view';
-import { getQueryClient, trpc } from '@/trpc/server';
+} from "@/modules/meetings/ui/views/meeting-view";
+import { getQueryClient, trpc } from "@/trpc/server";
 
 interface Props {
   params: Promise<{
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const metadata: Metadata = {
-  title: 'Meeting',
+  title: "Meeting",
 };
 
 const Page = async ({ params }: Props) => {
@@ -25,7 +25,7 @@ const Page = async ({ params }: Props) => {
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
-    trpc.meetings.get.queryOptions({ id: meetingId }),
+    trpc.meetings.get.queryOptions({ id: meetingId })
   );
 
   return (

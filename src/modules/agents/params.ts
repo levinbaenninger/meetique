@@ -1,9 +1,9 @@
-import { createLoader, parseAsInteger, parseAsString } from 'nuqs/server';
+import { createLoader, parseAsInteger, parseAsString } from "nuqs/server";
 
-import { DEFAULT_PAGE } from '@/constants';
+import { DEFAULT_PAGE } from "@/constants";
 
 export const agentsFiltersParams = {
-  search: parseAsString.withDefault(''),
+  search: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(DEFAULT_PAGE),
 };
 

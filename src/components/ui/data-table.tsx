@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,19 +28,19 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className='bg-background overflow-hidden rounded-lg border'>
+    <div className="overflow-hidden rounded-lg border bg-background">
       <Table>
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className={cn(onRowClick && "cursor-pointer")}
+                data-state={row.getIsSelected() && "selected"}
                 key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
                 onClick={() => onRowClick?.(row.original)}
-                className={cn(onRowClick && 'cursor-pointer')}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className='p-4 text-sm'>
+                  <TableCell className="p-4 text-sm" key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -49,8 +49,8 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell
+                className="h-19 text-center text-muted-foreground"
                 colSpan={columns.length}
-                className='text-muted-foreground h-19 text-center'
               >
                 No results.
               </TableCell>

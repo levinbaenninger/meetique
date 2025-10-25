@@ -1,21 +1,21 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import {
   AgentView,
   AgentViewError,
   AgentViewLoading,
-} from '@/modules/agents/ui/views/agent-view';
-import { getQueryClient, trpc } from '@/trpc/server';
+} from "@/modules/agents/ui/views/agent-view";
+import { getQueryClient, trpc } from "@/trpc/server";
 
 interface Props {
   params: Promise<{ agentId: string }>;
 }
 
 export const metadata: Metadata = {
-  title: 'Agent',
+  title: "Agent",
 };
 
 const Page = async ({ params }: Props) => {

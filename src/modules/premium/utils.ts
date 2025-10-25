@@ -1,10 +1,10 @@
-import { and, count, eq, gte, lte } from 'drizzle-orm';
+import { and, count, eq, gte, lte } from "drizzle-orm";
 
-import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
-import { polarClient } from '@/lib/polar';
+import { db } from "@/db";
+import { agent, meeting } from "@/db/schema";
+import { polarClient } from "@/lib/polar";
 
-import { type SubscriptionTier, TIER_LIMITS } from './constants';
+import { type SubscriptionTier, TIER_LIMITS } from "./constants";
 
 export interface CustomerData {
   id: string;
@@ -30,10 +30,10 @@ export async function getCustomerData(userId: string): Promise<CustomerData> {
 }
 
 export async function determineUserTier(
-  customer: CustomerData,
+  customer: CustomerData
 ): Promise<SubscriptionTier> {
   if (customer.activeSubscriptions.length === 0) {
-    return 'free';
+    return "free";
   }
 
   const subscription = customer.activeSubscriptions[0];
@@ -44,15 +44,17 @@ export async function determineUserTier(
 
   const productName = product.name.toLowerCase();
 
-  if (productName.includes('starter')) {
-    return 'starter';
-  } else if (productName.includes('pro')) {
-    return 'pro';
-  } else if (productName.includes('enterprise')) {
-    return 'enterprise';
+  if (productName.includes("starter")) {
+    return "starter";
+  }
+  if (productName.includes("pro")) {
+    return "pro";
+  }
+  if (productName.includes("enterprise")) {
+    return "enterprise";
   }
 
-  return 'free';
+  return "free";
 }
 
 export async function getTierInfo(userId: string): Promise<TierInfo> {
@@ -66,7 +68,7 @@ export async function getTierInfo(userId: string): Promise<TierInfo> {
 }
 
 export async function checkAgentLimit(
-  userId: string,
+  userId: string
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const tierInfo = await getTierInfo(userId);
 
@@ -89,7 +91,7 @@ export async function checkAgentLimit(
 }
 
 export async function checkMeetingLimit(
-  userId: string,
+  userId: string
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const tierInfo = await getTierInfo(userId);
 
@@ -108,8 +110,8 @@ export async function checkMeetingLimit(
       and(
         eq(meeting.userId, userId),
         gte(meeting.createdAt, startOfMonth),
-        lte(meeting.createdAt, endOfMonth),
-      ),
+        lte(meeting.createdAt, endOfMonth)
+      )
     );
 
   const allowed = userMeetings.count < tierInfo.limits.meetings;

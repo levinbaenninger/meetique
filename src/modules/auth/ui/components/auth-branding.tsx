@@ -1,8 +1,8 @@
-export const AuthBranding = () => {
-  return (
-    <div className='from-sidebar-accent to-sidebar relative hidden flex-col items-center justify-center gap-y-5 bg-radial md:flex'>
-      <img src='/logo.svg' alt='logo' className='h-[92px] w-[92px]' />
-      <p className='text-2xl font-semibold text-white'>Meetique</p>
-    </div>
-  );
-};
+import Image from "next/image";
+
+export const AuthBranding = () => (
+  <div className="relative hidden flex-col items-center justify-center gap-y-5 bg-radial from-sidebar-accent to-sidebar md:flex">
+    <Image alt="logo" height={92} src="/logo.svg" width={92} />
+    <p className="font-semibold text-2xl text-white">Meetique</p>
+  </div>
+);

@@ -1,14 +1,14 @@
-import { TRPCError } from '@trpc/server';
-import { and, count, desc, eq, getTableColumns, ilike } from 'drizzle-orm';
-import { z } from 'zod';
+import { TRPCError } from "@trpc/server";
+import { and, count, desc, eq, getTableColumns, ilike } from "drizzle-orm";
+import { z } from "zod";
 
-import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from '@/constants';
-import { db } from '@/db';
-import { agent, meeting } from '@/db/schema';
-import { createAgentSchema, updateAgentSchema } from '@/modules/agents/schemas';
-import premiumProcedure from '@/trpc/procedures/premium';
-import protectedProcedure from '@/trpc/procedures/protected';
-import { router } from '@/trpc/trpc';
+import { DEFAULT_LIMIT, DEFAULT_PAGE, MAX_LIMIT, MIN_LIMIT } from "@/constants";
+import { db } from "@/db";
+import { agent, meeting } from "@/db/schema";
+import { createAgentSchema, updateAgentSchema } from "@/modules/agents/schemas";
+import premiumProcedure from "@/trpc/procedures/premium";
+import protectedProcedure from "@/trpc/procedures/protected";
+import { router } from "@/trpc/trpc";
 
 export const agentsRouter = router({
   get: protectedProcedure
@@ -22,14 +22,14 @@ export const agentsRouter = router({
         .from(agent)
         .leftJoin(meeting, eq(agent.id, meeting.agentId))
         .where(
-          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id))
         )
         .groupBy(agent.id);
 
       if (!existingAgent) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Agent not found',
+          code: "NOT_FOUND",
+          message: "Agent not found",
         });
       }
 
@@ -41,7 +41,7 @@ export const agentsRouter = router({
         page: z.number().default(DEFAULT_PAGE),
         limit: z.number().min(MIN_LIMIT).max(MAX_LIMIT).default(DEFAULT_LIMIT),
         search: z.string().nullish(),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
       const { page, limit, search } = input;
@@ -56,8 +56,8 @@ export const agentsRouter = router({
         .where(
           and(
             eq(agent.userId, ctx.session.user.id),
-            search ? ilike(agent.name, `%${search}%`) : undefined,
-          ),
+            search ? ilike(agent.name, `%${search}%`) : undefined
+          )
         )
         .orderBy(desc(agent.createdAt), desc(agent.id))
         .groupBy(agent.id)
@@ -70,8 +70,8 @@ export const agentsRouter = router({
         .where(
           and(
             eq(agent.userId, ctx.session.user.id),
-            search ? ilike(agent.name, `%${search}%`) : undefined,
-          ),
+            search ? ilike(agent.name, `%${search}%`) : undefined
+          )
         );
 
       const totalPages = Math.ceil(total.count / limit);
@@ -82,7 +82,7 @@ export const agentsRouter = router({
         totalPages,
       };
     }),
-  create: premiumProcedure('agent')
+  create: premiumProcedure("agent")
     .input(createAgentSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgent] = await db
@@ -102,14 +102,14 @@ export const agentsRouter = router({
         .update(agent)
         .set(input)
         .where(
-          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id))
         )
         .returning();
 
       if (!updatedAgent) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Agent not found',
+          code: "NOT_FOUND",
+          message: "Agent not found",
         });
       }
 
@@ -121,14 +121,14 @@ export const agentsRouter = router({
       const [deletedAgent] = await db
         .delete(agent)
         .where(
-          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id)),
+          and(eq(agent.id, input.id), eq(agent.userId, ctx.session.user.id))
         )
         .returning();
 
       if (!deletedAgent) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Agent not found',
+          code: "NOT_FOUND",
+          message: "Agent not found",
         });
       }
 

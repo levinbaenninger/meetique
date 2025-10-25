@@ -4,8 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { magicLink } from "better-auth/plugins";
 
 import { db } from "@/db";
-// biome-ignore lint/performance/noNamespaceImport: Will be replace with serverless neon soon
-import * as schema from "@/db/schema";
+import { schema } from "@/db/schema";
 import { env } from "@/env";
 import { BETTER_AUTH_URL, TRUSTED_ORIGINS } from "@/lib/env";
 import { resend } from "@/lib/mail";

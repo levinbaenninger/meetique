@@ -103,3 +103,12 @@ export const meeting = pgTable("meeting", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const schema = {
+  user,
+  session,
+  account,
+  verification,
+  agent,
+  meeting,
+};

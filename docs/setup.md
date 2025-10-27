@@ -60,13 +60,13 @@ After setting up your ngrok domain, configure it in:
 
 ### Authentication
 
-**GitHub OAuth**
+#### GitHub OAuth
 
 1. Create OAuth app at [GitHub Developer Settings](https://github.com/settings/developers)
 2. Set callback URL: `http://localhost:3000/api/auth/callback/github`
 3. Add to `.env`: `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
 
-**Google OAuth**
+#### Google OAuth
 
 1. Create project at [Google Cloud Console](https://console.cloud.google.com/)
 2. Create OAuth credentials with redirect URI: `http://localhost:3000/api/auth/callback/google`

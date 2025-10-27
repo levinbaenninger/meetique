@@ -47,7 +47,7 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders at [levin@levinbaenninger.dev](mailto:levin@levinbaenninger.dev).
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders at [levin@baenninger.me](mailto:levin@baenninger.me).
 
 All complaints will be reviewed and investigated promptly and fairly. All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
@@ -76,7 +76,7 @@ All complaints will be reviewed and investigated promptly and fairly. All commun
 ## Contact
 
 - **Project Maintainer:** Levin Bänninger
-- **Email:** [levin@levinbaenninger.dev](mailto:levin@levinbaenninger.dev)
+- **Email:** [levin@baenninger.me](mailto:levin@baenninger.me)
 - **GitHub:** [@levinbaenninger](https://github.com/levinbaenninger)
 
 ## Attribution

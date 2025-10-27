@@ -6,7 +6,6 @@ Technical documentation for developers working with Meetique.
 
 1. [Setup Guide](setup.md) - Environment configuration
 2. [Architecture Overview](architecture.md) - System design
-3. [Troubleshooting](troubleshooting.md) - Common issues
 
 ## Quick Links
 
@@ -19,7 +18,6 @@ Technical documentation for developers working with Meetique.
 - [Better Auth](https://better-auth.com/docs)
 - [Sentry](https://docs.sentry.io/)
 - [Arcjet](https://docs.arcjet.com/)
-- [PostHog](https://posthog.com/docs)
 
 ### Development Tools
 

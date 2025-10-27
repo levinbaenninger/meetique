@@ -4,7 +4,7 @@
 
 AI-powered meeting platform for video meetings with custom AI agents, featuring real-time transcription and automated summaries.
 
-![Screenshot of App](./assets/preview.png)
+![Screenshot of App](./assets/preview.webp)
 
 ## Features
 
@@ -16,12 +16,12 @@ AI-powered meeting platform for video meetings with custom AI agents, featuring 
 
 ## Tech Stack
 
-Next.js 15, TypeScript, Tailwind CSS, tRPC, PostgreSQL (Drizzle ORM), Better Auth, Stream Video, OpenAI GPT-4, Inngest, Polar, Sentry, Arcjet, PostHog
+Next.js 15, TypeScript, Tailwind CSS, tRPC, PostgreSQL (Drizzle ORM), Better Auth, Stream Video, OpenAI GPT-4, Inngest, Polar, Sentry, Arcjet
 
 ## Prerequisites
 
-- Node.js 18+, Bun
-- Accounts: Neon, Stream Video, OpenAI, Resend, Polar, Sentry, Arcjet, PostHog
+- Node.js 20+, Bun
+- Accounts: Neon, Stream Video, OpenAI, Resend, Polar, Sentry, Arcjet
 - OAuth apps: GitHub and/or Google
 
 ## Environment Variables
@@ -30,21 +30,31 @@ Create a `.env` file with the following:
 
 ```bash
 DATABASE_URL="postgres://username:password@host/neondb?sslmode=require"
+
+BETTER_AUTH_SECRET="..."
+BETTER_AUTH_URL="..."
+
 GITHUB_CLIENT_ID="..."
 GITHUB_CLIENT_SECRET="..."
 GOOGLE_CLIENT_ID="..."
 GOOGLE_CLIENT_SECRET="..."
+
 NEXT_PUBLIC_STREAM_VIDEO_API_KEY="..."
 STREAM_VIDEO_API_SECRET="..."
+
 OPENAI_API_KEY="..."
-RESEND_API_KEY="..."
+
 POLAR_ACCESS_TOKEN="..."
 POLAR_SERVER="sandbox"
-NEXT_PUBLIC_SENTRY_DSN="..."
+
+SENTRY_ORG="..."
+SENTRY_PROJECT="..."
 SENTRY_AUTH_TOKEN="..."
+NEXT_PUBLIC_SENTRY_DSN="..."
+
 ARCJET_KEY="..."
-NEXT_PUBLIC_POSTHOG_KEY="..."
-NEXT_PUBLIC_POSTHOG_HOST="..."
+
+RESEND_API_KEY="..."
 ```
 
 See [Setup Guide](docs/setup.md) for detailed configuration instructions.
@@ -66,11 +76,13 @@ Open http://localhost:3000
 ## Development
 
 ```bash
+bun dev             # Start development server
+bun db:generate     # Generate migration
 bun db:migrate      # Run migrations
 bun db:studio       # Open database UI
 bun typecheck       # Type checking
-bun lint:check      # Linting
-bun format:check    # Formatting
+bun check           # Check linting and formatting
+bun fix             # Fix linting and formatting
 bun build           # Production build
 ```
 
@@ -90,7 +102,6 @@ src/
 
 - [Setup Guide](docs/setup.md) - Environment configuration
 - [Architecture](docs/architecture.md) - System design
-- [Troubleshooting](docs/troubleshooting.md) - Common issues
 - [Contributing](.github/CONTRIBUTING.md) - Contribution guidelines
 - [Security](.github/SECURITY.md) - Security policy
 

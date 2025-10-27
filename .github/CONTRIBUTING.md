@@ -12,25 +12,19 @@ Thank you for your interest in contributing to Meetique. All contributions requi
 
 ### Setup
 
-```bash
-git clone https://github.com/levinbaenninger/meetique.git
-cd meetique
-bun install
-cp .env.example .env
-# Edit .env with your values
-bun db:migrate
-```
+See [Setup](../docs/setup.md) for detailed instructions.
 
 ### Development Workflow
 
-1. Create feature branch: `git checkout -b feature/your-feature-name`
+1. Create feature/fix branch: `git checkout -b feature/your-feature-name`
 2. Make your changes
 3. Test locally:
 
 ```bash
+bun dev            # Run development servers
 bun typecheck      # Type checking
-bun lint:check     # Linting
-bun format:check   # Formatting
+bun check          # Check linting and formatting
+bun fix            # Fix linting and formatting
 bun build          # Build verification
 ```
 
@@ -88,7 +82,7 @@ test: add unit tests for meeting service
 
 All PRs must:
 
-1. Pass all CI checks (tests, linting, type checking)
+1. Pass all CI checks (formatting, linting, type checking)
 2. Have maintainer approval
 3. Include documentation for new features
 4. Be up to date with main branch
@@ -96,7 +90,6 @@ All PRs must:
 ## Review Criteria
 
 - Code quality and style consistency
-- Test coverage for new features
 - Documentation completeness
 - Performance impact
 - Security considerations

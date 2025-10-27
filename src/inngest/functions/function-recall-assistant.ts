@@ -2,13 +2,8 @@ import { createAgent, TextMessage } from '@inngest/agent-kit';
 
 import { db } from '@/db';
 import { meeting_chat_message_agent } from '@/db/schema';
-import {
-  addSpeakersToTranscript,
-  addTimesInSecondsToTranscript,
-  fetchTranscript,
-  getFunctionModel,
-} from '@/inngest/utils';
-import { Transcript } from '@/modules/meetings/types';
+import { fetchFormattedTranscript,getFunctionModel } from '@/inngest/utils';
+import { FormattedTranscript } from '@/modules/meetings/types';
 
 import { inngest } from '../client';
 
@@ -44,22 +39,14 @@ export const functionGenerateAgentMessage = inngest.createFunction(
     const { transcriptUrl, meetingChatId, agentId, chatMessages, lastMessage } =
       event.data;
 
-    const transcript: Transcript[] = await step.run(
-      'generate-agent-message/fetch-transcript',
-      async () => fetchTranscript(transcriptUrl),
-    );
-    const transcriptWithSpeaker = await step.run(
-      'generate-agent-message/add-speakers',
-      async () => addSpeakersToTranscript(transcript),
-    );
-    const transcriptWithSecondTimes = await step.run(
-      'generate-agent-message/add-second-times',
-      async () => addTimesInSecondsToTranscript(transcriptWithSpeaker),
+    const transcript: FormattedTranscript[] = await step.run(
+      'generate-agent-message/fetch-formatted-transcript',
+      async () => fetchFormattedTranscript(transcriptUrl),
     );
 
     const { output } = await chatBotAssistant.run(
       JSON.stringify({
-        meeting_transcript: transcriptWithSecondTimes,
+        meeting_transcript: transcript,
         chat_history: chatMessages,
         latest_user_message: lastMessage,
       }),

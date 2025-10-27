@@ -22,7 +22,7 @@ import {
   createMeetingSchema,
   updateMeetingSchema,
 } from '@/modules/meetings/schemas';
-import { meetingStatus, Transcript } from '@/modules/meetings/types';
+import { FetchedTranscript,meetingStatus } from '@/modules/meetings/types';
 import { PREMIUM_ENTITY } from '@/modules/premium/constants';
 import premiumProcedure from '@/trpc/procedures/premium';
 import protectedProcedure from '@/trpc/procedures/protected';
@@ -288,7 +288,7 @@ export const meetingsRouter = router({
 
       const transcript = await fetch(existingMeeting.transcriptUrl)
         .then((res) => res.text())
-        .then((text) => JSONL.parse<Transcript>(text))
+        .then((text) => JSONL.parse<FetchedTranscript>(text))
         .catch(() => []);
 
       const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];

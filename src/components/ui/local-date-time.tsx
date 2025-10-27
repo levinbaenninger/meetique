@@ -4,7 +4,7 @@ function LocalDateTime({ date }: { date: Date }) {
   const localDate = new Date(date);
   return (
     <time dateTime={date.toISOString()}>
-      {localDate.toLocaleDateString(undefined, {
+      {localDate.toLocaleString(undefined, {
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',

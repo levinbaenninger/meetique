@@ -4,32 +4,68 @@ import JSONL from 'jsonl-parse-stringify';
 
 import { db } from '@/db';
 import { agent, user } from '@/db/schema';
-import { Transcript } from '@/modules/meetings/types';
+import {
+  FetchedTranscript,
+  FormattedTranscript,
+  Speaker,
+} from '@/modules/meetings/types';
 
 export function getFunctionModel() {
-  return process.env.OPENAI_API_KEY
-    ? openai({
-        model: 'gpt-4o',
-        apiKey: process.env.OPENAI_API_KEY!,
-      })
-    : gemini({
-        model: 'gemini-2.0-flash',
-        apiKey: process.env.GEMINI_API_KEY!,
-      });
+  if (process.env.OPENAI_API_KEY) {
+    return openai({
+      model: 'gpt-4o',
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  if (process.env.GEMINI_API_KEY) {
+    return gemini({
+      model: 'gemini-2.0-flash',
+      apiKey: process.env.GEMINI_API_KEY,
+    });
+  }
+  throw new Error(
+    'No AI provider configured: set OPENAI_API_KEY and, optionally, GEMINI_API_KEY',
+  );
 }
 
-export async function fetchTranscript(
+export async function fetchFormattedTranscript(
   transcriptUrl: string,
-): Promise<Transcript[]> {
+): Promise<FormattedTranscript[]> {
+  const fetched = await fetchTranscript(transcriptUrl);
+
+  const speakerMap = await getSpeakers(
+    fetched.map((transcript) => transcript.speaker_id),
+  );
+
+  return fetched.map((transcript) => ({
+    speaker: speakerMap.get(transcript.speaker_id) ?? null,
+    type: transcript.type,
+    text: transcript.text,
+    start_time_formatted: millisecondsToFormattedTime(transcript.start_ts),
+    stop_time_formatted: millisecondsToFormattedTime(transcript.stop_ts),
+  }));
+}
+
+async function fetchTranscript(
+  transcriptUrl: string,
+): Promise<FetchedTranscript[]> {
   try {
     assertAllowedUrl(transcriptUrl);
-    const res = await fetch(transcriptUrl);
-    if (!res.ok) {
+
+    const abortController = new AbortController();
+    const timeout = setTimeout(() => abortController.abort(), 10_000);
+    const result = await fetch(transcriptUrl, {
+      signal: abortController.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!result.ok) {
       throw new Error(
-        `Failed to fetch transcript: ${res.status} ${res.statusText}`,
+        `Failed to fetch transcript: ${result.status} ${result.statusText}`,
       );
     }
-    return await parseTranscript(await res.text());
+
+    return await parseTranscript(await result.text());
   } catch (error) {
     throw new Error(
       `Failed to fetch transcript: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -55,51 +91,25 @@ function assertAllowedUrl(
 
 async function parseTranscript(
   transcriptionResponse: string,
-): Promise<Transcript[]> {
-  return JSONL.parse<Transcript>(transcriptionResponse) ?? [];
+): Promise<FetchedTranscript[]> {
+  return JSONL.parse<FetchedTranscript>(transcriptionResponse) ?? [];
 }
 
-export async function addSpeakersToTranscript(transcript: Transcript[]) {
-  const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
-
+async function getSpeakers(
+  speakerIds: string[],
+): Promise<Map<string, Speaker>> {
   const [userSpeakers, agentSpeakers] = await Promise.all([
     db.select().from(user).where(inArray(user.id, speakerIds)),
     db.select().from(agent).where(inArray(agent.id, speakerIds)),
   ]);
+  const speakers: Speaker[] = [...userSpeakers, ...agentSpeakers];
 
-  const speakers = [...userSpeakers, ...agentSpeakers];
-
-  return transcript.map((t) => {
-    const speaker = speakers.find((s) => s.id === t.speaker_id);
-
-    if (!speaker) {
-      return {
-        ...t,
-        user: {
-          name: 'Unknown',
-        },
-      };
-    }
-
-    return {
-      ...t,
-      user: {
-        name: speaker.name,
-      },
-    };
-  });
+  const speakerMap: Map<string, Speaker> = new Map<string, Speaker>();
+  speakers.forEach((speaker) => speakerMap.set(speaker.id, speaker));
+  return speakerMap;
 }
 
-export function addTimesInSecondsToTranscript(transcript: Transcript[]) {
-  return transcript.map((transcript) => ({
-    type: transcript.type,
-    text: transcript.text,
-    start_time_seconds: millisecondsToString(transcript.start_ts),
-    stop_time_seconds: millisecondsToString(transcript.stop_ts),
-  }));
-}
-
-function millisecondsToString(milliseconds: number) {
+function millisecondsToFormattedTime(milliseconds: number): string {
   // 6100069ms
   let seconds = Math.floor(milliseconds / 1000);
   let minutes = Math.floor(seconds / 60);

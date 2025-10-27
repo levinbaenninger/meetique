@@ -3,11 +3,7 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { meeting } from '@/db/schema';
-import {
-  addSpeakersToTranscript,
-  fetchTranscript,
-  getFunctionModel,
-} from '@/inngest/utils';
+import { fetchFormattedTranscript, getFunctionModel } from '@/inngest/utils';
 
 import { inngest } from '../client';
 
@@ -40,17 +36,13 @@ export const functionSummarizer = inngest.createFunction(
   { id: 'meetings/processing' },
   { event: 'meetings/processing' },
   async ({ event, step }) => {
-    const transcript = await step.run('processing/fetch-transcript', async () =>
-      fetchTranscript(event.data.transcriptUrl),
-    );
-
-    const transcriptWithSpeaker = await step.run(
-      'processing/add-speakers',
-      async () => addSpeakersToTranscript(transcript),
+    const transcript = await step.run(
+      'processing/fetch-formatted-transcript',
+      async () => fetchFormattedTranscript(event.data.transcriptUrl),
     );
 
     const { output } = await summarizer.run(
-      `Summarize the following meeting transcript: ${JSON.stringify(transcriptWithSpeaker)}`,
+      `Summarize the following meeting transcript: ${JSON.stringify(transcript)}`,
     );
 
     await step.run('processing/save-summary', async () => {

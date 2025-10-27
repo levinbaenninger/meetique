@@ -146,7 +146,7 @@ pnpm install
 
 ```bash
 cp .env.example .env
-# Edit .env. with your values
+# Edit .env with your values
 ```
 
 4. **Set up the database**

@@ -4,7 +4,7 @@ Complete configuration guide for Meetique external services.
 
 ## Prerequisites
 
-- Node.js 20+ - [Download](https://nodejs.org/)
+- Node.js 18+ - [Download](https://nodejs.org/)
 - Bun - `curl -fsSL https://bun.sh/install | bash`
 - Git - [Download](https://git-scm.com/)
 

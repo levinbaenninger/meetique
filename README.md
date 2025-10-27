@@ -20,7 +20,7 @@ Next.js 15, TypeScript, Tailwind CSS, tRPC, PostgreSQL (Drizzle ORM), Better Aut
 
 ## Prerequisites
 
-- Node.js 20+, Bun
+- Node.js 18+, Bun
 - Accounts: Neon, Stream Video, OpenAI, Resend, Polar, Sentry, Arcjet
 - OAuth apps: GitHub and/or Google
 

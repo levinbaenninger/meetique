@@ -36,7 +36,7 @@ export const auth = betterAuth({
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         await resend.emails.send({
-          from: "Meetique <meetique@levinbaenninger.dev>",
+          from: "Meetique <meetique@baenninger.me>",
           to: email,
           subject: "Welcome to Meetique - Your magic link",
           text: `Welcome to Meetique! Click the link to securely sign in to your account: ${url}`,

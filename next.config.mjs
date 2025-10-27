@@ -9,6 +9,9 @@ await jiti.import("./src/env");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactCompiler: true,
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
+  },
   async redirects() {
     return [
       {

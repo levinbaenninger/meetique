@@ -29,15 +29,16 @@ export const env = createEnv({
     STREAM_VIDEO_API_SECRET: z.string().min(1),
 
     // Sentry (optional with defaults)
-    SENTRY_ORG: z.string().optional(),
-    SENTRY_PROJECT: z.string().optional(),
+    SENTRY_ORG: z.string().min(1),
+    SENTRY_PROJECT: z.string().min(1),
+    SENTRY_AUTH_TOKEN: z.string().min(1),
 
     // CI/CD
     SKIP_ENV_VALIDATION: z.string().optional(),
   },
   client: {
     // Analytics & Monitoring
-    NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+    NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
 
     // Stream Video
     NEXT_PUBLIC_STREAM_VIDEO_API_KEY: z.string().min(1),
@@ -57,6 +58,7 @@ export const env = createEnv({
     STREAM_VIDEO_API_SECRET: process.env.STREAM_VIDEO_API_SECRET,
     SENTRY_ORG: process.env.SENTRY_ORG,
     SENTRY_PROJECT: process.env.SENTRY_PROJECT,
+    SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     SKIP_ENV_VALIDATION: process.env.SKIP_ENV_VALIDATION,
 
     // Client

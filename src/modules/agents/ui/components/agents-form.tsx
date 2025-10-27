@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
 
-import { GeneratedAvatar } from '@/components/generated-avatar';
-import { Button } from '@/components/ui/button';
+import { GeneratedAvatar } from "@/components/generated-avatar";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,12 +16,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useTRPC } from '@/lib/trpc';
-import { createAgentSchema } from '@/modules/agents/schemas';
-import type { Agent } from '@/modules/agents/types';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useTRPC } from "@/lib/trpc";
+import { createAgentSchema } from "@/modules/agents/schemas";
+import type { Agent } from "@/modules/agents/types";
 
 interface Props {
   onSuccess?: () => void;
@@ -39,18 +39,18 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       onSuccess: async () => {
         await queryClient.invalidateQueries(trpc.agents.list.queryOptions({}));
         await queryClient.invalidateQueries(
-          trpc.premium.getFreeUsage.queryOptions(),
+          trpc.premium.getFreeUsage.queryOptions()
         );
 
         onSuccess?.();
       },
       onError: (error) => {
         toast.error(error.message);
-        if (error.data?.code === 'FORBIDDEN') {
-          router.push('/upgrade');
+        if (error.data?.code === "FORBIDDEN") {
+          router.push("/upgrade");
         }
       },
-    }),
+    })
   );
 
   const updateAgent = useMutation(
@@ -62,7 +62,7 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
           queryClient.invalidateQueries(
             trpc.agents.get.queryOptions({
               id: initialValues.id,
-            }),
+            })
           );
         }
 
@@ -71,14 +71,14 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       onError: (error) => {
         toast.error(error.message);
       },
-    }),
+    })
   );
 
   const form = useForm<z.infer<typeof createAgentSchema>>({
     resolver: zodResolver(createAgentSchema),
     defaultValues: {
-      name: initialValues?.name ?? '',
-      instructions: initialValues?.instructions ?? '',
+      name: initialValues?.name ?? "",
+      instructions: initialValues?.instructions ?? "",
     },
   });
 
@@ -98,15 +98,15 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <GeneratedAvatar
-          seed={form.watch('name')}
-          variant='botttsNeutral'
-          className='size-16 border'
+          className="size-16 border"
+          seed={form.watch("name")}
+          variant="botttsNeutral"
         />
         <FormField
           control={form.control}
-          name='name'
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -119,7 +119,7 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
         />
         <FormField
           control={form.control}
-          name='instructions'
+          name="instructions"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Instructions</FormLabel>
@@ -133,19 +133,19 @@ export const AgentsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
             </FormItem>
           )}
         />
-        <div className='flex justify-between gap-x-2'>
+        <div className="flex justify-between gap-x-2">
           {onCancel && (
             <Button
-              variant='ghost'
               disabled={isPending}
-              type='button'
               onClick={onCancel}
+              type="button"
+              variant="ghost"
             >
               Cancel
             </Button>
           )}
-          <Button type='submit' disabled={isPending}>
-            {isEdit ? 'Update' : 'Create'}
+          <Button disabled={isPending} type="submit">
+            {isEdit ? "Update" : "Create"}
           </Button>
         </div>
       </form>

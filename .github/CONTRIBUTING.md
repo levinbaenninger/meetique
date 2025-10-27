@@ -1,123 +1,99 @@
-# Contributing to Meetique 🤝
+# Contributing to Meetique
 
-Thank you for your interest in contributing to Meetique! We welcome contributions from the community while maintaining high code quality and project direction.
+Thank you for your interest in contributing to Meetique. All contributions require maintainer approval before merging.
 
-## 🚦 Contribution Process
+## Contribution Process
 
 ### Before Contributing
 
-1. **Check existing issues** - Look for related issues or discussions
-2. **Open an issue first** - For new features or major changes, please open an issue to discuss before implementing
-3. **Get approval** - All contributions require maintainer approval before merging
+1. Check existing issues for related discussions
+2. Open an issue first for new features or major changes
+3. Wait for maintainer approval before implementing
 
-### How to Contribute
-
-#### 1. Fork & Clone
+### Setup
 
 ```bash
 git clone https://github.com/levinbaenninger/meetique.git
 cd meetique
-```
-
-#### 2. Set Up Development Environment
-
-```bash
-# Install dependencies
-pnpm install
-
-# Set up environment variables
+bun install
 cp .env.example .env
 # Edit .env with your values
-
-# Set up database
-pnpm db:migrate
+bun db:migrate
 ```
 
-#### 3. Create a Feature Branch
+### Development Workflow
+
+1. Create feature branch: `git checkout -b feature/your-feature-name`
+2. Make your changes
+3. Test locally:
 
 ```bash
-git checkout -b feature/your-feature-name
+bun typecheck      # Type checking
+bun lint:check     # Linting
+bun format:check   # Formatting
+bun build          # Build verification
 ```
 
-#### 4. Make Your Changes
+4. Push branch and create pull request
+5. Wait for maintainer review
 
-- Follow the existing code style
-- Add tests if applicable
-- Update documentation if needed
-- Ensure all existing tests pass
+## Code Standards
 
-#### 5. Test Your Changes
+**TypeScript:**
 
-```bash
-# Run type checking
-pnpm typecheck
+- Use strict typing, no `any` types
+- Prefer type inference where possible
 
-# Run linting
-pnpm lint:check
+**Naming:**
 
-# Run formatting
-pnpm format:check
+- camelCase for variables and functions
+- PascalCase for components and classes
+- UPPERCASE_SNAKE_CASE for constants
 
-# Build the project
-pnpm build
-```
+**Imports:**
 
-#### 6. Submit a Pull Request
+- Use absolute imports with `@/` prefix
+- Order: external, internal, relative
 
-- Push your branch to your fork
-- Create a pull request with a clear description
-- Link any related issues
-- Wait for maintainer review
-
-## 📋 Contribution Guidelines
-
-### Code Style
-
-- **TypeScript**: Use strict typing, no `any` types
-- **Naming**: camelCase for variables/functions, PascalCase for components
-- **Formatting**: Use Prettier (runs automatically)
-- **Linting**: Follow ESLint rules
-- **Imports**: Use absolute imports with `@/` prefix
-
-### Commit Messages
-
+**Commit messages:**
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
-feat: add new meeting summary feature
+feat: add meeting summary feature
 fix: resolve video connection issue
 docs: update API documentation
-style: format code with prettier
 refactor: simplify agent creation logic
 test: add unit tests for meeting service
 ```
 
-### What We're Looking For
+## What to Contribute
 
-- **Bug fixes** - Help us improve stability
-- **Performance improvements** - Optimize existing features
-- **Documentation** - Improve docs and examples
-- **Tests** - Increase test coverage
-- **Accessibility** - Improve a11y compliance
-- **UI/UX improvements** - Enhance user experience
+**Accepted:**
 
-### What Needs Discussion First
+- Bug fixes
+- Performance improvements
+- Documentation improvements
+- Test coverage increases
+- Accessibility improvements
+- UI/UX enhancements
 
-- **New features** - Please open an issue first
-- **Breaking changes** - Must be discussed and approved
-- **Architecture changes** - Requires maintainer approval
-- **External dependencies** - New dependencies need justification
+**Requires discussion first:**
 
-## 🔍 Review Process
+- New features
+- Breaking changes
+- Architecture modifications
+- New external dependencies
 
-### All PRs Must:
+## Pull Request Requirements
 
-1. **Pass CI checks** - All tests and linting must pass
-2. **Have maintainer approval** - At least one maintainer must approve
-3. **Include documentation** - Update docs for new features
-4. **Be up to date** - Resolve any merge conflicts
+All PRs must:
 
-### Review Criteria:
+1. Pass all CI checks (tests, linting, type checking)
+2. Have maintainer approval
+3. Include documentation for new features
+4. Be up to date with main branch
+
+## Review Criteria
 
 - Code quality and style consistency
 - Test coverage for new features
@@ -126,33 +102,29 @@ test: add unit tests for meeting service
 - Security considerations
 - Alignment with project goals
 
-## 🚫 Not Accepted
+## Not Accepted
 
-- **Spam or low-quality PRs**
-- **Unauthorized major changes**
-- **Breaking changes without discussion**
-- **Code that doesn't follow our style guide**
-- **Features without proper documentation**
+- Spam or low-quality PRs
+- Unauthorized major changes
+- Breaking changes without prior discussion
+- Code that doesn't follow style guide
+- Features without proper documentation
 
-## 📞 Getting Help
+## Getting Help
 
-- **Questions?** Open a GitHub issue with the `question` label
-- **Bug reports** Use the bug report template
-- **Feature requests** Use the feature request template
-- **Security issues** Please follow our [Security Policy](SECURITY.md) (don't open public issues)
+- Questions: Open GitHub issue with `question` label
+- Bug reports: Use bug report template
+- Feature requests: Use feature request template
+- Security issues: Follow [Security Policy](SECURITY.md) (do not open public issues)
 
-## 🤝 Community Guidelines
+## Community Guidelines
 
-All contributors are expected to follow our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before contributing to ensure a welcoming and inclusive environment for everyone.
+All contributors must follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## 🎯 Good First Issues
-
-Look for issues labeled `good first issue` or `help wanted` - these are great starting points for new contributors.
-
-## 📜 License
+## License
 
 By contributing to Meetique, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
-**Thank you for helping make Meetique better!** 🚀
+For good first issues, look for `good first issue` or `help wanted` labels.

@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 
 interface AgentFieldDescriptionProps {
   isDisabled: boolean;
@@ -26,8 +26,8 @@ export const AgentFieldDescription = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                type='button'
-                className='focus:ring-ring cursor-help rounded p-0 underline decoration-dotted focus:ring-2 focus:outline-none'
+                className="cursor-help rounded p-0 underline decoration-dotted focus:outline-none focus:ring-2 focus:ring-ring"
+                type="button"
               >
                 Agent is locked once the meeting starts.
               </button>
@@ -39,12 +39,12 @@ export const AgentFieldDescription = ({
               </p>
             </TooltipContent>
           </Tooltip>
-        </TooltipProvider>{' '}
+        </TooltipProvider>{" "}
         <Button
-          variant='link'
-          type='button'
+          className="p-0"
           onClick={onCreateNewMeeting}
-          className='p-0'
+          type="button"
+          variant="link"
         >
           Create new meeting
         </Button>
@@ -54,12 +54,12 @@ export const AgentFieldDescription = ({
 
   return (
     <>
-      Didn&apos;t find what you&apos;re looking for?{' '}
+      Didn&apos;t find what you&apos;re looking for?{" "}
       <Button
-        variant='link'
-        type='button'
+        className="p-0"
         onClick={onCreateNewAgent}
-        className='p-0'
+        type="button"
+        variant="link"
       >
         Create a new agent
       </Button>

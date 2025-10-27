@@ -1,16 +1,16 @@
-import { createAgent, openai, type TextMessage } from '@inngest/agent-kit';
-import { eq, inArray } from 'drizzle-orm';
-import JSONL from 'jsonl-parse-stringify';
+import { createAgent, openai, type TextMessage } from "@inngest/agent-kit";
+import { eq, inArray } from "drizzle-orm";
+import JSONL from "jsonl-parse-stringify";
 
-import { db } from '@/db';
-import { agent, meeting, user } from '@/db/schema';
-import { env } from '@/env';
-import { Transcript } from '@/modules/meetings/types';
+import { db } from "@/db";
+import { agent, meeting, user } from "@/db/schema";
+import { env } from "@/env";
+import type { Transcript } from "@/modules/meetings/types";
 
-import { inngest } from './client';
+import { inngest } from "./client";
 
 const summarizer = createAgent({
-  name: 'Summarizer',
+  name: "Summarizer",
   system:
     `You are an expert summarizer. You write readable, concise, simple content. You are given a transcript of a meeting and you need to summarize it.
 
@@ -31,34 +31,34 @@ const summarizer = createAgent({
   #### Next Section
   - Feature X automatically does Y
   - Mention of integration with Z`.trim(),
-  model: openai({ model: 'gpt-4o', apiKey: env.OPENAI_API_KEY }),
+  model: openai({ model: "gpt-4o", apiKey: env.OPENAI_API_KEY }),
 });
 
 export const meetingsProcessing = inngest.createFunction(
-  { id: 'meetings/processing' },
-  { event: 'meetings/processing' },
+  { id: "meetings/processing" },
+  { event: "meetings/processing" },
   async ({ event, step }) => {
-    const response = await step.run('fetch-transcript', async () => {
+    const response = await step.run("fetch-transcript", async () => {
       try {
         const res = await fetch(event.data.transcriptUrl);
         if (!res.ok) {
           throw new Error(
-            `Failed to fetch transcript: ${res.status} ${res.statusText}`,
+            `Failed to fetch transcript: ${res.status} ${res.statusText}`
           );
         }
         return await res.text();
       } catch (error) {
         throw new Error(
-          `Failed to fetch transcript: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          `Failed to fetch transcript: ${error instanceof Error ? error.message : "Unknown error"}`
         );
       }
     });
 
-    const transcript = await step.run('parse-transcript', async () => {
-      return JSONL.parse<Transcript>(response);
-    });
+    const transcript = await step.run("parse-transcript", async () =>
+      JSONL.parse<Transcript>(response)
+    );
 
-    const transcriptWithSpeaker = await step.run('add-speakers', async () => {
+    const transcriptWithSpeaker = await step.run("add-speakers", async () => {
       const speakerIds = [...new Set(transcript.map((t) => t.speaker_id))];
 
       const userSpeakers = await db
@@ -66,9 +66,9 @@ export const meetingsProcessing = inngest.createFunction(
         .from(user)
         .where(inArray(user.id, speakerIds))
         .then((users) =>
-          users.map((user) => ({
-            ...user,
-          })),
+          users.map((u) => ({
+            ...u,
+          }))
         );
 
       const agentSpeakers = await db
@@ -76,9 +76,9 @@ export const meetingsProcessing = inngest.createFunction(
         .from(agent)
         .where(inArray(agent.id, speakerIds))
         .then((agents) =>
-          agents.map((agent) => ({
-            ...agent,
-          })),
+          agents.map((a) => ({
+            ...a,
+          }))
         );
 
       const speakers = [...userSpeakers, ...agentSpeakers];
@@ -90,7 +90,7 @@ export const meetingsProcessing = inngest.createFunction(
           return {
             ...t,
             user: {
-              name: 'Unknown',
+              name: "Unknown",
             },
           };
         }
@@ -105,15 +105,15 @@ export const meetingsProcessing = inngest.createFunction(
     });
 
     const { output } = await summarizer.run(
-      `Summarize the following meeting transcript: ${JSON.stringify(transcriptWithSpeaker)}`,
+      `Summarize the following meeting transcript: ${JSON.stringify(transcriptWithSpeaker)}`
     );
 
-    await step.run('save-summary', async () => {
+    await step.run("save-summary", async () => {
       await db
         .update(meeting)
         .set({
           summary: (output[0] as TextMessage).content as string,
-          status: 'completed',
+          status: "completed",
         })
         .where(eq(meeting.id, event.data.meetingId));
     });
@@ -121,5 +121,5 @@ export const meetingsProcessing = inngest.createFunction(
     return {
       summary: output,
     };
-  },
+  }
 );

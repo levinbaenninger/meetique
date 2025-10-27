@@ -18,13 +18,13 @@ export const AuthCard = ({ children }: AuthCardProps) => (
       </CardContent>
     </Card>
 
-    <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline-offset-8 *:[a]:hover:text-primary">
+    <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline-offset-4 *:[a]:hover:text-primary">
       By clicking continue, you agree to our{" "}
-      <Link className="underline underline-offset-4" href="/terms">
+      <Link className="underline" href="/terms">
         Terms of Service
       </Link>{" "}
       and{" "}
-      <Link className="underline underline-offset-4" href="/privacy">
+      <Link className="underline" href="/privacy">
         Privacy Policy
       </Link>
       .

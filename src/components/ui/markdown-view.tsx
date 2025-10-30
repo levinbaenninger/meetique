@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import * as React from 'react';
-import Markdown from 'react-markdown';
+import Image from "next/image";
+import * as React from "react";
+import Markdown from "react-markdown";
 
 export enum MarkdownStyleType {
   TextPrimary,
@@ -78,13 +78,14 @@ function MarkdownView({
             className={`${getColor(type)} border-primary border-l-2 pl-4`}
           />
         ),
-        img: ({ src = '', alt = '', width, height, ...props }) => (
+        img: ({ src = "", alt = "", width, height, ...props }) => (
+          // biome-ignore lint/performance/noImgElement: Markdown component uses img element
           <Image
-            src={src.toString()}
             alt={alt}
-            width={typeof width === 'number' ? width : 800}
-            height={typeof height === 'number' ? height : 600}
-            className='mb-2 rounded-md'
+            className="mb-2 rounded-md"
+            height={typeof height === "number" ? height : 600}
+            src={src.toString()}
+            width={typeof width === "number" ? width : 800}
             {...props}
           />
         ),
@@ -98,11 +99,11 @@ function MarkdownView({
 function getColor(markdownStyleType: MarkdownStyleType): string {
   switch (markdownStyleType) {
     case MarkdownStyleType.TextPrimary:
-      return 'text-black';
+      return "text-black";
     case MarkdownStyleType.TextMuted:
-      return 'text-muted-foreground';
+      return "text-muted-foreground";
     default:
-      return 'text-black';
+      return "text-black";
   }
 }
 

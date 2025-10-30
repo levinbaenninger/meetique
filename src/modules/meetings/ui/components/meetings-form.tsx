@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
 
-import { CommandSelect } from '@/components/command-select';
-import { GeneratedAvatar } from '@/components/generated-avatar';
-import { Button } from '@/components/ui/button';
+import { CommandSelect } from "@/components/command-select";
+import { GeneratedAvatar } from "@/components/generated-avatar";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -19,12 +19,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useTRPC } from '@/lib/trpc';
-import { NewAgentDialog } from '@/modules/agents/ui/components/new-agent-dialog';
-import { createMeetingSchema } from '@/modules/meetings/schemas';
-import type { Meeting } from '@/modules/meetings/types';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useTRPC } from "@/lib/trpc";
+import { NewAgentDialog } from "@/modules/agents/ui/components/new-agent-dialog";
+import { createMeetingSchema } from "@/modules/meetings/schemas";
+import type { Meeting } from "@/modules/meetings/types";
+import { AgentFieldDescription } from "@/modules/meetings/ui/components/agent-field-description";
+import { NewMeetingDialog } from "@/modules/meetings/ui/components/new-meeting-dialog";
+import { isLockedStatus } from "@/modules/meetings/utils";
 
 interface Props {
   onSuccess?: (id: string) => void;
@@ -38,45 +41,48 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const queryClient = useQueryClient();
 
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
-  const [agentSearch, setAgentSearch] = useState('');
+  const [openNewMeetingDialog, setOpenNewMeetingDialog] = useState(false);
+  const [agentSearch, setAgentSearch] = useState("");
 
   const { data: agents } = useQuery(
     trpc.agents.list.queryOptions({
       limit: 100,
       search: agentSearch,
-    }),
+    })
   );
 
   const createMeeting = useMutation(
     trpc.meetings.create.mutationOptions({
       onSuccess: async (createdMeeting) => {
         await queryClient.invalidateQueries(
-          trpc.meetings.list.queryOptions({}),
+          trpc.meetings.list.queryOptions({})
         );
         await queryClient.invalidateQueries(
-          trpc.premium.getFreeUsage.queryOptions(),
+          trpc.premium.getFreeUsage.queryOptions()
         );
         onSuccess?.(createdMeeting.id);
       },
       onError: (error) => {
         toast.error(error.message);
-        if (error.data?.code === 'FORBIDDEN') {
-          router.push('/upgrade');
+        if (error.data?.code === "FORBIDDEN") {
+          router.push("/upgrade");
         }
       },
-    }),
+    })
   );
 
   const updateMeeting = useMutation(
     trpc.meetings.update.mutationOptions({
       onSuccess: async (updatedMeeting) => {
-        queryClient.invalidateQueries(trpc.meetings.list.queryOptions({}));
+        await queryClient.invalidateQueries(
+          trpc.meetings.list.queryOptions({})
+        );
 
         if (initialValues?.id) {
-          queryClient.invalidateQueries(
+          await queryClient.invalidateQueries(
             trpc.meetings.get.queryOptions({
               id: initialValues.id,
-            }),
+            })
           );
         }
 
@@ -85,19 +91,21 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       onError: (error) => {
         toast.error(error.message);
       },
-    }),
+    })
   );
 
   const form = useForm<z.infer<typeof createMeetingSchema>>({
     resolver: zodResolver(createMeetingSchema),
     defaultValues: {
-      name: initialValues?.name ?? '',
-      agentId: initialValues?.agentId ?? '',
+      name: initialValues?.name ?? "",
+      agentId: initialValues?.agentId ?? "",
     },
   });
 
   const isEdit = !!initialValues?.id;
   const isPending = createMeeting.isPending || updateMeeting.isPending;
+  const isAgentEditDisabled =
+    isEdit && initialValues?.status && isLockedStatus(initialValues.status);
 
   const onSubmit = (values: z.infer<typeof createMeetingSchema>) => {
     if (isEdit) {
@@ -112,15 +120,19 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
 
   return (
     <>
+      <NewMeetingDialog
+        onOpenChange={setOpenNewMeetingDialog}
+        open={openNewMeetingDialog}
+      />
       <NewAgentDialog
-        open={openNewAgentDialog}
         onOpenChange={setOpenNewAgentDialog}
+        open={openNewAgentDialog}
       />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name='name'
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
@@ -133,65 +145,62 @@ export const MeetingsForm = ({ onSuccess, onCancel, initialValues }: Props) => {
           />
           <FormField
             control={form.control}
-            name='agentId'
+            name="agentId"
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Agent</FormLabel>
                 <FormControl>
                   <CommandSelect
                     {...field}
+                    ariaDescribedBy={fieldState.error?.message}
+                    ariaInvalid={!!fieldState.error}
+                    disabled={isAgentEditDisabled}
+                    onSearch={(value) => setAgentSearch(value)}
+                    onSelect={(value) => field.onChange(value)}
                     options={(agents?.items ?? []).map((agent) => ({
                       id: agent.id,
                       value: agent.id,
                       children: (
-                        <div className='flex items-center gap-x-2'>
+                        <div className="flex items-center gap-x-2">
                           <GeneratedAvatar
+                            className="size-6 border"
                             seed={agent.name}
-                            variant='botttsNeutral'
-                            className='size-6 border'
+                            variant="botttsNeutral"
                           />
-                          <span className='truncate text-base md:text-sm'>
+                          <span className="truncate text-base md:text-sm">
                             {agent.name}
                           </span>
                         </div>
                       ),
                     }))}
-                    onSelect={(value) => field.onChange(value)}
-                    onSearch={(value) => setAgentSearch(value)}
+                    placeholder="Search for an agent..."
                     value={field.value}
-                    placeholder='Search for an agent...'
-                    ariaInvalid={!!fieldState.error}
-                    ariaDescribedBy={fieldState.error?.message}
                   />
                 </FormControl>
                 <FormDescription>
-                  Not found what you&apos;re looking for?{' '}
-                  <Button
-                    variant='link'
-                    type='button'
-                    onClick={() => setOpenNewAgentDialog(true)}
-                    className='p-0'
-                  >
-                    Create a new agent
-                  </Button>
+                  <AgentFieldDescription
+                    isDisabled={isAgentEditDisabled}
+                    onCreateNewAgent={() => setOpenNewAgentDialog(true)}
+                    onCreateNewMeeting={() => setOpenNewMeetingDialog(true)}
+                  />
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className='flex justify-between gap-x-2'>
+          <div className="flex justify-between gap-x-2">
             {onCancel && (
               <Button
-                variant='ghost'
                 disabled={isPending}
-                type='button'
                 onClick={onCancel}
+                type="button"
+                variant="ghost"
               >
                 Cancel
               </Button>
             )}
-            <Button type='submit' disabled={isPending}>
-              {isEdit ? 'Update' : 'Create'}
+            <Button disabled={isPending} type="submit">
+              {isEdit ? "Update" : "Create"}
             </Button>
           </div>
         </form>

@@ -1,9 +1,9 @@
 const getAppUrl = () => {
-  if (process.env.VERCEL_ENV === 'production') {
-    return 'https://meetique.vercel.app';
+  if (process.env.VERCEL_ENV === "production") {
+    return "https://meetique.baenninger.me";
   }
 
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_BRANCH_URL) {
+  if (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_BRANCH_URL) {
     return `https://${process.env.VERCEL_BRANCH_URL}`;
   }
 
@@ -11,20 +11,20 @@ const getAppUrl = () => {
     return `https://${process.env.VERCEL_URL}`;
   }
 
-  return 'http://localhost:3000';
+  return "http://localhost:3000";
 };
 
 const getTrustedOrigins = () => {
-  const origins = ['https://meetique.vercel.app']; // Production URL
+  const origins = ["https://meetique.baenninger.me"]; // Production URL
 
   // Add preview URL if available
-  if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_BRANCH_URL) {
+  if (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_BRANCH_URL) {
     origins.push(`https://${process.env.VERCEL_BRANCH_URL}`);
   }
 
   // Add localhost for development
-  if (process.env.NODE_ENV === 'development') {
-    origins.push('http://localhost:3000');
+  if (process.env.NODE_ENV === "development") {
+    origins.push("http://localhost:3000");
   }
 
   return origins;

@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { authClient } from '@/lib/auth-client';
-import { useTRPC } from '@/lib/trpc';
-import { AuthCard } from '@/modules/auth/ui/components/auth-card';
-import { EmailStep } from '@/modules/auth/ui/components/email-step';
-import { NameStep } from '@/modules/auth/ui/components/name-step';
+import { authClient } from "@/lib/auth-client";
+import { useTRPC } from "@/lib/trpc";
+import { AuthCard } from "@/modules/auth/ui/components/auth-card";
+import { EmailStep } from "@/modules/auth/ui/components/email-step";
+import { NameStep } from "@/modules/auth/ui/components/name-step";
 
-type Step = 'email' | 'name';
+type Step = "email" | "name";
 
 export const AuthView = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
-  const [step, setStep] = useState<Step>('email');
-  const [userEmail, setUserEmail] = useState('');
+  const [step, setStep] = useState<Step>("email");
+  const [userEmail, setUserEmail] = useState("");
   const [shouldCheckUser, setShouldCheckUser] = useState(false);
 
   const trpc = useTRPC();
@@ -35,22 +35,22 @@ export const AuthView = () => {
         authClient.signIn.magicLink(
           {
             email: userEmail,
-            callbackURL: '/',
+            callbackURL: "/",
           },
           {
             onSuccess: () => {
               router.push(
-                `/check-email?email=${encodeURIComponent(userEmail)}`,
+                `/check-email?email=${encodeURIComponent(userEmail)}`
               );
             },
-            onError: ({ error }) => {
-              setError(error.message);
+            onError: ({ error: e }) => {
+              setError(e.message);
               setIsPending(false);
             },
-          },
+          }
         );
       } else {
-        setStep('name');
+        setStep("name");
         setIsPending(false);
       }
     }
@@ -71,39 +71,39 @@ export const AuthView = () => {
       {
         name: data.name,
         email: data.email,
-        callbackURL: '/',
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
           router.push(
-            `/check-email?email=${encodeURIComponent(data.email)}&name=${encodeURIComponent(data.name)}`,
+            `/check-email?email=${encodeURIComponent(data.email)}&name=${encodeURIComponent(data.name)}`
           );
         },
-        onError: ({ error }) => {
-          setError(error.message);
+        onError: ({ error: e }) => {
+          setError(e.message);
           setIsPending(false);
         },
-      },
+      }
     );
   };
 
-  const handleSocialAuth = (provider: 'google' | 'github') => {
+  const handleSocialAuth = (provider: "google" | "github") => {
     setError(null);
     setIsPending(true);
 
     authClient.signIn.social(
-      { provider, callbackURL: '/' },
+      { provider, callbackURL: "/" },
       {
-        onError: ({ error }) => {
-          setError(error.message);
+        onError: ({ error: e }) => {
+          setError(e.message);
           setIsPending(false);
         },
-      },
+      }
     );
   };
 
   const handleBack = () => {
-    setStep('email');
+    setStep("email");
     setError(null);
     setIsPending(false);
     setShouldCheckUser(false);
@@ -113,20 +113,20 @@ export const AuthView = () => {
 
   return (
     <AuthCard>
-      {step === 'email' ? (
+      {step === "email" ? (
         <EmailStep
-          onSubmit={handleEmailSubmit}
-          onSocialAuth={handleSocialAuth}
-          isLoading={isLoading}
           error={error}
+          isLoading={isLoading}
+          onSocialAuth={handleSocialAuth}
+          onSubmit={handleEmailSubmit}
         />
       ) : (
         <NameStep
           email={userEmail}
-          onSubmit={handleNameSubmit}
-          onBack={handleBack}
-          isLoading={isLoading}
           error={error}
+          isLoading={isLoading}
+          onBack={handleBack}
+          onSubmit={handleNameSubmit}
         />
       )}
     </AuthCard>

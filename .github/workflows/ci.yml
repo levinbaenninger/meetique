@@ -5,90 +5,45 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  lint:
+  check:
     runs-on: ubuntu-latest
+    env:
+      SKIP_ENV_VALIDATION: true
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 10
-
-      - name: 💻 Use Node.js (LTS)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          bun-version: latest
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
 
-      - name: 🔬 Lint
-        run: pnpm lint:check
+      - name: 🔬 Lint & Format Check
+        run: bun check
 
   type-check:
     runs-on: ubuntu-latest
+    env:
+      SKIP_ENV_VALIDATION: true
     steps:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 10
-
-      - name: 💻 Use Node.js (LTS)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
+          bun-version: latest
 
       - name: 📥 Install dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
 
       - name: 🔬 Type Check
-        run: pnpm typecheck
-
-  format:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: ⬇️ Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: 💻 Use Node.js (LTS)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'pnpm'
-
-      - name: 📥 Install dependencies
-        run: pnpm install
-
-      - name: 🔬 Format
-        run: pnpm format:fix
-
-      - name: 🔧 Stash changes before pull
-        run: git stash --include-untracked
-
-      - name: 🔄 Pull latest changes (rebase)
-        env:
-          PR_HEAD_REF: ${{ github.head_ref }}
-        run: git pull --rebase origin "$PR_HEAD_REF"
-
-      - name: 🔧 Pop stash after pull
-        run: git stash pop || true
-
-      - name: 📸 Commit
-        uses: stefanzweifel/git-auto-commit-action@v6
-        with:
-          commit_message: 'chore: format code'
+        run: bun typecheck

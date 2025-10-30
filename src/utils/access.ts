@@ -1,11 +1,11 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq } from "drizzle-orm";
 
-import { db } from '@/db';
-import { meeting, meeting_chat } from '@/db/schema';
+import { db } from "@/db";
+import { meeting, meeting_chat } from "@/db/schema";
 
 export async function hasUserMeetingAccess(
   userId: string,
-  meetingId: string,
+  meetingId: string
 ): Promise<boolean> {
   const [foundMeeting] = await db
     .select({
@@ -21,7 +21,7 @@ export async function hasUserMeetingAccess(
 
 export async function hasUserMeetingChatAccess(
   userId: string,
-  meetingChatId: string,
+  meetingChatId: string
 ): Promise<boolean> {
   const [foundMeetingChat] = await db
     .select({
@@ -32,8 +32,8 @@ export async function hasUserMeetingChatAccess(
     .where(
       and(
         eq(meeting_chat.id, meetingChatId),
-        eq(meeting_chat.createdByUserId, userId),
-      ),
+        eq(meeting_chat.createdByUserId, userId)
+      )
     )
     .limit(1);
 

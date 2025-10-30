@@ -1,8 +1,8 @@
-import { TRPCError } from '@trpc/server';
-import { and, desc, eq, getTableColumns } from 'drizzle-orm';
-import { z } from 'zod';
+import { TRPCError } from "@trpc/server";
+import { and, desc, eq, getTableColumns } from "drizzle-orm";
+import { z } from "zod";
 
-import { db } from '@/db';
+import { db } from "@/db";
 import {
   agent,
   meeting,
@@ -10,24 +10,23 @@ import {
   meeting_chat_message_agent,
   meeting_chat_message_user,
   user,
-} from '@/db/schema';
-import { inngest } from '@/inngest/client';
-import { generateAvatarUri } from '@/lib/avatar';
-import { mergeMessagesIntoBaseMessages } from '@/modules/meetingchats/messageUtils';
+} from "@/db/schema";
+import { inngest } from "@/inngest/client";
+import { generateAvatarUri } from "@/lib/avatar";
+import { mergeMessagesIntoBaseMessages } from "@/modules/meetingchats/message-utils";
 import {
   createChatSchema,
   createChatUserMessageSchema,
   generateChatAgentMessageSchema,
-} from '@/modules/meetingchats/schemas';
-import {
+} from "@/modules/meetingchats/schemas";
+import type {
   MeetingChatAgentMessage,
   MeetingChatUserMessage,
-} from '@/modules/meetingchats/types';
-import { PREMIUM_ENTITY } from '@/modules/premium/constants';
-import premiumProcedure from '@/trpc/procedures/premium';
-import protectedProcedure from '@/trpc/procedures/protected';
-import { router } from '@/trpc/trpc';
-import { hasUserMeetingAccess, hasUserMeetingChatAccess } from '@/utils/access';
+} from "@/modules/meetingchats/types";
+import premiumProcedure from "@/trpc/procedures/premium";
+import protectedProcedure from "@/trpc/procedures/protected";
+import { router } from "@/trpc/trpc";
+import { hasUserMeetingAccess, hasUserMeetingChatAccess } from "@/utils/access";
 
 export const meetingChatsRouter = router({
   getChats: protectedProcedure
@@ -41,8 +40,8 @@ export const meetingChatsRouter = router({
         .where(
           and(
             eq(meeting_chat.createdByUserId, ctx.session.user.id),
-            eq(meeting_chat.meetingId, input.meetingId),
-          ),
+            eq(meeting_chat.meetingId, input.meetingId)
+          )
         );
 
       return meetingChats;
@@ -51,7 +50,7 @@ export const meetingChatsRouter = router({
     .input(
       z.object({
         meetingChatId: z.string(),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
       if (!input.meetingChatId) {
@@ -61,12 +60,12 @@ export const meetingChatsRouter = router({
       if (
         !(await hasUserMeetingChatAccess(
           ctx.session.user.id,
-          input.meetingChatId,
+          input.meetingChatId
         ))
       ) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting not found or access denied",
         });
       }
 
@@ -76,7 +75,7 @@ export const meetingChatsRouter = router({
     .input(
       z.object({
         meetingChatId: z.string(),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
       if (!input.meetingChatId) {
@@ -86,12 +85,12 @@ export const meetingChatsRouter = router({
       if (
         !(await hasUserMeetingChatAccess(
           ctx.session.user.id,
-          input.meetingChatId,
+          input.meetingChatId
         ))
       ) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting not found or access denied",
         });
       }
 
@@ -109,12 +108,12 @@ export const meetingChatsRouter = router({
       if (
         !(await hasUserMeetingChatAccess(
           ctx.session.user.id,
-          input.meetingChatId,
+          input.meetingChatId
         ))
       ) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting not found or access denied",
         });
       }
 
@@ -125,8 +124,8 @@ export const meetingChatsRouter = router({
     .mutation(async ({ input, ctx }) => {
       if (!(await hasUserMeetingAccess(ctx.session.user.id, input.meetingId))) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting not found or access denied",
         });
       }
 
@@ -140,18 +139,18 @@ export const meetingChatsRouter = router({
 
       return createdChat;
     }),
-  createUserMessage: premiumProcedure(PREMIUM_ENTITY.MEETING_CHAT_MESSAGE)
+  createUserMessage: premiumProcedure("meetingChatMessage")
     .input(createChatUserMessageSchema)
     .mutation(async ({ input, ctx }) => {
       if (
         !(await hasUserMeetingChatAccess(
           ctx.session.user.id,
-          input.meetingChatId,
+          input.meetingChatId
         ))
       ) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting chat not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting chat not found or access denied",
         });
       }
 
@@ -166,7 +165,7 @@ export const meetingChatsRouter = router({
 
       return createdUserMessage;
     }),
-  generateAgentMessage: premiumProcedure(PREMIUM_ENTITY.MEETING_CHAT_MESSAGE)
+  generateAgentMessage: premiumProcedure("meetingChatMessage")
     .input(generateChatAgentMessageSchema)
     .mutation(async ({ input, ctx }) => {
       const [meetingChat] = await db
@@ -177,14 +176,14 @@ export const meetingChatsRouter = router({
         .where(
           and(
             eq(meeting_chat.id, input.meetingChatId),
-            eq(meeting_chat.createdByUserId, ctx.session.user.id),
-          ),
+            eq(meeting_chat.createdByUserId, ctx.session.user.id)
+          )
         );
 
       if (!meetingChat) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting chat not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting chat not found or access denied",
         });
       }
 
@@ -196,14 +195,14 @@ export const meetingChatsRouter = router({
         .where(
           and(
             eq(meeting.id, meetingChat.meetingId),
-            eq(meeting.userId, ctx.session.user.id),
-          ),
+            eq(meeting.userId, ctx.session.user.id)
+          )
         );
 
       if (!existingMeeting) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Meeting not found or access denied',
+          code: "NOT_FOUND",
+          message: "Meeting not found or access denied",
         });
       }
 
@@ -218,18 +217,18 @@ export const meetingChatsRouter = router({
 
       const chatMessages = await getMessages(
         input.meetingChatId,
-        ctx.session.user.id,
+        ctx.session.user.id
       );
 
       await inngest.send({
-        name: 'meetings/generate-agent-message',
+        name: "meetings/generate-agent-message",
         data: {
           transcriptUrl: existingMeeting.transcriptUrl,
           meetingChatId: input.meetingChatId,
           agentId: existingMeeting.agentId,
           agentInstructions: agentOfMeeting.instructions,
           chatMessages: chatMessages.slice(0, -2),
-          lastMessage: chatMessages.at(-1) || '',
+          lastMessage: chatMessages.at(-1) || "",
         },
       });
     }),
@@ -242,13 +241,13 @@ async function getMessages(meetingChatId: string, currentUserId: string) {
   return mergeMessagesIntoBaseMessages(
     userMessages,
     agentMessages,
-    currentUserId,
+    currentUserId
   );
 }
 
 async function getUserMessages(
-  meetingChatId: string,
-): Promise<Array<MeetingChatUserMessage>> {
+  meetingChatId: string
+): Promise<MeetingChatUserMessage[]> {
   return await db
     .select({
       ...getTableColumns(meeting_chat_message_user),
@@ -265,23 +264,23 @@ async function getUserMessages(
         ...message,
         user: message.userId
           ? {
-              id: message.userId,
-              name: message.userName ?? '?',
-              image:
-                message.userImage ??
-                generateAvatarUri({
-                  seed: message.userName ?? '?',
-                  variant: 'initials',
-                }),
-            }
+            id: message.userId,
+            name: message.userName ?? "?",
+            image:
+              message.userImage ??
+              generateAvatarUri({
+                seed: message.userName ?? "?",
+                variant: "initials",
+              }),
+          }
           : null,
-      })),
+      }))
     );
 }
 
 async function getAgentMessages(
-  meetingChatId: string,
-): Promise<Array<MeetingChatAgentMessage>> {
+  meetingChatId: string
+): Promise<MeetingChatAgentMessage[]> {
   return await db
     .select({
       ...getTableColumns(meeting_chat_message_agent),
@@ -297,14 +296,14 @@ async function getAgentMessages(
         ...message,
         agent: message.agentId
           ? {
-              id: message.agentId,
-              name: message.agentName ?? '?',
-              image: generateAvatarUri({
-                seed: message.agentName ?? '?',
-                variant: 'botttsNeutral',
-              }),
-            }
+            id: message.agentId,
+            name: message.agentName ?? "?",
+            image: generateAvatarUri({
+              seed: message.agentName ?? "?",
+              variant: "botttsNeutral",
+            }),
+          }
           : null,
-      })),
+      }))
     );
 }

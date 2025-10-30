@@ -1,394 +1,127 @@
-# 🔧 Environment Setup Guide
+# Environment Setup Guide
 
-This guide provides detailed step-by-step instructions for setting up all external services required for Meetique.
+Complete configuration guide for Meetique external services.
 
-## 📋 Prerequisites
+## Prerequisites
 
-- **Node.js 18+** - [Download](https://nodejs.org/)
-- **pnpm** - Install with `npm install -g pnpm`
-- **Git** - [Download](https://git-scm.com/)
+- Node.js 18+ - [Download](https://nodejs.org/)
+- Bun - `curl -fsSL https://bun.sh/install | bash`
+- Git - [Download](https://git-scm.com/)
 
-## 🗄️ Database Setup (Neon PostgreSQL)
+## Webhook Testing Setup (ngrok)
 
-### 1. Create Neon Account
+For local development, webhooks from external services (like Stream Video) need a public URL to reach your localhost. We use ngrok for this.
 
-1. Go to [Neon.tech](https://neon.tech/)
-2. Sign up for a free account
-3. Create a new project
+### Installation
 
-### 2. Get Database URL
+```bash
+# macOS
+brew install ngrok/ngrok/ngrok
 
-1. In your Neon dashboard, go to **Connection Details**
-2. Copy the connection string (should look like this):
-   ```
-   postgresql://username:password@host/database?sslmode=require
-   ```
-3. Add to your `.env` file:
-   ```bash
-   DATABASE_URL="postgresql://username:password@host/database?sslmode=require"
-   ```
+# Windows (with Chocolatey)
+choco install ngrok
+```
 
-## 🔐 Authentication Setup
+### Get Your Static ngrok URL
 
-### GitHub OAuth
+1. Sign up for free at [ngrok.com](https://ngrok.com/) 📝
+2. Navigate to [Domains](https://dashboard.ngrok.com/domains) in your dashboard
+3. Create a new static domain (free tier includes one)
+4. Copy your domain (e.g., `your-domain.ngrok-free.dev`)
 
-1. **Create GitHub OAuth App**
+### Configure package.json
 
-   - Go to [GitHub Developer Settings](https://github.com/settings/developers)
-   - Click "New OAuth App"
-   - Fill in the details:
-     - **Application name**: Meetique Local
-     - **Homepage URL**: `http://localhost:3000`
-     - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
-   - Click "Register application"
+Replace the ngrok URL in your `package.json`:
 
-2. **Get Credentials**
-   - Copy the **Client ID**
-   - Generate a **Client Secret**
-   - Add to your `.env` file:
-     ```bash
-     GITHUB_CLIENT_ID="your_client_id_here"
-     GITHUB_CLIENT_SECRET="your_client_secret_here"
-     ```
+```json
+"dev:webhook": "ngrok http --url=your-domain.ngrok-free.dev 3000"
+```
 
-### Google OAuth
+**Example:**
 
-1. **Create Google Cloud Project**
+```json
+"dev:webhook": "ngrok http --url=peaceful-shark-awesome.ngrok-free.dev 3000"
+```
 
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing one
+### Update Webhook URLs
 
-2. **Create OAuth Credentials**
+After setting up your ngrok domain, configure it in:
 
-   - Go to **APIs & Services > Credentials**
-   - Click "Create Credentials" > "OAuth client ID"
-   - Select "Web application"
-   - Add authorized redirect URIs:
-     - `http://localhost:3000/api/auth/callback/google`
-   - Click "Create"
+1. **Stream Video Dashboard**: `https://your-domain.ngrok-free.dev/api/webhook`
+2. **Other webhook services** as needed
 
-3. **Get Credentials**
-   - Copy the **Client ID** and **Client Secret**
-   - Add to your `.env` file:
-     ```bash
-     GOOGLE_CLIENT_ID="your_client_id_here"
-     GOOGLE_CLIENT_SECRET="your_client_secret_here"
-     ```
+## Required Services
 
-## 🎥 Stream Video Setup
+### Database (Neon PostgreSQL)
 
-### 1. Create Stream Account
+1. Create account at [Neon.tech](https://neon.tech/)
+2. Create new project and copy connection string
+3. Add to `.env`: `DATABASE_URL="postgresql://...?sslmode=require"`
 
-1. Go to [GetStream.io](https://getstream.io/)
-2. Sign up for a free account
-3. Create a new app
+### Authentication
 
-### 2. Get API Keys
+#### GitHub OAuth
 
-1. In your Stream dashboard, go to **Dashboard > Your App**
-2. Copy the **API Key** and **API Secret**
-3. Add to your `.env` file:
-   ```bash
-   NEXT_PUBLIC_STREAM_VIDEO_API_KEY="your_api_key_here"
-   STREAM_VIDEO_API_SECRET="your_api_secret_here"
-   ```
+1. Create OAuth app at [GitHub Developer Settings](https://github.com/settings/developers)
+2. Set callback URL: `http://localhost:3000/api/auth/callback/github`
+3. Add to `.env`: `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
 
-### 3. Configure Webhooks
+#### Google OAuth
 
-1. In Stream dashboard, go to **Video & Audio > Overview > Webhook & Event Configuration**
-2. Add webhook URL: `https://decent-gently-cow.ngrok-free.app/api/webhook`
-3. Enable all events
+1. Create project at [Google Cloud Console](https://console.cloud.google.com/)
+2. Create OAuth credentials with redirect URI: `http://localhost:3000/api/auth/callback/google`
+3. Add to `.env`: `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
 
-## 🤖 OpenAI Setup
+### Stream Video
 
-### 1. Create OpenAI Account
+1. Sign up at [GetStream.io](https://getstream.io/)
+2. Create app and get credentials
+3. Add to `.env`: `NEXT_PUBLIC_STREAM_VIDEO_API_KEY` and `STREAM_VIDEO_API_SECRET`
+4. Configure webhook URL in dashboard: `https://your-ngrok-url.app/api/webhook`
 
-1. Go to [OpenAI Platform](https://platform.openai.com/)
-2. Sign up or log in
-3. Add billing information (required for API access)
+### OpenAI
 
-### 2. Get API Key
+1. Create account at [OpenAI Platform](https://platform.openai.com/)
+2. Add billing information and create API key
+3. Add to `.env`: `OPENAI_API_KEY="sk-..."`
+4. Set usage limits to avoid unexpected charges
 
-1. Go to **API Keys** section
-2. Click "Create new secret key"
-3. Copy the key and add to your `.env` file:
-   ```bash
-   OPENAI_API_KEY="sk-your_api_key_here"
-   ```
+### Resend (Email)
 
-### 3. Set Usage Limits (Recommended)
+1. Sign up at [Resend.com](https://resend.com/)
+2. Create API key
+3. Add to `.env`: `RESEND_API_KEY="re_..."`
 
-1. Go to **Settings > Billing > Usage limits**
-2. Set a monthly limit to avoid unexpected charges
-3. Set up email notifications for usage alerts
+### Polar (Payments)
 
-## 📧 Resend Setup (Magic Link Emails)
+1. Sign up at [Polar.sh](https://polar.sh/)
+2. Create API key in settings
+3. Add to `.env`: `POLAR_ACCESS_TOKEN` and `POLAR_SERVER="sandbox"`
 
-### 1. Create Resend Account
+### Sentry (Error Tracking)
 
-1. Go to [Resend.com](https://resend.com/)
-2. Sign up for a free account
-3. Complete email verification
+1. Create project at [Sentry.io](https://sentry.io/)
+2. Get DSN from project settings
+3. Add to `.env`: `NEXT_PUBLIC_SENTRY_DSN` and `SENTRY_AUTH_TOKEN`
 
-### 2. Get API Key
+### Arcjet (Security)
 
-1. Go to **API Keys** section
-2. Click "Create API Key"
-3. Give it a name (e.g., "Meetique Development")
-4. Copy the key and add to your `.env` file:
-   ```bash
-   RESEND_API_KEY="re_your_api_key_here"
-   ```
+1. Sign up at [Arcjet.com](https://arcjet.com/)
+2. Create site and get API key
+3. Add to `.env`: `ARCJET_KEY`
 
-### 3. Verify Domain (Production)
-
-For production use:
-
-1. Go to **Domains** section
-2. Add your domain (e.g., `meetique.com`)
-3. Add the required DNS records
-4. Wait for verification
-
-For development, you can use the default `resend.dev` domain.
-
-## 💳 Polar Setup (Payments)
-
-### 1. Create Polar Account
-
-1. Go to [Polar.sh](https://polar.sh/)
-2. Sign up for an account
-3. Complete your profile setup
-
-### 2. Get Access Token
-
-1. Go to **Settings > API Keys**
-2. Create a new API key
-3. Copy the token and add to your `.env` file:
-   ```bash
-   POLAR_ACCESS_TOKEN="your_access_token_here"
-   POLAR_SERVER="sandbox"
-   ```
-
-### 3. Create Products (Optional)
-
-1. Go to **Products** section
-2. Create subscription tiers:
-   - **Starter**: $15/month
-   - **Pro**: $30/month
-   - **Enterprise**: $200/month
-
-## 🔍 Sentry Setup (Error Tracking)
-
-### 1. Create Sentry Account
-
-1. Go to [Sentry.io](https://sentry.io/)
-2. Sign up for a free account
-3. Create a new project
-
-### 2. Get DSN (Data Source Name)
-
-1. In your Sentry project dashboard, go to **Settings > Client Keys (DSN)**
-2. Copy the **DSN** value
-3. Add to your `.env` file:
-   ```bash
-   NEXT_PUBLIC_SENTRY_DSN="your_sentry_dsn_here"
-   SENTRY_AUTH_TOKEN="your_sentry_auth_token_here"
-   ```
-
-## 🛡️ Arcjet Setup (Security & Bot Protection)
-
-### 1. Create Arcjet Account
-
-1. Go to [Arcjet.com](https://arcjet.com/)
-2. Sign up for a free account
-3. Create a new site/project
-
-### 2. Get API Key
-
-1. In your Arcjet dashboard, go to **API Keys**
-2. Copy your site key
-3. Add to your `.env` file:
-   ```bash
-   ARCJET_KEY="your_arcjet_api_key"
-   ```
-
-### 3. Configure Security Rules
-
-The project is pre-configured with:
-
-- **Shield Protection**: General security protection
-- **Bot Detection**: Blocks malicious bots while allowing legitimate ones
-- **Rate Limiting**: Token bucket and sliding window rate limiting
-- **Email Protection**: Validates emails during signup (blocks disposable emails)
-
-## 📊 PostHog Setup (Analytics & Feature Flags)
-
-### 1. Create PostHog Account
-
-1. Go to [PostHog.com](https://posthog.com/)
-2. Sign up for a free account
-3. Create a new project
-4. Choose EU region for GDPR compliance
-
-### 2. Get Project API Key
-
-1. In your PostHog dashboard, go to **Project Settings**
-2. Copy your **Project API Key**
-3. Add to your `.env` file:
-   ```bash
-   NEXT_PUBLIC_POSTHOG_KEY="your_posthog_project_api_key"
-   NEXT_PUBLIC_POSTHOG_HOST="your_posthog_host"
-   ```
-
-### 3. Verify Analytics Setup
-
-The project includes:
-
-- **Automatic Page Tracking**: All page views are tracked
-- **Exception Capture**: Errors are automatically sent to PostHog
-- **EU Compliance**: Configured for EU region with proxy routes
-- **Feature Flags**: Ready for A/B testing and feature rollouts
-
-## 🚀 Project Setup
-
-### 1. Clone and Install
+## Project Setup
 
 ```bash
 git clone https://github.com/levinbaenninger/meetique.git
 cd meetique
-pnpm install
-```
-
-### 2. Environment Variables
-
-```bash
+bun install
 cp .env.example .env
-# Edit .env with your actual values
+# Edit .env with your credentials
+bun db:migrate
+bun dev
 ```
-
-### 3. Database Setup
-
-```bash
-# Run database migrations
-pnpm db:migrate
-
-# Optional: Open Drizzle Studio to view database
-pnpm db:studio
-```
-
-### 4. Start Development
-
-```bash
-# Start all services
-pnpm dev
-
-# Or start individual services
-pnpm dev:web      # Next.js app
-pnpm dev:inngest  # Background jobs
-pnpm dev:webhook  # Webhook tunnel
-```
-
-## 🧪 Testing Your Setup
-
-### 1. Basic Application Test
-
-- Visit `http://localhost:3000`
-- Sign up with magic link (email)
-- Create a test agent
-- Schedule a test meeting
-
-### 2. Magic Link Authentication Test
-
-- Enter your email address on sign-up or sign-in page
-- Check your email inbox for the magic link
-- Click the magic link to authenticate
-- Verify you're redirected to the dashboard
-
-### 3. OAuth Test
-
-- Try signing in with GitHub
-- Try signing in with Google
-- Verify user data is saved correctly
-
-### 4. Video Calling Test
-
-- Join a test meeting
-- Verify video/audio works
-- Test screen sharing
-
-### 5. Background Jobs Test
-
-- End a meeting
-- Verify transcript processing
-- Check meeting summary generation
-
-### 6. Error Tracking Test
-
-- Trigger an intentional error
-- Verify error appears in Sentry dashboard
-- Check error details and context
-
-### 7. Security Protection Test
-
-- Visit `/api/arcjet` endpoint multiple times to test rate limiting
-- Verify bot protection is working
-- Check Arcjet dashboard for security events
-
-### 8. Analytics Test
-
-- Navigate through different pages
-- Verify events appear in PostHog dashboard
-- Test feature flags (if configured)
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-#### Database Connection Issues
-
-```bash
-# Check if DATABASE_URL is correct
-pnpm db:studio
-# Should open Drizzle Studio
-```
-
-#### OAuth Issues
-
-- Verify callback URLs match exactly
-- Check that OAuth apps are configured correctly
-- Ensure environment variables are set
-
-#### Stream Video Issues
-
-- Verify API keys are correct
-- Check webhook URL configuration
-- Ensure proper CORS settings
-
-#### OpenAI Issues
-
-- Verify API key is valid
-- Check billing status
-- Verify usage limits
-
-#### Sentry Issues
-
-- Verify DSN is correct format
-- Check project settings and quotas
-- Ensure errors are being captured
-
-### Getting Help
-
-- Check the [Troubleshooting Guide](troubleshooting.md)
-- Open an issue on GitHub
-- Check the [FAQ](faq.md)
-
-## 🎯 Next Steps
-
-After completing setup:
-
-1. Review the [Contributing Guidelines](../CONTRIBUTING.md)
-2. Explore the [Architecture Documentation](architecture.md)
 
 ---
 
-**Setup complete! Happy coding! 🚀**
+Setup complete.

@@ -1,11 +1,13 @@
-import 'server-only';
+import "server-only";
 
-import { StreamClient } from '@stream-io/node-sdk';
+import { StreamClient } from "@stream-io/node-sdk";
+
+import { env } from "@/env";
 
 export const streamVideo = new StreamClient(
-  process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
-  process.env.STREAM_VIDEO_API_SECRET!,
+  env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY,
+  env.STREAM_VIDEO_API_SECRET,
   {
-    timeout: 10000,
-  },
+    timeout: 10_000,
+  }
 );

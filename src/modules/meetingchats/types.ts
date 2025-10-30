@@ -1,9 +1,9 @@
-import type { inferRouterOutputs } from '@trpc/server';
+import type { inferRouterOutputs } from "@trpc/server";
 
-import type { appRouter } from '@/trpc/routers/_app';
+import type { appRouter } from "@/trpc/routers/_app";
 
 export type MeetingChat = NonNullable<
-  inferRouterOutputs<typeof appRouter>['meetings']['chats']['getChats'][0]
+  inferRouterOutputs<typeof appRouter>["meetings"]["chats"]["getChats"][0]
 >;
 
 interface BaseMeetingChatMessage {
@@ -31,13 +31,12 @@ export interface MeetingChatAgentMessage extends BaseMeetingChatMessage {
 }
 
 export type Meeting = NonNullable<
-  inferRouterOutputs<typeof appRouter>['meetings']['get']
+  inferRouterOutputs<typeof appRouter>["meetings"]["get"]
 >;
 
-export enum AuthorType {
-  USER,
-  AGENT,
-}
+export const authorType = ["user", "agent"] as const;
+
+export type AuthorType = (typeof authorType)[number];
 
 export interface BaseMessage {
   author: {

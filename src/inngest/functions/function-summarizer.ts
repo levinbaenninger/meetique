@@ -1,14 +1,14 @@
-import { createAgent, type TextMessage } from '@inngest/agent-kit';
-import { eq } from 'drizzle-orm';
+import { createAgent, type TextMessage } from "@inngest/agent-kit";
+import { eq } from "drizzle-orm";
 
-import { db } from '@/db';
-import { meeting } from '@/db/schema';
-import { fetchFormattedTranscript, getFunctionModel } from '@/inngest/utils';
+import { db } from "@/db";
+import { meeting } from "@/db/schema";
+import { fetchFormattedTranscript, getFunctionModel } from "@/inngest/utils";
 
-import { inngest } from '../client';
+import { inngest } from "../client";
 
 const summarizer = createAgent({
-  name: 'Summarizer',
+  name: "Summarizer",
   system:
     `You are an expert summarizer. You write readable, concise, simple content. You are given a transcript of a meeting and you need to summarize it.
 
@@ -33,32 +33,32 @@ const summarizer = createAgent({
 });
 
 export const functionSummarizer = inngest.createFunction(
-  { id: 'meetings/processing' },
-  { event: 'meetings/processing' },
+  { id: "meetings/processing" },
+  { event: "meetings/processing" },
   async ({ event, step }) => {
     const transcript = await step.run(
-      'processing/fetch-formatted-transcript',
-      async () => fetchFormattedTranscript(event.data.transcriptUrl),
+      "processing/fetch-formatted-transcript",
+      async () => fetchFormattedTranscript(event.data.transcriptUrl)
     );
 
     const { output } = await summarizer.run(
-      `Summarize the following meeting transcript: ${JSON.stringify(transcript)}`,
+      `Summarize the following meeting transcript: ${JSON.stringify(transcript)}`
     );
 
-    await step.run('processing/save-summary', async () => {
+    await step.run("processing/save-summary", async () => {
       if (!Array.isArray(output) || output.length === 0) {
-        throw new Error('Summarizer returned no content');
+        throw new Error("Summarizer returned no content");
       }
       const first = output[0] as Partial<TextMessage>;
       const content =
-        typeof first?.content === 'string'
+        typeof first?.content === "string"
           ? first.content
           : JSON.stringify(first ?? {});
       await db
         .update(meeting)
         .set({
           summary: content,
-          status: 'completed',
+          status: "completed",
           updatedAt: new Date(),
         })
         .where(eq(meeting.id, event.data.meetingId));
@@ -67,5 +67,5 @@ export const functionSummarizer = inngest.createFunction(
     return {
       summary: output,
     };
-  },
+  }
 );

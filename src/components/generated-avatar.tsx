@@ -1,9 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { generateAvatarUri } from '@/lib/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { generateAvatarUri } from "@/lib/avatar";
 
 interface GeneratedAvatarProps {
   seed: string;
-  variant: 'botttsNeutral' | 'initials';
+  variant: "botttsNeutral" | "initials";
   className?: string;
 }
 
@@ -16,7 +16,7 @@ export const GeneratedAvatar = ({
 
   return (
     <Avatar className={className}>
-      <AvatarImage src={avatarUri} alt='avatar' />
+      <AvatarImage alt="avatar" src={avatarUri} />
       <AvatarFallback>{seed.charAt(0).toUpperCase()}</AvatarFallback>
     </Avatar>
   );

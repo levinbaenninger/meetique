@@ -3,16 +3,15 @@ import {
   parseAsString,
   parseAsStringLiteral,
   useQueryStates,
-} from 'nuqs';
+} from "nuqs";
 
-import { DEFAULT_PAGE } from '@/constants';
-import { meetingStatus } from '@/modules/meetings/types';
+import { DEFAULT_PAGE } from "@/constants";
+import { meetingStatus } from "@/modules/meetings/types";
 
-export const useMeetingsFilters = () => {
-  return useQueryStates({
-    search: parseAsString.withDefault(''),
+export const useMeetingsFilters = () =>
+  useQueryStates({
+    search: parseAsString.withDefault(""),
     page: parseAsInteger.withDefault(DEFAULT_PAGE),
-    agentId: parseAsString.withDefault(''),
+    agentId: parseAsString.withDefault(""),
     status: parseAsStringLiteral(meetingStatus),
   });
-};

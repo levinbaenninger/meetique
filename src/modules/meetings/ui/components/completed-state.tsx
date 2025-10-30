@@ -1,137 +1,133 @@
-import { TabsList } from '@radix-ui/react-tabs';
-import { format } from 'date-fns';
+import { TabsList } from "@radix-ui/react-tabs";
+import { format } from "date-fns";
 import {
   BookOpenTextIcon,
   ClockFadingIcon,
   FileTextIcon,
   FileVideoIcon,
-  MessageCircleIcon,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-
-import { GeneratedAvatar } from '@/components/generated-avatar';
-import { Badge } from '@/components/ui/badge';
-import { MarkdownStyleType, MarkdownView } from '@/components/ui/markdown-view';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs';
-import { VideoPlayer } from '@/components/ui/video-player';
-import { formatDuration } from '@/lib/utils';
-import { MeetingChat } from '@/modules/meetingchats/ui/components/chat';
-import { Meeting } from '@/modules/meetings/types';
-import { Transcript } from '@/modules/meetings/ui/components/transcript';
+} from "lucide-react";
+import Link from "next/link";
+import { GeneratedAvatar } from "@/components/generated-avatar";
+import { Badge } from "@/components/ui/badge";
+import { MarkdownStyleType, MarkdownView } from "@/components/ui/markdown-view";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import { formatDuration } from "@/lib/utils";
+import { MeetingChat } from "@/modules/meetingchats/ui/components/chat";
+import type { Meeting } from "@/modules/meetings/types";
+import { Recording } from "@/modules/meetings/ui/components/recording";
+import { ResourceAvailabilityBanner } from "@/modules/meetings/ui/components/resource-availability-banner";
+import { Transcript } from "@/modules/meetings/ui/components/transcript";
+import { areResourcesAvailable } from "@/modules/meetings/utils";
 
 interface Props {
   meeting: Meeting;
 }
 
 export const CompletedState = ({ meeting }: Props) => {
-  const [currentTab, setCurrentTab] = useState<string>();
+  const resourcesAvailable = areResourcesAvailable(meeting.endedAt);
+  const hasTranscript = !!meeting.transcriptUrl && resourcesAvailable;
+  const hasRecording = !!meeting.recordingUrl && resourcesAvailable;
 
   return (
-    <div className='flex flex-col gap-y-4'>
-      <Tabs
-        defaultValue='summary'
-        onValueChange={(value) => setCurrentTab(value)}
-      >
-        <div className='rounded-lg border bg-white px-3'>
+    <div className="flex flex-col gap-y-4">
+      <ResourceAvailabilityBanner
+        endedAt={meeting.endedAt}
+        hasRecording={!!meeting.recordingUrl}
+        hasTranscript={!!meeting.transcriptUrl}
+      />
+      <Tabs defaultValue="summary">
+        <div className="rounded-lg border bg-white px-3">
           <ScrollArea>
-            <TabsList className='bg-background h-13 justify-start rounded-none p-0'>
+            <TabsList className="h-13 justify-start rounded-none bg-background p-0">
               <TabsTrigger
-                value='summary'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
+                className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                value="summary"
               >
                 <BookOpenTextIcon />
                 Summary
               </TabsTrigger>
-              <TabsTrigger
-                value='transcript'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-              >
-                <FileTextIcon />
-                Transcript
-              </TabsTrigger>
-              <TabsTrigger
-                value='recording'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-              >
-                <FileVideoIcon />
-                Recording
-              </TabsTrigger>
-              <TabsTrigger
-                value='chat'
-                className='text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-transparent data-[state=active]:shadow-none'
-              >
-                <MessageCircleIcon />
-                Chat
-              </TabsTrigger>
+              {hasTranscript && (
+                <TabsTrigger
+                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                  value="transcript"
+                >
+                  <FileTextIcon />
+                  Transcript
+                </TabsTrigger>
+              )}
+              {hasRecording && (
+                <TabsTrigger
+                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                  value="recording"
+                >
+                  <FileVideoIcon />
+                  Recording
+                </TabsTrigger>
+              )}
             </TabsList>
-            <ScrollBar orientation='horizontal' />
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
-        <TabsContent value='summary'>
-          {currentTab === 'summary' && (
-            <div className='rounded-lg border bg-white'>
-              <div className='col-span-5 flex flex-col gap-y-5 px-4 py-5'>
-                <h2 className='text-2xl font-medium capitalize'>
-                  {meeting.name}
-                </h2>
-                <div className='flex items-center gap-x-2'>
-                  <Link
-                    href={`/agents/${meeting.agent.id}`}
-                    className='flex items-center gap-x-2 capitalize underline underline-offset-4'
-                  >
-                    <GeneratedAvatar
-                      variant='botttsNeutral'
-                      seed={meeting.agent.name}
-                      className='size-6'
-                    />
-                    {meeting.agent.name}
-                  </Link>
-                  <p className='text-muted-foreground text-sm'>
-                    {meeting.startedAt ? format(meeting.startedAt, 'PPP') : ''}
-                  </p>
-                </div>
-                <Badge
-                  variant='outline'
-                  className='flex items-center gap-x-2 [&>svg]:size-4'
+        <TabsContent value="summary">
+          <div className="rounded-lg border bg-white">
+            <div className="col-span-5 flex flex-col gap-y-5 px-4 py-5">
+              <h2 className="font-medium text-2xl capitalize">
+                {meeting.name}
+              </h2>
+              <div className="flex items-center gap-x-2">
+                <Link
+                  className="flex items-center gap-x-2 capitalize underline underline-offset-4"
+                  href={`/agents/${meeting.agent.id}`}
                 >
-                  <ClockFadingIcon className='text-primary' />
-                  {meeting.duration
-                    ? formatDuration(meeting.duration)
-                    : 'No duration'}
-                </Badge>
-                <div>
-                  {meeting.summary === null ? (
-                    <p className='text-primary text-sm'>
-                      No summary available.
-                    </p>
-                  ) : (
-                    <MarkdownView
-                      markdownText={
-                        meeting.summary || '_No summary available._'
-                      }
-                      type={MarkdownStyleType.TextMuted}
-                    />
-                  )}
-                </div>
+                  <GeneratedAvatar
+                    className="size-6"
+                    seed={meeting.agent.name}
+                    variant="botttsNeutral"
+                  />
+                  {meeting.agent.name}
+                </Link>
+                <p className="text-muted-foreground text-sm">
+                  {meeting.startedAt ? format(meeting.startedAt, "PPP") : ""}
+                </p>
+              </div>
+              <Badge
+                className="flex items-center gap-x-2 [&>svg]:size-4"
+                variant="outline"
+              >
+                <ClockFadingIcon className="text-primary" />
+                {meeting.duration
+                  ? formatDuration(meeting.duration)
+                  : "No duration"}
+              </Badge>
+              <div>
+                {meeting.summary ? (
+                  <MarkdownView
+                    markdownText={meeting.summary}
+                    type={MarkdownStyleType.TextMuted}
+                  />
+                ) : (
+                  <p className="text-primary text-sm">No summary available.</p>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </TabsContent>
-        <TabsContent value='transcript'>
-          {currentTab}
-          <Transcript meetingId={meeting.id} />
-        </TabsContent>
-        <TabsContent value='recording'>
-          {currentTab === 'recording' && (
-            <div className='rounded-lg border bg-white px-4 py-5'>
-              <VideoPlayer src={meeting.recordingUrl!} />
-            </div>
-          )}
-        </TabsContent>
-        <TabsContent value='chat'>
-          {currentTab === 'chat' && <MeetingChat meeting={meeting} />}
+        {hasTranscript && (
+          <TabsContent value="transcript">
+            <Transcript meetingId={meeting.id} />
+          </TabsContent>
+        )}
+        {hasRecording && (
+          <TabsContent value="recording">
+            <Recording
+              meetingId={meeting.id}
+              recordingUrl={meeting.recordingUrl as string}
+            />
+          </TabsContent>
+        )}
+        <TabsContent value="chat">
+          <MeetingChat meeting={meeting} />
         </TabsContent>
       </Tabs>
     </div>

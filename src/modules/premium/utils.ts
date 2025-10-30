@@ -1,16 +1,16 @@
-import { and, count, eq, gte, inArray, lte } from 'drizzle-orm';
+import { and, count, eq, gte, inArray, lte } from "drizzle-orm";
 
-import { db } from '@/db';
+import { db } from "@/db";
 import {
   agent,
   meeting,
   meeting_chat,
   meeting_chat_message_agent,
   meeting_chat_message_user,
-} from '@/db/schema';
-import { polarClient } from '@/lib/polar';
+} from "@/db/schema";
+import { polarClient } from "@/lib/polar";
 
-import { type SubscriptionTier, TIER_LIMITS } from './constants';
+import { type SubscriptionTier, TIER_LIMITS } from "./constants";
 
 export interface CustomerData {
   id: string;
@@ -37,10 +37,10 @@ export async function getCustomerData(userId: string): Promise<CustomerData> {
 }
 
 export async function determineUserTier(
-  customer: CustomerData,
+  customer: CustomerData
 ): Promise<SubscriptionTier> {
   if (customer.activeSubscriptions.length === 0) {
-    return 'free';
+    return "free";
   }
 
   const subscription = customer.activeSubscriptions[0];
@@ -51,15 +51,17 @@ export async function determineUserTier(
 
   const productName = product.name.toLowerCase();
 
-  if (productName.includes('starter')) {
-    return 'starter';
-  } else if (productName.includes('pro')) {
-    return 'pro';
-  } else if (productName.includes('enterprise')) {
-    return 'enterprise';
+  if (productName.includes("starter")) {
+    return "starter";
+  }
+  if (productName.includes("pro")) {
+    return "pro";
+  }
+  if (productName.includes("enterprise")) {
+    return "enterprise";
   }
 
-  return 'free';
+  return "free";
 }
 
 export async function getTierInfo(userId: string): Promise<TierInfo> {
@@ -74,7 +76,7 @@ export async function getTierInfo(userId: string): Promise<TierInfo> {
 
 export async function checkAgentLimit(
   userId: string,
-  tierInformation?: TierInfo,
+  tierInformation?: TierInfo
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const tierInfo = tierInformation ?? (await getTierInfo(userId));
 
@@ -98,7 +100,7 @@ export async function checkAgentLimit(
 
 export async function checkMeetingLimit(
   userId: string,
-  tierInformation?: TierInfo,
+  tierInformation?: TierInfo
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const tierInfo = tierInformation ?? (await getTierInfo(userId));
 
@@ -107,9 +109,9 @@ export async function checkMeetingLimit(
     return { allowed: true, current: 0, limit: -1 };
   }
 
-  let userMeetingCount;
+  let userMeetingCount: number;
 
-  if (tierInfo.tier === 'free') {
+  if (tierInfo.tier === "free") {
     // free tier with universal limits
     const [userMeetings] = await db
       .select({ count: count(meeting.id) })
@@ -128,8 +130,8 @@ export async function checkMeetingLimit(
         and(
           eq(meeting.userId, userId),
           gte(meeting.createdAt, startOfMonth),
-          lte(meeting.createdAt, endOfMonth),
-        ),
+          lte(meeting.createdAt, endOfMonth)
+        )
       );
 
     userMeetingCount = userMeetings.count;
@@ -144,7 +146,7 @@ export async function checkMeetingLimit(
 
 export async function checkMeetingChatMessageLimit(
   userId: string,
-  tierInformation?: TierInfo,
+  tierInformation?: TierInfo
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const tierInfo = tierInformation ?? (await getTierInfo(userId));
 
@@ -152,9 +154,9 @@ export async function checkMeetingChatMessageLimit(
     return { allowed: true, current: 0, limit: -1 };
   }
 
-  let userMeetingChatMessageCount;
+  let userMeetingChatMessageCount: number;
 
-  if (tierInfo.tier === 'free') {
+  if (tierInfo.tier === "free") {
     // free tier with universal limits
     const userChats = await db
       .select({ id: meeting_chat.id })
@@ -162,7 +164,7 @@ export async function checkMeetingChatMessageLimit(
       .where(eq(meeting_chat.createdByUserId, userId))
       .then((chats) => chats.map((chat) => chat.id));
 
-    if (userChats.length == 0) {
+    if (userChats.length === 0) {
       userMeetingChatMessageCount = 0;
     } else {
       const [agentMessages] = await db
@@ -196,8 +198,8 @@ export async function checkMeetingChatMessageLimit(
           and(
             inArray(meeting_chat_message_agent.meetingChatId, userChats),
             gte(meeting_chat_message_agent.createdAt, startOfMonth),
-            lte(meeting_chat_message_agent.createdAt, endOfMonth),
-          ),
+            lte(meeting_chat_message_agent.createdAt, endOfMonth)
+          )
         );
 
       const [userMessages] = await db
@@ -207,8 +209,8 @@ export async function checkMeetingChatMessageLimit(
           and(
             inArray(meeting_chat_message_user.meetingChatId, userChats),
             gte(meeting_chat_message_user.createdAt, startOfMonth),
-            lte(meeting_chat_message_user.createdAt, endOfMonth),
-          ),
+            lte(meeting_chat_message_user.createdAt, endOfMonth)
+          )
         );
 
       userMeetingChatMessageCount = agentMessages.count + userMessages.count;

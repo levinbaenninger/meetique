@@ -4,29 +4,31 @@ import {
   ClockArrowUpIcon,
   LoaderIcon,
   VideoIcon,
-} from 'lucide-react';
+} from "lucide-react";
 
-import { CommandSelect } from '@/components/command-select';
-import { useMeetingsFilters } from '@/modules/meetings/hooks/use-meetings-filters';
-import { meetingStatus } from '@/modules/meetings/types';
+import { CommandSelect } from "@/components/command-select";
+import { useMeetingsFilters } from "@/modules/meetings/hooks/use-meetings-filters";
+import { type MeetingStatus, meetingStatus } from "@/modules/meetings/types";
 
 const options = meetingStatus.map((status) => ({
   id: status,
   value: status,
   children: (
-    <div className='flex items-center gap-x-2 capitalize'>
+    <div className="flex items-center gap-x-2 capitalize">
       {(() => {
         switch (status) {
-          case 'upcoming':
+          case "upcoming":
             return <ClockArrowUpIcon />;
-          case 'active':
+          case "active":
             return <VideoIcon />;
-          case 'completed':
+          case "completed":
             return <CircleCheckIcon />;
-          case 'processing':
+          case "processing":
             return <LoaderIcon />;
-          case 'cancelled':
+          case "cancelled":
             return <CircleXIcon />;
+          default:
+            return null;
         }
       })()}
       {`${status.charAt(0).toUpperCase()}${status.slice(1)}`}
@@ -39,13 +41,11 @@ export const MeetingsStatusFilter = () => {
 
   return (
     <CommandSelect
-      placeholder='Status'
-      className='h-9'
+      className="h-9"
+      onSelect={(value) => setFilters({ status: value as MeetingStatus })}
       options={options}
-      onSelect={(value) =>
-        setFilters({ status: value as (typeof meetingStatus)[number] })
-      }
-      value={filters.status ?? ''}
+      placeholder="Status"
+      value={filters.status ?? ""}
     />
   );
 };

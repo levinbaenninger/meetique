@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { ErrorState } from '@/components/error-state';
-import { LoadingState } from '@/components/loading-state';
-import { useTRPC } from '@/lib/trpc';
-import { CallProvider } from '@/modules/call/ui/components/call-provider';
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
+import { useTRPC } from "@/lib/trpc";
+import { CallProvider } from "@/modules/call/ui/components/call-provider";
 
 interface Props {
   meetingId: string;
@@ -14,15 +14,15 @@ interface Props {
 export const CallView = ({ meetingId }: Props) => {
   const trpc = useTRPC();
   const { data: meeting } = useSuspenseQuery(
-    trpc.meetings.get.queryOptions({ id: meetingId }),
+    trpc.meetings.get.queryOptions({ id: meetingId })
   );
 
-  if (meeting.status === 'completed') {
+  if (meeting.status === "completed") {
     return (
-      <div className='flex h-screen items-center justify-center'>
+      <div className="flex h-screen items-center justify-center">
         <ErrorState
-          title='Meeting has ended'
-          description='You can no longer join this meeting.'
+          description="You can no longer join this meeting."
+          title="Meeting has ended"
         />
       </div>
     );
@@ -33,14 +33,14 @@ export const CallView = ({ meetingId }: Props) => {
 
 export const CallViewLoading = () => (
   <LoadingState
-    title='Loading call'
-    description='This may take a few seconds.'
+    description="This may take a few seconds."
+    title="Loading call"
   />
 );
 
 export const CallViewError = () => (
   <ErrorState
-    title='Error loading call'
-    description='Please try again later.'
+    description="Please try again later."
+    title="Error loading call"
   />
 );

@@ -1,40 +1,45 @@
-import { gemini, openai } from '@inngest/agent-kit';
-import { inArray } from 'drizzle-orm';
-import JSONL from 'jsonl-parse-stringify';
+import { gemini, openai } from "@inngest/agent-kit";
+import { inArray } from "drizzle-orm";
+import JSONL from "jsonl-parse-stringify";
 
-import { db } from '@/db';
-import { agent, user } from '@/db/schema';
-import {
+import { db } from "@/db";
+import { agent, user } from "@/db/schema";
+import type {
   FetchedTranscript,
   FormattedTranscript,
   Speaker,
-} from '@/modules/meetings/types';
+} from "@/modules/meetings/types";
+
+const TIMEOUT = 10_000;
+const MILLISECONDS_PER_SECOND = 1000;
+const SECONDS_PER_MINUTE = 60;
+const MINUTES_PER_HOUR = 60;
 
 export function getFunctionModel() {
   if (process.env.OPENAI_API_KEY) {
     return openai({
-      model: 'gpt-4o',
+      model: "gpt-4o",
       apiKey: process.env.OPENAI_API_KEY,
     });
   }
   if (process.env.GEMINI_API_KEY) {
     return gemini({
-      model: 'gemini-2.0-flash',
+      model: "gemini-2.0-flash",
       apiKey: process.env.GEMINI_API_KEY,
     });
   }
   throw new Error(
-    'No AI provider configured: set OPENAI_API_KEY and, optionally, GEMINI_API_KEY',
+    "No AI provider configured: set OPENAI_API_KEY and, optionally, GEMINI_API_KEY"
   );
 }
 
 export async function fetchFormattedTranscript(
-  transcriptUrl: string,
+  transcriptUrl: string
 ): Promise<FormattedTranscript[]> {
   const fetched = await fetchTranscript(transcriptUrl);
 
   const speakerMap = await getSpeakers(
-    fetched.map((transcript) => transcript.speaker_id),
+    fetched.map((transcript) => transcript.speaker_id)
   );
 
   return fetched.map((transcript) => ({
@@ -47,13 +52,13 @@ export async function fetchFormattedTranscript(
 }
 
 async function fetchTranscript(
-  transcriptUrl: string,
+  transcriptUrl: string
 ): Promise<FetchedTranscript[]> {
   try {
     assertAllowedUrl(transcriptUrl);
 
     const abortController = new AbortController();
-    const timeout = setTimeout(() => abortController.abort(), 10_000);
+    const timeout = setTimeout(() => abortController.abort(), TIMEOUT);
     const result = await fetch(transcriptUrl, {
       signal: abortController.signal,
     });
@@ -61,42 +66,40 @@ async function fetchTranscript(
 
     if (!result.ok) {
       throw new Error(
-        `Failed to fetch transcript: ${result.status} ${result.statusText}`,
+        `Failed to fetch transcript: ${result.status} ${result.statusText}`
       );
     }
 
-    return await parseTranscript(await result.text());
+    return parseTranscript(await result.text());
   } catch (error) {
     throw new Error(
-      `Failed to fetch transcript: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Failed to fetch transcript: ${error instanceof Error ? error.message : "Unknown error"}`
     );
   }
 }
 
 function assertAllowedUrl(
   urlString: string,
-  allowedHosts: string[] = (process.env.ALLOWED_TRANSCRIPT_HOSTS ?? '')
-    .split(',')
+  allowedHosts: string[] = (process.env.ALLOWED_TRANSCRIPT_HOSTS ?? "")
+    .split(",")
     .map((s) => s.trim())
-    .filter(Boolean),
+    .filter(Boolean)
 ): void {
   const url = new URL(urlString);
-  if (url.protocol !== 'https:') {
-    throw new Error('Only https:// is allowed for transcript URLs');
+  if (url.protocol !== "https:") {
+    throw new Error("Only https:// is allowed for transcript URLs");
   }
   if (allowedHosts.length && !allowedHosts.includes(url.hostname)) {
     throw new Error(`Host ${url.hostname} is not allowed`);
   }
 }
 
-async function parseTranscript(
-  transcriptionResponse: string,
-): Promise<FetchedTranscript[]> {
+function parseTranscript(transcriptionResponse: string): FetchedTranscript[] {
   return JSONL.parse<FetchedTranscript>(transcriptionResponse) ?? [];
 }
 
 async function getSpeakers(
-  speakerIds: string[],
+  speakerIds: string[]
 ): Promise<Map<string, Speaker>> {
   const [userSpeakers, agentSpeakers] = await Promise.all([
     db.select().from(user).where(inArray(user.id, speakerIds)),
@@ -105,21 +108,23 @@ async function getSpeakers(
   const speakers: Speaker[] = [...userSpeakers, ...agentSpeakers];
 
   const speakerMap: Map<string, Speaker> = new Map<string, Speaker>();
-  speakers.forEach((speaker) => speakerMap.set(speaker.id, speaker));
+  for (const speaker of speakers) {
+    speakerMap.set(speaker.id, speaker);
+  }
   return speakerMap;
 }
 
 function millisecondsToFormattedTime(milliseconds: number): string {
   // 6100069ms
-  let seconds = Math.floor(milliseconds / 1000);
-  let minutes = Math.floor(seconds / 60);
-  seconds = seconds % 60;
-  const hours = Math.floor(minutes / 60);
-  minutes = minutes % 60;
+  let seconds = Math.floor(milliseconds / MILLISECONDS_PER_SECOND);
+  let minutes = Math.floor(seconds / SECONDS_PER_MINUTE);
+  seconds %= SECONDS_PER_MINUTE;
+  const hours = Math.floor(minutes / MINUTES_PER_HOUR);
+  minutes %= MINUTES_PER_HOUR;
 
-  const formattedSeconds = String(seconds).padStart(2, '0');
-  const formattedMinutes = String(minutes).padStart(2, '0');
-  const formattedHours = String(hours).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedHours = String(hours).padStart(2, "0");
 
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }

@@ -23,8 +23,10 @@ export const TIER_LIMITS = {
 
 export type SubscriptionTier = keyof typeof TIER_LIMITS;
 
-export enum PREMIUM_ENTITY {
-  AGENT,
-  MEETING,
-  MEETING_CHAT_MESSAGE,
-}
+export const premiumEntity = [
+  "agent",
+  "meeting",
+  "meetingChatMessage",
+] as const;
+
+export type PremiumEntity = (typeof premiumEntity)[number];

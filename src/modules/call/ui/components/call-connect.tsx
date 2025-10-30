@@ -1,20 +1,21 @@
-import '@stream-io/video-react-sdk/dist/css/styles.css';
+import "@stream-io/video-react-sdk/dist/css/styles.css";
 
 import {
-  Call,
+  type Call,
   CallingState,
   StreamCall,
   StreamVideo,
   StreamVideoClient,
-} from '@stream-io/video-react-sdk';
-import { useMutation } from '@tanstack/react-query';
-import { Loader2Icon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+} from "@stream-io/video-react-sdk";
+import { useMutation } from "@tanstack/react-query";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-import { useTRPC } from '@/lib/trpc';
-import { CallUi } from '@/modules/call/ui/components/call-ui';
+import { env } from "@/env";
+import { useTRPC } from "@/lib/trpc";
+import { CallUi } from "@/modules/call/ui/components/call-ui";
 
 interface Props {
   meetingId: string;
@@ -38,15 +39,15 @@ export const CallConnect = ({
     trpc.meetings.generateToken.mutationOptions({
       onError: (error) => {
         toast.error(error.message);
-        router.push('/meetings');
+        router.push("/meetings");
       },
-    }),
+    })
   );
 
   const [client, setClient] = useState<StreamVideoClient>();
   useEffect(() => {
     const _client = new StreamVideoClient({
-      apiKey: process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY!,
+      apiKey: env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY,
       user: {
         id: userId,
         name: userName,
@@ -65,9 +66,11 @@ export const CallConnect = ({
 
   const [call, setCall] = useState<Call>();
   useEffect(() => {
-    if (!client) return;
+    if (!client) {
+      return;
+    }
 
-    const _call = client.call('default', meetingId);
+    const _call = client.call("default", meetingId);
     _call.camera.disable();
     _call.microphone.disable();
     setCall(_call);
@@ -81,10 +84,10 @@ export const CallConnect = ({
     };
   }, [client, meetingId]);
 
-  if (!client || !call) {
+  if (!(client && call)) {
     return (
-      <div className='from-sidebar-accent to-sidebar flex h-screen items-center justify-center bg-radial'>
-        <Loader2Icon className='size-6 animate-spin text-white' />
+      <div className="flex h-screen items-center justify-center bg-radial from-sidebar-accent to-sidebar">
+        <Loader2Icon className="size-6 animate-spin text-white" />
       </div>
     );
   }

@@ -31,14 +31,13 @@ flowchart TB
 
     subgraph "External Services"
         SERVICE_STREAM[Stream Video<br/>Video Calling]
-        SERVICE_OPENAI_SUMMARY[OpenAI<br/>GPT-4 Summary]
+        SERVICE_OPENAI_SUMMARY[OpenAI<br/>GPT-4 Summaries]
         SERVICE_OPENAI_CHAT[OpenAI<br/>GPT-4 Chat]
         SERVICE_POLAR[Polar<br/>Payments]
         SERVICE_BETTER_AUTH[Better Auth<br/>Authentication]
         SERVICE_INNGEST[Inngest<br/>Background Jobs]
         SERVICE_SENTRY[Sentry<br/>Error Tracking]
         SERVICE_ARCJET[Arcjet<br/>Security & Bot Protection]
-        SERVICE_POSTHOG[PostHog<br/>Analytics & Feature Flags]
     end
 
     subgraph "Authentication Providers"
@@ -72,7 +71,6 @@ flowchart TB
     SERVICE_OPENAI_CHAT --> |Generate Agent Chat Messages| TABLE_MEETING_CHAT_AGENT_MESSAGE
     USER_INTERFACE --> |Errors & Performance| SERVICE_SENTRY
     AUTHENTICATION --> |Security Protection| SERVICE_ARCJET
-    USER_INTERFACE --> |Analytics & Events| SERVICE_POSTHOG
 
     style USER_INTERFACE fill:#e1f5fe
     style SERVICE_STREAM fill:#fff3e0
@@ -82,5 +80,4 @@ flowchart TB
     style SERVICE_INNGEST fill:#fff8e1
     style SERVICE_SENTRY fill:#ffebee
     style SERVICE_ARCJET fill:#ffeaa7
-    style SERVICE_POSTHOG fill:#fd79a8
 ```

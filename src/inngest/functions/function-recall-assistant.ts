@@ -1,11 +1,11 @@
-import { createAgent, TextMessage } from '@inngest/agent-kit';
+import { createAgent, type TextMessage } from "@inngest/agent-kit";
 
-import { db } from '@/db';
-import { meeting_chat_message_agent } from '@/db/schema';
-import { fetchFormattedTranscript,getFunctionModel } from '@/inngest/utils';
-import { FormattedTranscript } from '@/modules/meetings/types';
+import { db } from "@/db";
+import { meeting_chat_message_agent } from "@/db/schema";
+import { fetchFormattedTranscript, getFunctionModel } from "@/inngest/utils";
+import type { FormattedTranscript } from "@/modules/meetings/types";
 
-import { inngest } from '../client';
+import { inngest } from "../client";
 
 const defaultSystemPrompt =
   `You are a cutting-edge AI assistant specifically designed for meeting post-processing. Your primary task is to provide users with precise and context-aware answers based on meeting information, flexibly responding to their questions and requests.
@@ -27,21 +27,21 @@ const defaultSystemPrompt =
     `.trim();
 
 const chatBotAssistant = createAgent({
-  name: 'Chat Bot Assistant',
+  name: "Chat Bot Assistant",
   system: defaultSystemPrompt,
   model: getFunctionModel(),
 });
 
 export const functionGenerateAgentMessage = inngest.createFunction(
-  { id: 'meetings/generate-agent-message' },
-  { event: 'meetings/generate-agent-message' },
+  { id: "meetings/generate-agent-message" },
+  { event: "meetings/generate-agent-message" },
   async ({ event, step }) => {
     const { transcriptUrl, meetingChatId, agentId, chatMessages, lastMessage } =
       event.data;
 
     const transcript: FormattedTranscript[] = await step.run(
-      'generate-agent-message/fetch-formatted-transcript',
-      async () => fetchFormattedTranscript(transcriptUrl),
+      "generate-agent-message/fetch-formatted-transcript",
+      async () => fetchFormattedTranscript(transcriptUrl)
     );
 
     const { output } = await chatBotAssistant.run(
@@ -49,10 +49,10 @@ export const functionGenerateAgentMessage = inngest.createFunction(
         meeting_transcript: transcript,
         chat_history: chatMessages,
         latest_user_message: lastMessage,
-      }),
+      })
     );
 
-    let agentMessage = '';
+    let agentMessage = "";
 
     if (!output || output.length === 0 || !(output[0] as TextMessage).content) {
       agentMessage =
@@ -62,25 +62,25 @@ export const functionGenerateAgentMessage = inngest.createFunction(
     }
 
     await step.run(
-      'generate-agent-message/save-agent-chat-message',
+      "generate-agent-message/save-agent-chat-message",
       async () => {
         try {
           await db
             .insert(meeting_chat_message_agent)
             .values({
-              meetingChatId: meetingChatId,
-              agentId: agentId,
+              meetingChatId,
+              agentId,
               message: agentMessage,
             })
             .returning();
         } catch (error) {
           throw new Error(
-            `Failed to save agent message: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Failed to save agent message: ${error instanceof Error ? error.message : "Unknown error"}`
           );
         }
-      },
+      }
     );
 
     return output;
-  },
+  }
 );

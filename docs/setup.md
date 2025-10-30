@@ -89,8 +89,10 @@ After setting up your ngrok domain, configure it in:
 ### Resend (Email)
 
 1. Sign up at [Resend.com](https://resend.com/)
-2. Create API key
-3. Add to `.env`: `RESEND_API_KEY="re_..."`
+2. Add and verify domain
+3. Add email (of verified domain) to `.env`: `MAGIC_LINK_EMAIL="...@..."`
+4. Create API key
+5. Add API key to `.env`: `RESEND_API_KEY="re_..."`
 
 ### Polar (Payments)
 

@@ -63,6 +63,7 @@ See [Setup Guide](docs/setup.md) for detailed configuration instructions.
 
 ## Getting Started
 
+```bash
 git clone https://github.com/levinbaenninger/meetique.git
 cd meetique
 bun install

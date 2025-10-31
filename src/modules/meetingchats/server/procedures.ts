@@ -264,15 +264,15 @@ async function getUserMessages(
         ...message,
         user: message.userId
           ? {
-            id: message.userId,
-            name: message.userName ?? "?",
-            image:
-              message.userImage ??
-              generateAvatarUri({
-                seed: message.userName ?? "?",
-                variant: "initials",
-              }),
-          }
+              id: message.userId,
+              name: message.userName ?? "?",
+              image:
+                message.userImage ??
+                generateAvatarUri({
+                  seed: message.userName ?? "?",
+                  variant: "initials",
+                }),
+            }
           : null,
       }))
     );
@@ -296,13 +296,13 @@ async function getAgentMessages(
         ...message,
         agent: message.agentId
           ? {
-            id: message.agentId,
-            name: message.agentName ?? "?",
-            image: generateAvatarUri({
-              seed: message.agentName ?? "?",
-              variant: "botttsNeutral",
-            }),
-          }
+              id: message.agentId,
+              name: message.agentName ?? "?",
+              image: generateAvatarUri({
+                seed: message.agentName ?? "?",
+                variant: "botttsNeutral",
+              }),
+            }
           : null,
       }))
     );

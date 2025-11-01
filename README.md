@@ -2,7 +2,7 @@
 
 **Professional AI-Powered Meeting Platform**
 
-AI-powered meeting platform for video meetings with custom AI agents, featuring real-time transcription and automated summaries.
+AI-powered meeting platform for video meetings with custom AI agents, featuring real-time transcription, automated summaries, and after-meeting chat with the agent.
 
 ![Screenshot of App](./assets/preview.webp)
 
@@ -10,7 +10,7 @@ AI-powered meeting platform for video meetings with custom AI agents, featuring 
 
 - Custom AI agents with personalized instructions
 - Real-time video calling with Stream Video SDK
-- Automatic transcription and AI-powered summaries
+- Automatic transcription, AI-powered summaries, and after-meeting chat with the agent
 - Magic link and OAuth authentication (Google, GitHub)
 - Premium subscription tiers with usage limits
 
@@ -41,8 +41,10 @@ GOOGLE_CLIENT_SECRET="..."
 
 NEXT_PUBLIC_STREAM_VIDEO_API_KEY="..."
 STREAM_VIDEO_API_SECRET="..."
+ALLOWED_TRANSCRIPT_HOSTS="ohio.stream-io-cdn.com,..."
 
 OPENAI_API_KEY="..."
+GEMINI_API_KEY="..." # optional for meeting summarization, and chat
 
 POLAR_ACCESS_TOKEN="..."
 POLAR_SERVER="sandbox"
@@ -94,7 +96,7 @@ src/
 ├── components/     # UI components
 ├── db/             # Database & migrations
 ├── lib/            # Utilities
-├── modules/        # Feature modules (agents, meetings, call, premium)
+├── modules/        # Feature modules (agents, meetings, meeting chats, call, premium)
 └── trpc/           # API layer
 ```
 

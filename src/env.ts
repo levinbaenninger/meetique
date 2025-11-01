@@ -6,15 +6,17 @@ export const env = createEnv({
   extends: [vercel()],
   server: {
     // Database
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
 
     // AI Services
     OPENAI_API_KEY: z.string().min(1),
+    GEMINI_API_KEY: z.string().optional(),
 
     // External Services
     POLAR_ACCESS_TOKEN: z.string().min(1),
     POLAR_SERVER: z.enum(["sandbox", "production"]),
     RESEND_API_KEY: z.string().min(1),
+    MAGIC_LINK_EMAIL: z.email(),
 
     // Auth Providers
     GITHUB_CLIENT_ID: z.string().min(1),
@@ -50,6 +52,8 @@ export const env = createEnv({
     POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN,
     POLAR_SERVER: process.env.POLAR_SERVER,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    MAGIC_LINK_EMAIL: process.env.MAGIC_LINK_EMAIL,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

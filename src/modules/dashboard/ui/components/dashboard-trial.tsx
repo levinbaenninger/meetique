@@ -47,7 +47,9 @@ export const DashboardTrial = () => {
   };
 
   const isUnlimited =
-    freeUsage.limits.agents === -1 && freeUsage.limits.meetings === -1;
+    freeUsage.limits.agents === -1 &&
+    freeUsage.limits.meetings === -1 &&
+    freeUsage.limits.meetingChatMessages === -1;
 
   return (
     <div className="flex w-full flex-col gap-y-2 rounded-lg border border-border/10 bg-white/5">
@@ -82,6 +84,23 @@ export const DashboardTrial = () => {
               value={calculateProgress(
                 freeUsage.meetingCount,
                 freeUsage.limits.meetings
+              )}
+            />
+          )}
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <p className="text-xs">
+            {freeUsage.meetingChatMessageCount}/
+            {formatLimit(freeUsage.limits.meetingChatMessages)} Meeting Chat
+            Messages
+            {(freeUsage.tier === "starter" || freeUsage.tier === "pro") &&
+              " (this month)"}
+          </p>
+          {freeUsage.limits.meetingChatMessages !== -1 && (
+            <Progress
+              value={calculateProgress(
+                freeUsage.meetingChatMessageCount,
+                freeUsage.limits.meetingChatMessages
               )}
             />
           )}

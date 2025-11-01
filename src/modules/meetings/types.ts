@@ -16,10 +16,24 @@ export const meetingStatus = [
 
 export type MeetingStatus = (typeof meetingStatus)[number];
 
-export type Transcript = {
+export type FetchedTranscript = {
   speaker_id: string;
   type: string;
   text: string;
   start_ts: number;
   stop_ts: number;
+};
+
+export type FormattedTranscript = {
+  speaker: Speaker | null;
+  type: string;
+  text: string;
+  start_time_formatted: string;
+  stop_time_formatted: string;
+};
+
+export type Speaker = {
+  id: string;
+  name: string;
+  image?: string | null;
 };

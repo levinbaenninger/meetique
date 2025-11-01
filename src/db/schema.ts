@@ -70,8 +70,8 @@ export const agent = pgTable("agent", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   instructions: text("instructions").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const meetingStatus = pgEnum("meeting_status", [
@@ -100,8 +100,53 @@ export const meeting = pgTable("meeting", {
   meetingUrl: text("meeting_url"),
   recordingUrl: text("recording_url"),
   summary: text("summary"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const meeting_chat = pgTable("meeting_chat", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  meetingId: text("meeting_id")
+    .notNull()
+    .references(() => meeting.id, { onDelete: "cascade" }),
+  createdByUserId: text("created_by_user_id").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const meeting_chat_message_agent = pgTable(
+  "meeting_chat_message_agent",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    meetingChatId: text("meeting_chat_id")
+      .notNull()
+      .references(() => meeting_chat.id, { onDelete: "cascade" }),
+    agentId: text("agent_id").references(() => agent.id, {
+      onDelete: "set null",
+    }),
+    message: text("message").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  }
+);
+
+export const meeting_chat_message_user = pgTable("meeting_chat_message_user", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => nanoid()),
+  meetingChatId: text("meeting_chat_id")
+    .notNull()
+    .references(() => meeting_chat.id, { onDelete: "cascade" }),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const schema = {
@@ -111,4 +156,7 @@ export const schema = {
   verification,
   agent,
   meeting,
+  meeting_chat,
+  meeting_chat_message_agent,
+  meeting_chat_message_user,
 };

@@ -34,7 +34,7 @@ export type Meeting = NonNullable<
   inferRouterOutputs<typeof appRouter>["meetings"]["get"]
 >;
 
-export const authorType = ["user", "agent"] as const;
+const authorType = ["user", "agent"] as const;
 
 export type AuthorType = (typeof authorType)[number];
 

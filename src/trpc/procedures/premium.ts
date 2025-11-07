@@ -10,18 +10,18 @@ import {
 import protectedProcedure from "./protected";
 
 const premiumProcedure = (entity: PremiumEntity) =>
-  protectedProcedure.use(({ ctx, next }) => {
+  protectedProcedure.use(async ({ ctx, next }) => {
     const userId: string = ctx.session.user.id;
 
     switch (entity) {
       case "agent":
-        assertAgentLimit(userId);
+        await assertAgentLimit(userId);
         break;
       case "meeting":
-        assertMeetingLimit(userId);
+        await assertMeetingLimit(userId);
         break;
       case "meetingChatMessage":
-        assertMeetingChatMessages(userId);
+        await assertMeetingChatMessages(userId);
         break;
       default:
         break;

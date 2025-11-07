@@ -5,6 +5,8 @@ import {
   ClockFadingIcon,
   FileTextIcon,
   FileVideoIcon,
+  MessageCircleIcon,
+  MessageCircleIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { GeneratedAvatar } from "@/components/generated-avatar";
@@ -29,6 +31,9 @@ export const CompletedState = ({ meeting }: Props) => {
   const hasTranscript = !!meeting.transcriptUrl && resourcesAvailable;
   const hasRecording = !!meeting.recordingUrl && resourcesAvailable;
 
+  const tabsTriggerClassName =
+    "h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none";
+
   return (
     <div className="flex flex-col gap-y-4">
       <ResourceAvailabilityBanner
@@ -40,16 +45,13 @@ export const CompletedState = ({ meeting }: Props) => {
         <div className="rounded-lg border bg-white px-3">
           <ScrollArea>
             <TabsList className="h-13 justify-start rounded-none bg-background p-0">
-              <TabsTrigger
-                className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-                value="summary"
-              >
+              <TabsTrigger className={tabsTriggerClassName} value="summary">
                 <BookOpenTextIcon />
                 Summary
               </TabsTrigger>
               {hasTranscript && (
                 <TabsTrigger
-                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                  className={tabsTriggerClassName}
                   value="transcript"
                 >
                   <FileTextIcon />
@@ -57,14 +59,18 @@ export const CompletedState = ({ meeting }: Props) => {
                 </TabsTrigger>
               )}
               {hasRecording && (
-                <TabsTrigger
-                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-                  value="recording"
-                >
+                <TabsTrigger className={tabsTriggerClassName} value="recording">
                   <FileVideoIcon />
                   Recording
                 </TabsTrigger>
               )}
+              <TabsTrigger
+                className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                value="chat"
+              >
+                <MessageCircleIcon />
+                Chat
+              </TabsTrigger>
             </TabsList>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

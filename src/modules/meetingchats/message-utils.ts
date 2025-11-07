@@ -21,7 +21,7 @@ export function mergeMessagesIntoBaseMessages(
         image:
           userMessage.user?.image ??
           generateAvatarUri({
-            seed: userMessage.user?.name ?? "?", // deleted
+            seed: userMessage.user?.name ?? "?", // fallback for deleted/unknown users
             variant: "initials",
           }),
       },

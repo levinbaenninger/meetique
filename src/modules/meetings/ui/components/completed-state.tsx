@@ -6,7 +6,6 @@ import {
   FileTextIcon,
   FileVideoIcon,
   MessageCircleIcon,
-  MessageCircleIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { GeneratedAvatar } from "@/components/generated-avatar";

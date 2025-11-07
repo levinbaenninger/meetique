@@ -93,12 +93,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -158,12 +154,8 @@
           "name": "agent_user_id_user_id_fk",
           "tableFrom": "agent",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -267,12 +259,8 @@
           "name": "meeting_user_id_user_id_fk",
           "tableFrom": "meeting",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -280,12 +268,8 @@
           "name": "meeting_agent_id_agent_id_fk",
           "tableFrom": "meeting",
           "tableTo": "agent",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -339,12 +323,8 @@
           "name": "meeting_chat_meeting_id_meeting_id_fk",
           "tableFrom": "meeting_chat",
           "tableTo": "meeting",
-          "columnsFrom": [
-            "meeting_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["meeting_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -352,12 +332,8 @@
           "name": "meeting_chat_created_by_user_id_user_id_fk",
           "tableFrom": "meeting_chat",
           "tableTo": "user",
-          "columnsFrom": [
-            "created_by_user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -417,12 +393,8 @@
           "name": "meeting_chat_message_agent_meeting_chat_id_meeting_chat_id_fk",
           "tableFrom": "meeting_chat_message_agent",
           "tableTo": "meeting_chat",
-          "columnsFrom": [
-            "meeting_chat_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["meeting_chat_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -430,12 +402,8 @@
           "name": "meeting_chat_message_agent_agent_id_agent_id_fk",
           "tableFrom": "meeting_chat_message_agent",
           "tableTo": "agent",
-          "columnsFrom": [
-            "agent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agent_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -495,12 +463,8 @@
           "name": "meeting_chat_message_user_meeting_chat_id_meeting_chat_id_fk",
           "tableFrom": "meeting_chat_message_user",
           "tableTo": "meeting_chat",
-          "columnsFrom": [
-            "meeting_chat_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["meeting_chat_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -508,12 +472,8 @@
           "name": "meeting_chat_message_user_user_id_user_id_fk",
           "tableFrom": "meeting_chat_message_user",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -583,12 +543,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -598,9 +554,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -661,9 +615,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -724,13 +676,7 @@
     "public.meeting_status": {
       "name": "meeting_status",
       "schema": "public",
-      "values": [
-        "upcoming",
-        "active",
-        "completed",
-        "processing",
-        "cancelled"
-      ]
+      "values": ["upcoming", "active", "completed", "processing", "cancelled"]
     }
   },
   "schemas": {},

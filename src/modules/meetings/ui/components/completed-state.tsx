@@ -63,10 +63,7 @@ export const CompletedState = ({ meeting }: Props) => {
                   Recording
                 </TabsTrigger>
               )}
-              <TabsTrigger
-                className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-                value="chat"
-              >
+              <TabsTrigger className={tabsTriggerClassName} value="chat">
                 <MessageCircleIcon />
                 Chat
               </TabsTrigger>

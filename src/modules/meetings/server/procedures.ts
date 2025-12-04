@@ -17,17 +17,23 @@ import { db } from "@/db";
 import { agent, meeting, user } from "@/db/schema";
 import { generateAvatarUri } from "@/lib/avatar";
 import { streamVideo } from "@/lib/stream-video";
+import { meetingChatsRouter } from "@/modules/meetingchats/server/procedures";
 import {
   createMeetingSchema,
   updateMeetingSchema,
 } from "@/modules/meetings/schemas";
-import { meetingStatus, type Transcript } from "@/modules/meetings/types";
+import {
+  type FetchedTranscript,
+  meetingStatus,
+} from "@/modules/meetings/types";
 import { isLockedStatus } from "@/modules/meetings/utils";
 import premiumProcedure from "@/trpc/procedures/premium";
 import protectedProcedure from "@/trpc/procedures/protected";
 import { router } from "@/trpc/trpc";
 
 export const meetingsRouter = router({
+  chats: meetingChatsRouter,
+
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -324,7 +330,7 @@ export const meetingsRouter = router({
         }
 
         const text = await res.text();
-        const transcript = JSONL.parse<Transcript>(text);
+        const transcript = JSONL.parse<FetchedTranscript>(text);
 
         if (transcript.length === 0) {
           return [];

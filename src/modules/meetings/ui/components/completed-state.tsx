@@ -5,14 +5,16 @@ import {
   ClockFadingIcon,
   FileTextIcon,
   FileVideoIcon,
+  MessageCircleIcon,
 } from "lucide-react";
 import Link from "next/link";
-import Markdown from "react-markdown";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
+import { MarkdownStyleType, MarkdownView } from "@/components/ui/markdown-view";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { formatDuration } from "@/lib/utils";
+import { MeetingChat } from "@/modules/meetingchats/ui/components/chat";
 import type { Meeting } from "@/modules/meetings/types";
 import { Recording } from "@/modules/meetings/ui/components/recording";
 import { ResourceAvailabilityBanner } from "@/modules/meetings/ui/components/resource-availability-banner";
@@ -28,6 +30,9 @@ export const CompletedState = ({ meeting }: Props) => {
   const hasTranscript = !!meeting.transcriptUrl && resourcesAvailable;
   const hasRecording = !!meeting.recordingUrl && resourcesAvailable;
 
+  const tabsTriggerClassName =
+    "h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none";
+
   return (
     <div className="flex flex-col gap-y-4">
       <ResourceAvailabilityBanner
@@ -39,16 +44,13 @@ export const CompletedState = ({ meeting }: Props) => {
         <div className="rounded-lg border bg-white px-3">
           <ScrollArea>
             <TabsList className="h-13 justify-start rounded-none bg-background p-0">
-              <TabsTrigger
-                className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-                value="summary"
-              >
+              <TabsTrigger className={tabsTriggerClassName} value="summary">
                 <BookOpenTextIcon />
                 Summary
               </TabsTrigger>
               {hasTranscript && (
                 <TabsTrigger
-                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
+                  className={tabsTriggerClassName}
                   value="transcript"
                 >
                   <FileTextIcon />
@@ -56,14 +58,15 @@ export const CompletedState = ({ meeting }: Props) => {
                 </TabsTrigger>
               )}
               {hasRecording && (
-                <TabsTrigger
-                  className="h-full rounded-none border-transparent border-b-2 bg-background text-muted-foreground hover:text-accent-foreground data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground data-[state=active]:shadow-none"
-                  value="recording"
-                >
+                <TabsTrigger className={tabsTriggerClassName} value="recording">
                   <FileVideoIcon />
                   Recording
                 </TabsTrigger>
               )}
+              <TabsTrigger className={tabsTriggerClassName} value="chat">
+                <MessageCircleIcon />
+                Chat
+              </TabsTrigger>
             </TabsList>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
@@ -100,70 +103,14 @@ export const CompletedState = ({ meeting }: Props) => {
                   : "No duration"}
               </Badge>
               <div>
-                <Markdown
-                  components={{
-                    h1: (props) => (
-                      <h1 {...props} className="mb-6 font-medium text-2xl" />
-                    ),
-                    h2: (props) => (
-                      <h2 {...props} className="mb-4 font-medium text-xl" />
-                    ),
-                    h3: (props) => (
-                      <h3 {...props} className="mb-3 font-medium text-lg" />
-                    ),
-                    h4: (props) => (
-                      <h4 {...props} className="mb-2 font-medium text-base" />
-                    ),
-                    p: (props) => (
-                      <p
-                        {...props}
-                        className="mb-2 text-muted-foreground text-sm leading-relaxed"
-                      />
-                    ),
-                    ul: (props) => (
-                      <ul
-                        {...props}
-                        className="mb-2 list-inside list-disc pl-5"
-                      />
-                    ),
-                    li: (props) => (
-                      <li
-                        {...props}
-                        className="mb-0 text-muted-foreground text-sm leading-relaxed"
-                      />
-                    ),
-                    strong: (props) => (
-                      <strong
-                        {...props}
-                        className="font-semibold text-muted-foreground"
-                      />
-                    ),
-                    code: (props) => (
-                      <code
-                        {...props}
-                        className="rounded-md bg-muted px-1 py-0.5 text-muted-foreground text-sm"
-                      />
-                    ),
-                    blockquote: (props) => (
-                      <blockquote
-                        {...props}
-                        className="border-primary border-l-2 pl-4 text-muted-foreground"
-                      />
-                    ),
-                    img: (props) => (
-                      // biome-ignore lint/performance/noImgElement: Markdown component uses img element
-                      <img
-                        {...props}
-                        alt={props.alt}
-                        className="mb-2 rounded-md"
-                        height={props.height}
-                        width={props.width}
-                      />
-                    ),
-                  }}
-                >
-                  {meeting.summary}
-                </Markdown>
+                {meeting.summary ? (
+                  <MarkdownView
+                    markdownText={meeting.summary}
+                    type={MarkdownStyleType.TextMuted}
+                  />
+                ) : (
+                  <p className="text-primary text-sm">No summary available.</p>
+                )}
               </div>
             </div>
           </div>
@@ -181,6 +128,9 @@ export const CompletedState = ({ meeting }: Props) => {
             />
           </TabsContent>
         )}
+        <TabsContent value="chat">
+          <MeetingChat meeting={meeting} />
+        </TabsContent>
       </Tabs>
     </div>
   );

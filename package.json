@@ -2,6 +2,13 @@
   "name": "meetique",
   "version": "0.1.0",
   "private": true,
+  "trustedDependencies": [
+    "@sentry/cli",
+    "esbuild",
+    "inngest-cli",
+    "protobufjs",
+    "sharp"
+  ],
   "scripts": {
     "dev:web": "next dev",
     "dev:webhook": "ngrok http --url=unquick-unarticulative-arlene.ngrok-free.dev 3000",
@@ -115,8 +122,8 @@
     "@types/react-highlight-words": "^0.20.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "drizzle-kit": "^0.31.5",
-    "husky": "^9.1.7",
     "inngest-cli": "^1.12.1",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
     "lint-staged": "^16.2.6",
     "react-email": "4.3.1",

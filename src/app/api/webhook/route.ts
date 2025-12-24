@@ -60,10 +60,19 @@ const handleCallSessionStarted = async (event: CallSessionStartedEvent) => {
     call,
     openAiApiKey: env.OPENAI_API_KEY,
     agentUserId: existingAgent.id,
+    model: "gpt-4o-realtime-preview-2025-06-03",
   });
 
   realtimeClient.updateSession({
     instructions: existingAgent.instructions,
+    modalities: ["text", "audio"],
+    voice: "echo",
+    turn_detection: {
+      type: "server_vad",
+      threshold: 0.5,
+      prefix_padding_ms: 300,
+      silence_duration_ms: 500,
+    },
   });
 
   return NextResponse.json({ message: "OK." });

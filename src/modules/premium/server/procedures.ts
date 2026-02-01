@@ -1,4 +1,4 @@
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, gte, lte } from "drizzle-orm";
 
 import { db } from "@/db";
 import { agent, meeting } from "@/db/schema";
@@ -10,11 +10,29 @@ import { router } from "@/trpc/trpc";
 export const premiumRouter = router({
   getFreeUsage: protectedProcedure.query(async ({ ctx }) => {
     const tierInfo = await getTierInfo(ctx.session.user.id);
+    const isFreeTier = tierInfo.tier === "free";
 
-    const [userMeetings] = await db
-      .select({ count: count(meeting.id) })
-      .from(meeting)
-      .where(eq(meeting.userId, ctx.session.user.id));
+    const [userMeetings] = isFreeTier
+      ? await db
+          .select({ count: count(meeting.id) })
+          .from(meeting)
+          .where(eq(meeting.userId, ctx.session.user.id))
+      : await db
+          .select({ count: count(meeting.id) })
+          .from(meeting)
+          .where(
+            and(
+              eq(meeting.userId, ctx.session.user.id),
+              gte(
+                meeting.createdAt,
+                new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+              ),
+              lte(
+                meeting.createdAt,
+                new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+              )
+            )
+          );
 
     const [userAgents] = await db
       .select({ count: count(agent.id) })

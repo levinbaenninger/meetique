@@ -12,6 +12,7 @@ export const premiumRouter = router({
     const tierInfo = await getTierInfo(ctx.session.user.id);
     const isFreeTier = tierInfo.tier === "free";
 
+    const now = new Date();
     const [userMeetings] = isFreeTier
       ? await db
           .select({ count: count(meeting.id) })
@@ -25,11 +26,11 @@ export const premiumRouter = router({
               eq(meeting.userId, ctx.session.user.id),
               gte(
                 meeting.createdAt,
-                new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+                new Date(now.getFullYear(), now.getMonth(), 1)
               ),
               lte(
                 meeting.createdAt,
-                new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+                new Date(now.getFullYear(), now.getMonth() + 1, 0)
               )
             )
           );

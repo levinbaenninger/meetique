@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useRouter } from "next/navigation";

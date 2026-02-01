@@ -1,10 +1,16 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/core", "ultracite/next"],
+  "extends": [
+    "ultracite/core",
+    "ultracite/next",
+    "ultracite/biome/core",
+    "ultracite/biome/react",
+    "ultracite/biome/next"
+  ],
   "linter": {
     "rules": {
       "complexity": {
-        "noVoid": "off" // tRPC uses void in Server Components to prefetch data (https://trpc.io/docs/client/tanstack-react-query/server-components#using-your-api)
+        "noVoid": "off"
       },
       "style": {
         "useConsistentTypeDefinitions": "off"

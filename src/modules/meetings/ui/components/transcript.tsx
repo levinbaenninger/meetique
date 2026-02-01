@@ -58,7 +58,7 @@ export const Transcript = ({ meetingId }: Props) => {
           placeholder="Search Transcript"
           value={searchQuery}
         />
-        <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-2 size-4 text-muted-foreground" />
+        <SearchIcon className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
       <ScrollArea>
         <div className="flex flex-col gap-y-4">

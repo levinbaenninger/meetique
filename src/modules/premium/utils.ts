@@ -99,20 +99,31 @@ export async function checkMeetingLimit(
     return { allowed: true, current: 0, limit: -1 };
   }
 
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const isFreeTier = tierInfo.tier === "free";
 
-  const [userMeetings] = await db
-    .select({ count: count(meeting.id) })
-    .from(meeting)
-    .where(
-      and(
-        eq(meeting.userId, userId),
-        gte(meeting.createdAt, startOfMonth),
-        lte(meeting.createdAt, endOfMonth)
-      )
-    );
+  let userMeetings: { count: number };
+
+  if (isFreeTier) {
+    [userMeetings] = await db
+      .select({ count: count(meeting.id) })
+      .from(meeting)
+      .where(eq(meeting.userId, userId));
+  } else {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    [userMeetings] = await db
+      .select({ count: count(meeting.id) })
+      .from(meeting)
+      .where(
+        and(
+          eq(meeting.userId, userId),
+          gte(meeting.createdAt, startOfMonth),
+          lte(meeting.createdAt, endOfMonth)
+        )
+      );
+  }
 
   const allowed = userMeetings.count < tierInfo.limits.meetings;
 

@@ -14,7 +14,7 @@ export const AgentsSearchFilter = () => {
         placeholder="Search agents"
         value={filters.search}
       />
-      <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-2 size-4 text-muted-foreground" />
+      <SearchIcon className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
     </div>
   );
 };

@@ -1,13 +1,9 @@
-import { fileURLToPath } from "node:url";
-
 import { withSentryConfig } from "@sentry/nextjs";
-import { createJiti } from "jiti";
+import type { NextConfig } from "next";
 
-const jiti = createJiti(fileURLToPath(import.meta.url), { fsCache: true });
-await jiti.import("./src/env");
+import "./src/env";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactCompiler: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,
@@ -28,7 +24,6 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
-  disableLogger: true,
   tunnelRoute: true,
   widenClientFileUpload: true,
 });

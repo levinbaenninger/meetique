@@ -1,6 +1,23 @@
 {
-  "cSpell.words": ["bottts", "ilike", "uidotdev", "usehooks"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[mdx]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },

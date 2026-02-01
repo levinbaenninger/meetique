@@ -1,4 +1,4 @@
-import ip from "@arcjet/ip";
+import { findIp } from "@arcjet/ip";
 import arcjet, {
   type ArcjetDecision,
   type BotOptions,
@@ -28,7 +28,7 @@ const aj = arcjet({
 
 const emailOptions = {
   mode: "LIVE",
-  block: ["DISPOSABLE", "INVALID", "NO_MX_RECORDS"],
+  deny: ["DISPOSABLE", "INVALID", "NO_MX_RECORDS"],
 } satisfies EmailOptions;
 
 const botOptions = {
@@ -57,7 +57,7 @@ async function protect(req: NextRequest): Promise<ArcjetDecision> {
   if (session?.user.id) {
     userId = session.user.id;
   } else {
-    userId = ip(req);
+    userId = findIp(req) || "127.0.0.1";
   }
 
   if (req.nextUrl.pathname.startsWith("/api/auth/sign-up")) {
@@ -73,6 +73,7 @@ async function protect(req: NextRequest): Promise<ArcjetDecision> {
       .withRule(slidingWindow(rateLimitOptions))
       .protect(req, { userId });
   }
+
   return aj.withRule(detectBot(botOptions)).protect(req, { userId });
 }
 
@@ -103,6 +104,7 @@ export const POST = async (req: NextRequest) => {
 
       return Response.json({ message }, { status: 400 });
     }
+
     return new Response(null, { status: 403 });
   }
 

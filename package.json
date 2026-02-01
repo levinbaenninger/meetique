@@ -2,6 +2,9 @@
   "name": "meetique",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">= 20.9.0"
+  },
   "scripts": {
     "dev:web": "next dev",
     "dev:inngest": "inngest-cli dev",
@@ -131,7 +134,6 @@
   ],
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
-      "bun x ultracite fix",
       "bun x ultracite fix"
     ]
   }

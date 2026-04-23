@@ -79,7 +79,7 @@
     "drizzle-orm": "^0.45.1",
     "embla-carousel-react": "^8.6.0",
     "humanize-duration": "^3.33.2",
-    "inngest": "^3.50.0",
+    "inngest": "^3.54.0",
     "input-otp": "^1.4.2",
     "jsonl-parse-stringify": "^1.0.3",
     "lucide-react": "^0.563.0",

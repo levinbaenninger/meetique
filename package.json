@@ -120,7 +120,7 @@
     "husky": "^9.1.7",
     "inngest-cli": "^1.49.0",
     "jiti": "^2.7.0",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.6.0",
     "mprocs": "^0.8.3",
     "tailwindcss": "^4.3.4",
     "tsx": "^4.23.15",

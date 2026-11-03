@@ -42,7 +42,7 @@
         "@radix-ui/react-toggle-group": "^1.2.1",
         "@radix-ui/react-tooltip": "^1.4.1",
         "@sentry/nextjs": "^10.78.0",
-        "@stream-io/node-sdk": "^0.7.64",
+        "@stream-io/node-sdk": "^0.8.15",
         "@stream-io/openai-realtime-api": "^0.3.3",
         "@stream-io/video-react-sdk": "^1.45.1",
         "@t3-oss/env-core": "^0.13.11",
@@ -932,7 +932,7 @@
 
     "@stream-io/logger": ["@stream-io/logger@2.1.0", "", {}, "sha512-JN4qgxK2J83Vs4sU/eoHwY3X1fIjoh+hfReuwZhwQBoOTPwNicgivAZTI47jGH3lzlHu2l5PvvpyhLO46HO0Gw=="],
 
-    "@stream-io/node-sdk": ["@stream-io/node-sdk@0.7.64", "", { "dependencies": { "@types/jsonwebtoken": "^9.0.10", "@types/node": "^18.3.0", "jsonwebtoken": "^9.0.3" }, "peerDependencies": { "@stream-io/openai-realtime-api": "~0.1.3 || ~0.2.0 || ~0.3.0 || ~0.4.0" }, "optionalPeers": ["@stream-io/openai-realtime-api"] }, "sha512-E+c0NLtJ/5FMQ+XzBCjUdrVdSXyOCfrvZjRrOqb9qYNEjY/lMue+TXckfhYSkko0VSfSVQMsz8UaMidPlUzFoQ=="],
+    "@stream-io/node-sdk": ["@stream-io/node-sdk@0.8.15", "", { "dependencies": { "@types/jsonwebtoken": "^9.0.10", "jsonwebtoken": "^9.0.3" }, "peerDependencies": { "@stream-io/openai-realtime-api": "~0.1.3 || ~0.2.0 || ~0.3.0 || ~0.4.0" }, "optionalPeers": ["@stream-io/openai-realtime-api"], "hasInstallScript": true }, "sha512-1tJgbEB4Ysz9P3TtRpAy3b8MtTF88u/c+DpIFvwFqjMhyjJIHdoxa0klAUs88fFJJakoK0vcviVx+3IwBAR1fw=="],
 
     "@stream-io/openai-realtime-api": ["@stream-io/openai-realtime-api@0.3.3", "", { "dependencies": { "@openai/realtime-api-beta": "github:openai/openai-realtime-api-beta#a5cb94824f625423858ebacb9f769226ca98945f", "ws": "^8.18.0" } }, "sha512-jHjvE8zIkUAK6oeR/ZmjKDkyGB/jmV0QSGEv8CmXbobX4uzWPjM72CK6kqzTdUqJdxjGun7UrCp2enrPhHizlg=="],
 
@@ -2256,8 +2256,6 @@
 
     "@sentry/node/@opentelemetry/instrumentation": ["@opentelemetry/instrumentation@0.220.0", "", { "dependencies": { "@opentelemetry/api-logs": "0.220.0", "import-in-the-middle": "^3.0.0", "require-in-the-middle": "^8.0.0" }, "peerDependencies": { "@opentelemetry/api": "^1.3.0" } }, "sha512-xQx3E2WxP1mDvKzxLxX+CTCtNLa560YJZ3087qYHerl2YmiKpv7AH+dAy7vmx+eVrZ5BwhfWUAVoKOoxCNHcpw=="],
 
-    "@stream-io/node-sdk/@types/node": ["@types/node@18.19.130", "", { "dependencies": { "undici-types": "~5.26.4" } }, "sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg=="],
-
     "@tailwindcss/oxide-wasm32-wasi/@emnapi/core": ["@emnapi/core@1.11.3", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.3", "tslib": "^2.4.0" }, "bundled": true }, "sha512-zLpS5asjEb7lq8jYLq37N6XKaE41DIexlY1rF/z4/tIl3wo13Sqm28fRyfIsKZD+NZ8mM5RoKkpW/rBcuoSZSg=="],
 
     "@tailwindcss/oxide-wasm32-wasi/@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" }, "bundled": true }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
@@ -2761,8 +2759,6 @@
     "@sentry/node/@opentelemetry/instrumentation/@opentelemetry/api-logs": ["@opentelemetry/api-logs@0.220.0", "", { "dependencies": { "@opentelemetry/api": "^1.3.0" } }, "sha512-CmVa4ImJ+ynfrPMNaAXHET6Bhb44SwzmfyVJFq9ni2jgXJR/l7C6gfVFddNmHP+ZOkP9cf4f9DBe68qVLTHc9w=="],
 
     "@sentry/node/@opentelemetry/instrumentation/require-in-the-middle": ["require-in-the-middle@8.0.1", "", { "dependencies": { "debug": "^4.3.5", "module-details-from-path": "^1.0.3" } }, "sha512-QT7FVMXfWOYFbeRBF6nu+I6tr2Tf3u0q8RIEjNob/heKY/nh7drD/k7eeMFmSQgnTtCzLDcCu/XEnpW2wk4xCQ=="],
-
-    "@stream-io/node-sdk/@types/node/undici-types": ["undici-types@5.26.5", "", {}, "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA=="],
 
     "accepts/mime-types/mime-db": ["mime-db@1.52.0", "", {}, "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg=="],
 

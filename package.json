@@ -59,7 +59,7 @@
     "@radix-ui/react-toggle-group": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.4.1",
     "@sentry/nextjs": "^10.78.0",
-    "@stream-io/node-sdk": "^0.7.64",
+    "@stream-io/node-sdk": "^0.8.15",
     "@stream-io/openai-realtime-api": "^0.3.3",
     "@stream-io/video-react-sdk": "^1.45.1",
     "@t3-oss/env-core": "^0.13.11",

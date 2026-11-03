@@ -27,7 +27,7 @@
     "@arcjet/next": "1.15.0",
     "@dicebear/collection": "^9.4.3",
     "@dicebear/core": "^9.4.3",
-    "@hookform/resolvers": "^5.9.2",
+    "@hookform/resolvers": "^7.0.1",
     "@inngest/agent-kit": "^0.13.2",
     "@neondatabase/serverless": "^1.2.0",
     "@polar-sh/better-auth": "1.8.1",
